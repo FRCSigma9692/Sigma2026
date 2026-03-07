@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P1-Collect1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P2-Intake1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P3-Shoot1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of ToSource"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ToTower"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

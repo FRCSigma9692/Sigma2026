@@ -1,0 +1,93 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 13.022588383838384,
+        "y": 7.42479797979798
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 11.8745212648393,
+        "y": 7.652226558225704
+      },
+      "isLocked": false,
+      "linkedName": "EndP3"
+    },
+    {
+      "anchor": {
+        "x": 11.483187203794436,
+        "y": 2.7239336492917117
+      },
+      "prevControl": {
+        "x": 11.718181802128173,
+        "y": 2.638625157604391
+      },
+      "nextControl": {
+        "x": 11.247247353770028,
+        "y": 2.809585289275069
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 10.000177725121453,
+        "y": 3.551409952609248
+      },
+      "prevControl": {
+        "x": 11.038427728832072,
+        "y": 3.0328499278785905
+      },
+      "nextControl": {
+        "x": 9.776522266568382,
+        "y": 3.6631159768846433
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.85,
+        "y": 3.799
+      },
+      "prevControl": {
+        "x": 9.175222071456577,
+        "y": 3.7295384439998496
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "EndP4"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "StartIntake",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "reversed": false,
+  "folder": "AutoLines",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "useDefaultConstraints": true
+}
