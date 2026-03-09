@@ -12,13 +12,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
-import frc.robot.subsystems.FuelShooter;
 import frc.robot.subsystems.LimelightHelpers;
 
 public class Robot extends TimedRobot {
     
     private Command m_autonomousCommand;
-    private FuelShooter fs;
     private final RobotContainer m_robotContainer;
 
     /* log and replay timestamp and joystick data */
@@ -34,12 +32,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         m_timeAndJoystickReplay.update();
         CommandScheduler.getInstance().run(); 
-        // if (!((Math.abs(m_robotContainer.User1.getLeftX()))<0.1 || Math.abs(m_robotContainer.User1.getLeftY())<0.1 || Math.abs(m_robotContainer.User1.getRightX())<0.1 || Math.abs(m_robotContainer.User1.getRightY())<0.1)){
-        //     if (m_robotContainer.drivetrain.pathfindingCommand!=null){
-        //         SmartDashboard.putData("pathfindingcommand",m_robotContainer.drivetrain.pathfindingCommand);
-        //         m_robotContainer.drivetrain.pathfindingCommand.cancel();
-        //     }
-        // }
+       
     }
 
     @Override

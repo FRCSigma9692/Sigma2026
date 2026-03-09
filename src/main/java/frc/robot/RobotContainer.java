@@ -32,32 +32,39 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DrivetoPose;
+import frc.robot.commands.FeedingCmd;
+import frc.robot.commands.FeedingStop;
+import frc.robot.commands.HopperCmd;
 import frc.robot.commands.IntakCmd;
 import frc.robot.commands.LimIMUCmd;
+import frc.robot.commands.PushCmd;
 import frc.robot.commands.ShootDropCmd;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.ShooterDecCommand;
 import frc.robot.commands.ShooterIncCommand;
+
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CheckSparkFlex;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Feeding;
-import frc.robot.subsystems.FuelShooter;
+import frc.robot.subsystems.FeedingSub;
 import frc.robot.subsystems.FuelShooterMax;
+import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LimelightHelpers;
+import frc.robot.subsystems.Pushing;
+
 
 public class RobotContainer {
 
-    public final Field2d field2;
+    private Pushing pusher = new Pushing();
     public BooleanSupplier override = ()-> true;
-
+    public Hopper hopper;
     public double output;
     public double RotPow45;
     private double speed = 0.6;
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * speed; // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-
+    //private Pushing transfer;
     private final edu.wpi.first.wpilibj.smartdashboard.Field2d field = new edu.wpi.first.wpilibj.smartdashboard.Field2d();
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -74,19 +81,17 @@ public class RobotContainer {
 
     private final CommandXboxController joystick = new CommandXboxController(1);
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    private FuelShooter fs = new FuelShooter();
 
     private Intake intake = new Intake();
 
-    private Feeding feed = new Feeding();
+    private FeedingSub feed = new FeedingSub();
     
     private FuelShooterMax fuelShooterMax = new FuelShooterMax();
     //private CheckSparkFlex cs= new CheckSparkFlex();
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        
-        field2 = new Field2d();
+        SmartDashboard.putData("Field", field);
         NamedCommands.registerCommand("Align",new InstantCommand(()-> drivetrain.rotOverride(drivetrain.rot)));
         autoChooser = AutoBuilder.buildAutoChooser("OTR");
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -95,10 +100,11 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        User1.circle().onTrue(drivetrain.pathFind(10.8,7.17,180.0, override));
-        new Trigger(()->((Math.abs(User1.getLeftX()))<0.1 && Math.abs(User1.getLeftY())<0.1 && Math.abs(User1.getRightX())<0.1 && Math.abs(User1.getRightY())<0.1))
-        .onTrue(
-            Commands.runOnce(()->CommandScheduler.getInstance().cancelAll()));
+        User1.circle().onTrue(
+            Commands.race(drivetrain.pathFind(10.8,7.17,180.0, override),Commands.waitUntil(()->(!((Math.abs(User1.getLeftX()))<0.05 && Math.abs(User1.getLeftY())<0.05 && Math.abs(User1.getRightX())<0.03 && Math.abs(User1.getRightY())<0.03)))));
+        // new Trigger(()->((Math.abs(User1.getLeftX()))<0.1 && Math.abs(User1.getLeftY())<0.1 && Math.abs(User1.getRightX())<0.1 && Math.abs(User1.getRightY())<0.1))
+        // .onTrue(
+        //     Commands.runOnce(()->CommandScheduler.getInstance().cancelAll()));
     
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
@@ -138,6 +144,9 @@ public class RobotContainer {
         joystick.a().onTrue(new ShootDropCmd(fuelShooterMax, 0));
         joystick.x().onTrue(new ShooterIncCommand(fuelShooterMax, rpm));
         joystick.b().onTrue(new ShooterDecCommand(fuelShooterMax, rpm));
+        joystick.povUp().whileTrue(new FeedingCmd(feed, 0.8).alongWith(new PushCmd(pusher)));
+        joystick.povDown().whileTrue(new FeedingCmd(feed,-0.8));
+        //joystick.povDownLeft().whileTrue(new HopperCmd(hopper, 0.8));
         //joystick.x().onTrue(new ShooterIncCommand(fs, rpm));
         SmartDashboard.putNumber("RPMWheel", rpm);
         
@@ -148,11 +157,11 @@ public class RobotContainer {
                     .withVelocityY(-User1.getLeftX() * MaxSpeed * speed) // Drive left with negative X (left)
                 .withRotationalRate(drivetrain.rot*MaxAngularRate*0.4)));
 
-        User1.L2().onTrue(
-            drivetrain.applyRequest(() ->
-                    drive.withVelocityX(-User1.getLeftY() * MaxSpeed * speed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-User1.getLeftX() * MaxSpeed * speed) // Drive left with negative X (left)
-                .withRotationalRate(drivetrain.Rot45)));
+        // User1.L2().onTrue(
+        //     drivetrain.applyRequest(() ->
+        //             drive.withVelocityX(-User1.getLeftY() * MaxSpeed * speed) // Drive forward with negative Y (forward)
+        //             .withVelocityY(-User1.getLeftX() * MaxSpeed * speed) // Drive left with negative X (left)
+        //         .withRotationalRate(drivetrain.Rot45)));
         
         User1.R2().onTrue(new LimIMUCmd(drivetrain));
         joystick.leftTrigger().whileTrue(new IntakCmd(intake, 0.8));

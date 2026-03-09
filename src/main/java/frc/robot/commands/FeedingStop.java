@@ -9,13 +9,11 @@ import frc.robot.subsystems.FeedingSub;
 
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class FeedingCmd extends Command {
+public class FeedingStop extends Command {
   private FeedingSub feedingsub;
-  private double rpm;
   /** Creates a new FeedingCmd. */
-  public FeedingCmd(FeedingSub feed, double speed) {
+  public FeedingStop(FeedingSub feed) {
     this.feedingsub = feed;
-    this.rpm = speed;
     addRequirements(feed);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -27,13 +25,12 @@ public class FeedingCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    feedingsub.runShooterRPM(rpm);
+    feedingsub.stopShooter();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    feedingsub.stopShooter();
       super.end(interrupted);
   }
 

@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.FuelShooter;
 import frc.robot.subsystems.FuelShooterMax;
 public class ShooterIncCommand extends Command{
 

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 12.976780303024661,
-        "y": 7.4935101010076774
+        "x": 12.999684343434344,
+        "y": 7.298825757575758
       },
       "prevControl": null,
       "nextControl": {
-        "x": 12.51869949494385,
-        "y": 7.665290404037982
+        "x": 12.541603535353532,
+        "y": 7.4706060606060625
       },
       "isLocked": false,
       "linkedName": "Start"
@@ -48,7 +48,7 @@
   "folder": "AutoLines",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -107.3975128855309
   },
   "useDefaultConstraints": true
 }

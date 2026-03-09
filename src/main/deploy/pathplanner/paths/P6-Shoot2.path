@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 13.022588383838384,
-        "y": 7.42479797979798
+        "x": 13.0,
+        "y": 7.299
       },
       "prevControl": {
-        "x": 12.758015391259422,
-        "y": 7.569120891382227
+        "x": 12.735427007421038,
+        "y": 7.443322911584247
       },
       "nextControl": null,
       "isLocked": false,
@@ -58,7 +58,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -108.95951403934069
   },
   "reversed": false,
   "folder": "AutoLines",

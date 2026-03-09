@@ -5,14 +5,12 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
   private SparkMax intake;
-  SparkMaxConfig configure = new SparkMaxConfig();
   /** Creates a new Intake. */
   public Intake() {
     intake = new SparkMax(15, MotorType.kBrushless);

@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import javax.lang.model.element.TypeElement;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -48,6 +50,8 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.subsystems.LimelightHelpers.IMUData;
+import frc.robot.subsystems.LimelightHelpers.LimelightResults;
+import frc.robot.subsystems.LimelightHelpers.LimelightTarget_Detector;
 import frc.robot.subsystems.LimelightHelpers.PoseEstimate;
 
 /**
@@ -58,6 +62,12 @@ import frc.robot.subsystems.LimelightHelpers.PoseEstimate;
  * https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/tuner-swerve/index.html
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
+    double LensHeight = 13;
+    double goalHeight= 2.955;
+    double offsetAngleVertical;
+    double distance;
+    double tx,ty;
+    boolean DetectedFuel;
     Command followCommand = null;
     private Rotation2d overrideRot;
     public Command pathfindingCommand;
@@ -186,6 +196,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SwerveDrivetrainConstants drivetrainConstants,
         SwerveModuleConstants<?, ?, ?>... modules
     ) {
+
         super(drivetrainConstants, modules);
         if (Utils.isSimulation()) {
             startSimThread();
@@ -249,8 +260,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+
         configureAutoBuilder();
     }
+ 
 
     private void configureAutoBuilder() {
         try {
@@ -332,10 +345,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 //Heading = getState().Pose.getRotation().getDegrees();
                 xOdo = getState().Pose.getX();
                 yOdo = getState().Pose.getY();
-                double Error135 = 135-Heading;
-                double Error_45 = -45-Heading;
-                double Error_135 = -135-Heading;
-                Error45 = 45-Heading;
+                double Error135 = 120-Heading;
+                double Error_45 = -30-Heading;
+                double Error_135 = -125-Heading;
+                Error45 = 30-Heading;
                 if (Error45>0){
                 Error45= (Error45+180)%360-180;
                 }
@@ -410,14 +423,20 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
          */
         
         LimelightHelpers.setPipelineIndex("limelight-l",1);
-        LimelightHelpers.setPipelineIndex("limelight-ll", 0);
+        // LimelightHelpers.setPipelineIndex("limelight-ll", 0);
+         LimelightHelpers.setPipelineIndex("limelight-ll", 4);
           if (!LimSeed){
             LimelightHelpers.SetIMUMode("limelight-l", 4);
             LimelightHelpers.SetIMUMode("limelight-ll", 4);
+            LimelightHelpers.SetRobotOrientation("limelight-ll", GetLimHeading(), 0,0, 0, 0, 0);
+        LimelightHelpers.SetRobotOrientation("limelight-l", GetLimHeading(), 0,0,0,0,0);
+
             //imelightHelpers.SetRobotOrientation("limelight-ll", Lime);
             //LimelightHelpers.SetRobo  tOrientation("limelight-l", getState().Pose.getRotation().getDegrees(), 0,0,0,0,0);
         }
         else {
+            LimelightHelpers.SetRobotOrientation("limelight-ll", GetHeading(), 0,0, 0, 0, 0);
+            LimelightHelpers.SetRobotOrientation("limelight-l", GetHeading(), 0,0,0,0,0);
             LimelightHelpers.SetIMUMode("limelight-ll", 1);
             LimelightHelpers.SetIMUMode("limelight-l", 1);
         }
@@ -430,12 +449,32 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
          
         
         //LimelightHelpers.setLimelightNTDoubleArray("null", null, null);
-        LimelightHelpers.SetRobotOrientation("limelight-ll", getState().Pose.getRotation().getDegrees(), 0,0, 0, 0, 0);
-        LimelightHelpers.SetRobotOrientation("limelight-l", getState().Pose.getRotation().getDegrees(), 0,0,0,0,0);
+        //LimelightHelpers.SetRobotOrientation("limelight-ll", getState().Pose.getRotation().getDegrees(), 0,0, 0, 0, 0);
+        //LimelightHelpers.SetRobotOrientation("limelight-l", getState().Pose.getRotation().getDegrees(), 0,0,0,0,0);
 
         //LimelightHelpers.SetRobotOrientation("limelight-ll", getState().Pose.getRotation().getDegrees(), 0,0,0,0,0);
-        lim2mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-ll");
+
+        //lim2mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-ll");
         mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-l");
+        LimelightTarget_Detector limelightTarget_Detector = new LimelightTarget_Detector();
+        LimelightHelpers.LimelightResults limelightResults = LimelightHelpers.getLatestResults("limelight-ll");
+        LimelightHelpers.LimelightTarget_Detector[] detections = limelightResults.targets_Detector;
+        for (LimelightHelpers.LimelightTarget_Detector detection : detections){
+            if (detection.className.contentEquals("Fuel")){
+                double[] BotSpace= LimelightHelpers.getTargetPose_RobotSpace("limelight-ll");
+                ty = detection.ty;
+                tx= detection.tx;
+                offsetAngleVertical = detection.ty;
+                double angleToGoalDefrees = Math.toRadians(ty);
+                distance = (goalHeight-LensHeight)/Math.tan(angleToGoalDefrees);
+                double Hdist = distance * Math.tan(Math.toRadians(tx));
+                DetectedFuel = true;
+            } else {
+                DetectedFuel = false;
+
+            }
+        }
+    
        // double data = LimelightHelpers.getIMUData("limelight-l").robotYaw;
         
         rejectUpdate = false;
@@ -444,36 +483,37 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         // ✅ 4. Normal rejection rules (only used BEFORE auto, or in teleop)
         if (mt2 == null || mt2.tagCount == 0)
             rejectUpdate = true;
-         if (lim2mt2.tagCount == 0)
-             rejectUpdate2 = true;
+        //  if (lim2mt2.tagCount == 0)
+        //      rejectUpdate2 = true;
 
 
         if (Math.abs(getPigeon2().getAngularVelocityZDevice().getValueAsDouble()) > 720)
            rejectUpdate = true;
            //rejectUpdate2 = true;
 
-        //✅ 5. Apply MT2 once vision is enabled
-        if (!rejectUpdate) {
-            // We trust X/Y but ignore theta
-            setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
-            addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
-        }
-        if (!rejectUpdate2) {
-            // We trust X/Y but ignore theta
-            SmartDashboard.putString("runing", "lime2");
-            setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
-            addVisionMeasurement(lim2mt2.pose, lim2mt2.timestampSeconds);
-        }
-        if (!rejectUpdate && !rejectUpdate2){
-            setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
-            addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
-        }
-        else {
-            SmartDashboard.putString("not runing", "lime2");
-        }
+        // //✅ 5. Apply MT2 once vision is enabled
+        // if (!rejectUpdate) {
+        //     // We trust X/Y but ignore theta
+        //     setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
+        //     addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
+        // }
+        // if (!rejectUpdate2) {
+        //     // We trust X/Y but ignore theta
+        //     // SmartDashboard.putString("runing", "lime2");
+        //     // setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
+        //     // addVisionMeasurement(lim2mt2.pose, lim2mt2.timestampSeconds);
+        // }
+        // if (!rejectUpdate && !rejectUpdate2){
+        //     setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
+        //     addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
+        // }
+        // else {
+        //     SmartDashboard.putString("not runing", "lime2");
+        // }
 
         field.setRobotPose(getState().Pose);
-
+        
+        
         
         // ✅ 6. Dashboard
       ///  double x = getState().Pose.getX();
@@ -499,6 +539,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putBoolean("Reject Update Lim1", rejectUpdate);
         SmartDashboard.putBoolean("Reject Update Lim2", rejectUpdate2);
         SmartDashboard.putBoolean("PathDone", pathDone);
+        SmartDashboard.putBoolean("DetectedFuel", DetectedFuel);
+        SmartDashboard.putNumber("DetectedFuel Tx", tx);
+        SmartDashboard.putNumber("DetectedFuelTy", ty);
+        SmartDashboard.putNumber("DistanceFromFuel", distance);
+        
+        
+        //SmartDashboard.putData("null", field);
         //  SmartDashboard.putNumber("Best Velocity", shooterCalc.bestVelocity);
         //         SmartDashboard.putNumber("Best Angle", shooterCalc.bestAngle);
         //         SmartDashboard.putNumber("Best RPM", shooterCalc.bestVelocity*60/Math.PI*4);
@@ -558,6 +605,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         //     })
         return pathfindingCommand;
     }
+     public Command CancelCommand(){
+        pathfindingCommand = null;
+        return pathfindingCommand;
+    }
     
    
     private void startSimThread() {
@@ -610,6 +661,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public double GetDistFromHub(){
         return calcdist;
     }
+   
     
     /**
      * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate

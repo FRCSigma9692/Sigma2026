@@ -61,8 +61,8 @@ public class FuelShooterMax extends SubsystemBase {
 
     public FuelShooterMax() {
       
-    leftMotor = new SparkFlex(21, MotorType.kBrushless);
-    rightMotor = new SparkFlex(22, MotorType.kBrushless);
+    leftMotor = new SparkFlex(19, MotorType.kBrushless);
+    rightMotor = new SparkFlex(20, MotorType.kBrushless);
 
     /* ---------------- Config Objects ---------------- */
     
@@ -73,7 +73,7 @@ public class FuelShooterMax extends SubsystemBase {
 
     /* ---------------- Common Motor Settings ---------------- */
     leftConfig
-        .smartCurrentLimit(40)
+        .smartCurrentLimit(30)
         .idleMode(IdleMode.kCoast);
   
     /* ---------------- Closed Loop (PID + FF) ---------------- */

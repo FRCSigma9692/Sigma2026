@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.022588383838384,
-        "y": 7.42479797979798
+        "x": 13.0,
+        "y": 7.299
       },
       "prevControl": null,
       "nextControl": {
-        "x": 11.8745212648393,
-        "y": 7.652226558225704
+        "x": 11.851932881000916,
+        "y": 7.526428578427724
       },
       "isLocked": false,
       "linkedName": "EndP3"
@@ -87,7 +87,7 @@
   "folder": "AutoLines",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -108.95951403934069
   },
   "useDefaultConstraints": true
 }

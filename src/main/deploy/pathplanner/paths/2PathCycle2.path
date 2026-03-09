@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.022588383838384,
-        "y": 7.42479797979798
+        "x": 13.0,
+        "y": 7.299
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.02682580622841,
-        "y": 7.6310767710448095
+        "x": 14.004237422390027,
+        "y": 7.5052787912468295
       },
       "isLocked": false,
       "linkedName": "EndP3"
@@ -208,7 +208,7 @@
   "folder": "Full Cycle",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -108.95951403934069
   },
   "useDefaultConstraints": true
 }

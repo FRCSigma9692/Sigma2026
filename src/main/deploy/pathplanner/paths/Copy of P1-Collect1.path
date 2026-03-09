@@ -3,45 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 12.976780303024661,
-        "y": 7.4935101010076774
+        "x": 12.999684343434344,
+        "y": 7.298825757575758
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.027065721896273,
-        "y": 7.464249678038497
+        "x": 12.724835858585859,
+        "y": 7.378989898989898
       },
       "isLocked": false,
       "linkedName": "Start"
     },
     {
       "anchor": {
-        "x": 14.018914141414141,
-        "y": 7.378989898989898
+        "x": 11.923194444444443,
+        "y": 7.42479797979798
       },
       "prevControl": {
-        "x": 14.267166957031225,
-        "y": 7.349484991971069
+        "x": 12.679027777777776,
+        "y": 7.390441919191919
       },
       "nextControl": {
-        "x": 12.910152360472274,
-        "y": 7.5107665041067575
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 11.602537878782236,
-        "y": 7.4935101010076774
-      },
-      "prevControl": {
-        "x": 12.571853512122235,
-        "y": 7.579373489346061
-      },
-      "nextControl": {
-        "x": 10.832875362497786,
-        "y": 7.425332276105054
+        "x": 9.326040471950506,
+        "y": 7.542850433093162
       },
       "isLocked": false,
       "linkedName": null
@@ -60,12 +44,17 @@
       "linkedName": "EndP1"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.87,
+      "rotationDegrees": -90.20161527401372
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6578073089700994,
-      "maxWaypointRelativePos": 1.4086378737541516,
+      "minWaypointRelativePos": 0.35,
+      "maxWaypointRelativePos": 0.7,
       "constraints": {
         "maxVelocity": 1.5,
         "maxAcceleration": 1.5,
@@ -83,19 +72,12 @@
         "y": 5.5
       },
       "rotationOffset": 59.99999999999999,
-      "minWaypointRelativePos": 0.25,
-      "maxWaypointRelativePos": 0.75,
+      "minWaypointRelativePos": 0.15,
+      "maxWaypointRelativePos": 0.4,
       "name": "Point Towards Zone"
     }
   ],
-  "eventMarkers": [
-    {
-      "name": "Shoot",
-      "waypointRelativePos": 1.0,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 5.0,
@@ -112,7 +94,7 @@
   "folder": "AutoLines",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -107.39800000000001
   },
   "useDefaultConstraints": true
 }
