@@ -20,8 +20,8 @@ public class FeedingSub extends SubsystemBase {
   // Motors
 
         private final SparkMax leftmotor;
-        private final SparkMax rightmotor;
-        private final RelativeEncoder shooterEncoder2;
+       // private final SparkMax rightmotor;
+        //private final RelativeEncoder shooterEncoder2;
         // Closed-loop objects (ONLY from leader)
         private final SparkClosedLoopController shooterController;
         private final RelativeEncoder shooterEncoder;
@@ -34,14 +34,14 @@ public class FeedingSub extends SubsystemBase {
         public FeedingSub() {
           
         leftmotor = new SparkMax(17, MotorType.kBrushless);
-        rightmotor = new SparkMax(18, MotorType.kBrushless);
+        //rightmotor = new SparkMax(18, MotorType.kBrushless);
     
         /* ---------------- Config Objects ---------------- */
         SparkMaxConfig leftconfig = new SparkMaxConfig();
-        SparkMaxConfig rightConfig = new SparkMaxConfig();
+        //SparkMaxConfig rightConfig = new SparkMaxConfig();
       
     
-        shooterEncoder2 = rightmotor.getEncoder();
+        //shooterEncoder2 = rightmotor.getEncoder();
         shooterEncoder = leftmotor.getEncoder();
           leftconfig
           .smartCurrentLimit(30)
@@ -55,12 +55,12 @@ public class FeedingSub extends SubsystemBase {
           .minOutput(-0.8)
           .maxOutput(0.8);
     
-        rightConfig
-            .apply(leftconfig)
-            .follow(leftmotor, false);
+        // rightConfig
+        //     .apply(leftconfig)
+        //     .follow(leftmotor, false);
     
         leftmotor.configure(leftconfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-        rightmotor.configure(rightConfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+        //rightmotor.configure(rightConfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
         shooterController = leftmotor.getClosedLoopController();
       }
     

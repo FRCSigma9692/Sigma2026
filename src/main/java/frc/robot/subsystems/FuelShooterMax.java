@@ -73,9 +73,9 @@ public class FuelShooterMax extends SubsystemBase {
 
     /* ---------------- Common Motor Settings ---------------- */
     leftConfig
+        .inverted(true)
         .smartCurrentLimit(30)
         .idleMode(IdleMode.kCoast);
-  
     /* ---------------- Closed Loop (PID + FF) ---------------- */
     leftConfig.closedLoop
         .p(Kp)
@@ -90,15 +90,13 @@ public class FuelShooterMax extends SubsystemBase {
     .maxAcceleration(4000)
     ;
       
-
     leftConfig.encoder
             .positionConversionFactor(1.0)
             .velocityConversionFactor(1.0);
           
-  
     rightConfig
-        .apply(leftConfig)
-        .follow(leftMotor, true);
+      .follow(leftMotor, true)
+      .apply(leftConfig);
 
     leftMotor.configure(leftConfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
     rightMotor.configure(rightConfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);

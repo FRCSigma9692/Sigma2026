@@ -7,6 +7,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.NullType;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
@@ -62,6 +63,8 @@ import frc.robot.subsystems.LimelightHelpers.PoseEstimate;
  * https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/tuner-swerve/index.html
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
+    public int checkcase = 0;
+    public boolean wonAuto;
     double LensHeight = 13;
     double goalHeight= 2.955;
     double offsetAngleVertical;
@@ -543,7 +546,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("DetectedFuel Tx", tx);
         SmartDashboard.putNumber("DetectedFuelTy", ty);
         SmartDashboard.putNumber("DistanceFromFuel", distance);
-        
+        SmartDashboard.putBoolean("Won Auto Or Not", wonAuto);
+        SmartDashboard.putNumber("CheckCase", checkcase);
         
         //SmartDashboard.putData("null", field);
         //  SmartDashboard.putNumber("Best Velocity", shooterCalc.bestVelocity);
@@ -608,6 +612,24 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      public Command CancelCommand(){
         pathfindingCommand = null;
         return pathfindingCommand;
+    }
+    public void AutoWon(){
+        if (checkcase==0){
+        wonAuto = true;
+        checkcase++;
+        }
+        else {
+
+        }
+    }
+     public void AutoLost(){
+        if (checkcase==0){
+        wonAuto = false;
+        checkcase++;
+        }
+        else {
+
+        }
     }
     
    

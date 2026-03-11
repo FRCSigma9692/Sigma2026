@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -21,18 +23,19 @@ public class Pushing extends SubsystemBase {
   /** Creates a new Intake. */
   public Pushing() {
     Pusher = new SparkMax(16, MotorType.kBrushless);
+    SparkMaxConfig configure = new SparkMaxConfig();
   //  PusherEncoder = Pusher.getEncoder();
-  //   configure
-  //   .smartCurrentLimit(20)
-  //   .idleMode(IdleMode.kCoast);
-  //   configure.encoder
-  //   .velocityConversionFactor(1)
-  //   .positionConversionFactor(1);
-  //   configure.closedLoop
-  //   .pid(Kp, Ki, Kd)
-  //   .velocityFF(Kf)
-  //   .minOutput(-1)
-  //   .maxOutput(1);
+    configure
+    .smartCurrentLimit(30)
+    .idleMode(IdleMode.kCoast);
+    configure.encoder
+    .velocityConversionFactor(1)
+    .positionConversionFactor(1);
+    configure.closedLoop
+    .pid(Kp, Ki, Kd)
+    .velocityFF(Kf)
+    .minOutput(-1)
+    .maxOutput(1);
 
     //Pusher.configure(configure, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     // pushController = Pusher.getClosedLoopController();
@@ -43,7 +46,10 @@ public class Pushing extends SubsystemBase {
     // This method will be called once per scheduler run
   }
   public void runPusher(){
-    Pusher.set(-1);
+    Pusher.set(0.6);
+  }
+  public void ReversePusher(){
+    Pusher.set(-0.6);
   }
   public void Stop(){
     Pusher.set(0);

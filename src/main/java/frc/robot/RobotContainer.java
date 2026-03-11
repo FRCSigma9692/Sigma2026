@@ -19,6 +19,7 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -85,7 +86,7 @@ public class RobotContainer {
     private Intake intake = new Intake();
 
     private FeedingSub feed = new FeedingSub();
-    
+    public Timer timer = new Timer();
     private FuelShooterMax fuelShooterMax = new FuelShooterMax();
     //private CheckSparkFlex cs= new CheckSparkFlex();
     private final SendableChooser<Command> autoChooser;
@@ -144,8 +145,15 @@ public class RobotContainer {
         joystick.a().onTrue(new ShootDropCmd(fuelShooterMax, 0));
         joystick.x().onTrue(new ShooterIncCommand(fuelShooterMax, rpm));
         joystick.b().onTrue(new ShooterDecCommand(fuelShooterMax, rpm));
-        joystick.povUp().whileTrue(new FeedingCmd(feed, 0.8).alongWith(new PushCmd(pusher)));
+        joystick.povUp().whileTrue(new FeedingCmd(feed, 0.8));
         joystick.povDown().whileTrue(new FeedingCmd(feed,-0.8));
+        // joystick.povLeft().onTrue(new InstantCommand(()-> pusher.runPusher()));
+        // joystick.povRight().onTrue(new InstantCommand(()-> pusher.ReversePusher()));
+         joystick.leftBumper().onTrue(new InstantCommand(()-> pusher.Stop()));
+         joystick.rightBumper().onTrue(new FeedingStop(feed));
+
+        joystick.povLeft().onTrue(new InstantCommand(()-> drivetrain.AutoWon()));
+        joystick.povRight().onTrue(new InstantCommand(()-> drivetrain.AutoLost()));
         //joystick.povDownLeft().whileTrue(new HopperCmd(hopper, 0.8));
         //joystick.x().onTrue(new ShooterIncCommand(fs, rpm));
         SmartDashboard.putNumber("RPMWheel", rpm);
@@ -193,7 +201,7 @@ public class RobotContainer {
     
 
     public Command getAutonomousCommand() {
-        PPHolonomicDriveController.overrideRotationFeedback(()->drivetrain.rot);
+        //PPHolonomicDriveController.overrideRotationFeedback(()->drivetrain.rot);
         return autoChooser.getSelected();
         // Simple drive forward auton
         // final var idle = new SwerveRequest.Idle();
