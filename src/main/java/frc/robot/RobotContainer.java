@@ -147,13 +147,13 @@ public class RobotContainer {
         joystick.b().onTrue(new ShooterDecCommand(fuelShooterMax, rpm));
         joystick.povUp().whileTrue(new FeedingCmd(feed, 0.8));
         joystick.povDown().whileTrue(new FeedingCmd(feed,-0.8));
-        // joystick.povLeft().onTrue(new InstantCommand(()-> pusher.runPusher()));
-        // joystick.povRight().onTrue(new InstantCommand(()-> pusher.ReversePusher()));
+         joystick.povLeft().onTrue(new InstantCommand(()-> pusher.runPusher()));
+         joystick.povRight().onTrue(new InstantCommand(()-> pusher.ReversePusher()));
          joystick.leftBumper().onTrue(new InstantCommand(()-> pusher.Stop()));
          joystick.rightBumper().onTrue(new FeedingStop(feed));
 
-        joystick.povLeft().onTrue(new InstantCommand(()-> drivetrain.AutoWon()));
-        joystick.povRight().onTrue(new InstantCommand(()-> drivetrain.AutoLost()));
+        //joystick.povLeft().onTrue(new InstantCommand(()-> drivetrain.AutoWon()));
+        //joystick.povRight().onTrue(new InstantCommand(()-> drivetrain.AutoLost()));
         //joystick.povDownLeft().whileTrue(new HopperCmd(hopper, 0.8));
         //joystick.x().onTrue(new ShooterIncCommand(fs, rpm));
         SmartDashboard.putNumber("RPMWheel", rpm);

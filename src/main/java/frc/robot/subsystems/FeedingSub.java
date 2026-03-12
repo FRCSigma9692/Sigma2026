@@ -14,6 +14,8 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class FeedingSub extends SubsystemBase {
 
@@ -44,7 +46,7 @@ public class FeedingSub extends SubsystemBase {
         //shooterEncoder2 = rightmotor.getEncoder();
         shooterEncoder = leftmotor.getEncoder();
           leftconfig
-          .smartCurrentLimit(30)
+          .smartCurrentLimit(50)
           .idleMode(IdleMode.kCoast);
           leftconfig.encoder
           .velocityConversionFactor(1)
@@ -66,6 +68,7 @@ public class FeedingSub extends SubsystemBase {
     
       @Override
       public void periodic() {
+        SmartDashboard.putNumber("FeedingCurrent", leftmotor.getOutputCurrent());
         
           }
     

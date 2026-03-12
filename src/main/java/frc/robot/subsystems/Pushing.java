@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Pushing extends SubsystemBase {
@@ -43,15 +44,19 @@ public class Pushing extends SubsystemBase {
 
   @Override
   public void periodic() {
+            SmartDashboard.putNumber("Pusher Current",GetCurrent());
     // This method will be called once per scheduler run
   }
   public void runPusher(){
-    Pusher.set(0.6);
+    Pusher.set(1);
   }
   public void ReversePusher(){
-    Pusher.set(-0.6);
+    Pusher.set(-1);
   }
   public void Stop(){
     Pusher.set(0);
+  }
+  public double GetCurrent(){
+    return Pusher.getOutputCurrent();
   }
 }

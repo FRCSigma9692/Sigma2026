@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.030682622992488,
-        "y": 6.93253761707322
+        "x": 14.753182756535026,
+        "y": 7.3365419775500325
       },
       "isLocked": false,
       "linkedName": "EndP3"
@@ -20,8 +20,8 @@
         "y": 7.42479797979798
       },
       "prevControl": {
-        "x": 15.0725,
-        "y": 7.069785353535353
+        "x": 14.674381025993275,
+        "y": 7.369474676202418
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.19712070874861606,
-      "maxWaypointRelativePos": 0.651162790697675,
+      "minWaypointRelativePos": 0.7401574803149609,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.5,
         "maxAcceleration": 1.5,
@@ -44,26 +44,8 @@
       }
     }
   ],
-  "pointTowardsZones": [
-    {
-      "fieldPosition": {
-        "x": 0.4,
-        "y": 5.5
-      },
-      "rotationOffset": 45.0,
-      "minWaypointRelativePos": 0.2,
-      "maxWaypointRelativePos": 0.65,
-      "name": "Point Towards Zone"
-    }
-  ],
-  "eventMarkers": [
-    {
-      "name": "Shoot",
-      "waypointRelativePos": 0.25,
-      "endWaypointRelativePos": 0.6,
-      "command": null
-    }
-  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 5.0,

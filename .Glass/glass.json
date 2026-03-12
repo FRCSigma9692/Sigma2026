@@ -11,10 +11,13 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/Pose": "Field2d",
+      "/SmartDashboard/Auto Mode": "String Chooser",
+      "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
-      "/SmartDashboard/Module 3": "Mechanism2d"
+      "/SmartDashboard/Module 3": "Mechanism2d",
+      "/SmartDashboard/PathPlanner": "Alerts"
     },
     "windows": {
       "/FMSInfo": {
@@ -23,11 +26,15 @@
         }
       },
       "/Pose": {
-        "bottom": 1638,
+        "builtin": "",
         "height": 8.051901817321777,
-        "left": 534,
-        "right": 3466,
-        "top": 291,
+        "image": "E:\\RebuiltSigma26\\assets\\FE-2026-_REBUILT_Playing_Field_With_Background.png",
+        "width": 17.54825210571289
+      },
+      "/SmartDashboard/Field": {
+        "builtin": "",
+        "height": 8.051901817321777,
+        "image": "E:\\RebuiltSigma26\\assets\\FE-2026-_REBUILT_Playing_Field_With_Background.png",
         "width": 17.54825210571289,
         "window": {
           "visible": true

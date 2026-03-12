@@ -548,6 +548,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("DistanceFromFuel", distance);
         SmartDashboard.putBoolean("Won Auto Or Not", wonAuto);
         SmartDashboard.putNumber("CheckCase", checkcase);
+
+    
         
         //SmartDashboard.putData("null", field);
         //  SmartDashboard.putNumber("Best Velocity", shooterCalc.bestVelocity);

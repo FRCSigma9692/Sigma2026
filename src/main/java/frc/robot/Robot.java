@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.subsystems.LimelightHelpers;
 
 public class Robot extends TimedRobot {
+    boolean Allianceshift;
+    double Matchtime;
     boolean AutoResult = false;
     private Command m_autonomousCommand;
     private final RobotContainer m_robotContainer;
@@ -34,8 +36,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
+        Matchtime = DriverStation.getMatchTime();
         //SmartDashboard.putBoolean("Result Of Selection",m_robotContainer.drivetrain.wonAuto);
          SmartDashboard.putNumber("MatchTime",DriverStation.getMatchTime());
+         SmartDashboard.putBoolean("Active Zone or No ", Allianceshift);
         m_timeAndJoystickReplay.update();
         CommandScheduler.getInstance().run(); 
     }
@@ -80,17 +84,24 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
      if (m_robotContainer.drivetrain.wonAuto){
-            if (DriverStation.getMatchTime()==125 || DriverStation.getMatchNumber() == 75){
-            testColor = new Color(255, 255, 0);
-         }else {
-            testColor = new Color(192, 192, 192);
+            if ( Matchtime>= 130 &&(Matchtime<=130.00 && Matchtime>=105) || (Matchtime <= 80 && Matchtime >=55)){
+            Allianceshift = true;
+            testColor = new Color(0, 255, 0);
+            }
+         else {
+            Allianceshift = false;
+            testColor = new Color(255, 0, 0);
          }
-        }        
+        }
+             
          if (!m_robotContainer.drivetrain.wonAuto){
-            if (DriverStation.getMatchTime()==100 || DriverStation.getMatchNumber() == 50){
-            testColor = new Color(255, 255, 0);
-         }else {
-            testColor = new Color(192, 192, 192);
+         if (Matchtime> 130 && (Matchtime<=105.00 && Matchtime>=80) || (Matchtime <= 55 && Matchtime >=30)){
+            Allianceshift = true;
+            testColor = new Color(0, 255, 0);
+            }
+         else {
+            Allianceshift = false;
+            testColor = new Color(255, 0, 0);
          }
         }        
           SmartDashboard.putString("Alliance Shift", testColor.toString());
