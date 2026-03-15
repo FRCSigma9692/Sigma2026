@@ -5,18 +5,19 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-
-import frc.robot.subsystems.FuelShooterMax;
-
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.FeederSub;
+import frc.robot.subsystems.ShooterSub;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ShootDropCmd extends Command {
-  FuelShooterMax fuelShooter;
-  double RPM;
-  /** Creates a new ShootDrop. */
-  public ShootDropCmd(FuelShooterMax fs, double RPM ) {
-    this.fuelShooter = fs;
-    this.RPM = RPM;
-    addRequirements(fs);
+public class FeedCmd extends Command {
+  private FeederSub feed;
+  private RobotContainer m_RobotContainer;
+  /** Creates a new FeedingCmd. */
+  public FeedCmd(FeederSub feed, RobotContainer robotContainer) {
+    this.feed = feed;
+    this.m_RobotContainer = robotContainer;
+  //  addRequirements(pusher);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -27,13 +28,15 @@ public class ShootDropCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    fuelShooter.RampDown(RPM);
+    if (ShooterSub.SHOOTER_RPM< m_RobotContainer.rpm)
+    feed.runPusher();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    super.end(interrupted);
+    //pusher.Stop();
+      super.end(interrupted);
   }
 
   // Returns true when the command should end.

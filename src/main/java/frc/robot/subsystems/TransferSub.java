@@ -17,34 +17,28 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-public class FeedingSub extends SubsystemBase {
+public class TransferSub extends SubsystemBase {
 
-  // Motors
-
-        private final SparkMax leftmotor;
-       // private final SparkMax rightmotor;
-        //private final RelativeEncoder shooterEncoder2;
-        // Closed-loop objects (ONLY from leader)
+        private final SparkMax Transfer;
         private final SparkClosedLoopController shooterController;
         private final RelativeEncoder shooterEncoder;
         public static double Kp = 0.0073; // 0.00055
         public static double Ki = 0.00000009;//0
         public static double Kd = 0.61; // 0.03
-        public static double Kf = 0.000195;
+        public static double Kf = 0.000195;  
     
-    
-        public FeedingSub() {
+        public TransferSub() {
           
-        leftmotor = new SparkMax(17, MotorType.kBrushless);
-        //rightmotor = new SparkMax(18, MotorType.kBrushless);
+        Transfer = new SparkMax(16, MotorType.kBrushless);
+        //rightTransfer = new SparkMax(18, TransferType.kBrushless);
     
         /* ---------------- Config Objects ---------------- */
         SparkMaxConfig leftconfig = new SparkMaxConfig();
         //SparkMaxConfig rightConfig = new SparkMaxConfig();
       
     
-        //shooterEncoder2 = rightmotor.getEncoder();
-        shooterEncoder = leftmotor.getEncoder();
+        //shooterEncoder2 = rightTransfer.getEncoder();
+        shooterEncoder = Transfer.getEncoder();
           leftconfig
           .smartCurrentLimit(50)
           .idleMode(IdleMode.kCoast);
@@ -59,16 +53,16 @@ public class FeedingSub extends SubsystemBase {
     
         // rightConfig
         //     .apply(leftconfig)
-        //     .follow(leftmotor, false);
+        //     .follow(Transfer, false);
     
-        leftmotor.configure(leftconfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-        //rightmotor.configure(rightConfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-        shooterController = leftmotor.getClosedLoopController();
+        Transfer.configure(leftconfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+        //rightTransfer.configure(rightConfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+        shooterController = Transfer.getClosedLoopController();
       }
     
       @Override
       public void periodic() {
-        SmartDashboard.putNumber("FeedingCurrent", leftmotor.getOutputCurrent());
+        SmartDashboard.putNumber("FeedingCurrent", Transfer.getOutputCurrent());
         
           }
     
@@ -76,8 +70,8 @@ public class FeedingSub extends SubsystemBase {
         
         // This method will be called once per scheduler run
      
-      public void runShooterRPM(double rpm) {
-          leftmotor.set(rpm);
+  public void runShooterRPM(double rpm) {
+      Transfer.set(rpm);
           //shooterController.setSetpoint(rpm, ControlType.kVelocity);
   }
 

@@ -37,6 +37,7 @@
         "image": "E:\\RebuiltSigma26\\assets\\FE-2026-_REBUILT_Playing_Field_With_Background.png",
         "width": 17.54825210571289,
         "window": {
+          "name": "BotView",
           "visible": true
         }
       }

@@ -13,27 +13,31 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-public class FuelShooterMax extends SubsystemBase {
+public class Shooter4Sub extends SubsystemBase {
   public double InitRPM = 2400;
 
   // Motors
     public double ElapsedTime;
-    private final SparkFlex leftMotor;
-    private final SparkFlex rightMotor;
+    private final SparkMax MM;
+    private final SparkMax FM1;
+    private final SparkMax FM2;
+    private final SparkMax FM3;
     private final RelativeEncoder shooterEncoder2;
-    SparkFlexConfig leftConfig = new SparkFlexConfig();
+    SparkMaxConfig MMConfig = new SparkMaxConfig();
     // Closed-loop objects (ONLY from leader)
     private final SparkClosedLoopController shooterController;
     private final RelativeEncoder shooterEncoder;
+    private final RelativeEncoder shooterEncoder3;
+    private final RelativeEncoder shooterEncoder4;
 
     // public static double Kp = 0.0002; // 0.00007
     // public static double Ki = 0.00000014; //0.00000047
@@ -50,34 +54,40 @@ public class FuelShooterMax extends SubsystemBase {
     public double StartingRPM = 2000;
     public double Poutput;
     public double currenttime;
-    public static double Kp = 0.0073; // 0.00055
-    public static double Ki = 0.00000009;//0
-    public static double Kd = 0.61; // 0.03
-    public static double Kf = 0.000195;
+    public static double Kp = 0.00053; // 0.00055
+    public static double Ki = 0.00000;//0
+    public static double Kd = 0.0013; // 0.03
+    public static double Kf = 0.000165;
     Timer timer = new Timer(); //0.0001486
     public double RampDOwnRPM;
     // Shooter RPM
     public static final double SHOOTER_RPM = 3000;
 
-    public FuelShooterMax() {
+    public Shooter4Sub() {
       
-    leftMotor = new SparkFlex(19, MotorType.kBrushless);
-    rightMotor = new SparkFlex(20, MotorType.kBrushless);
+    MM = new SparkMax(30, MotorType.kBrushless);
+    FM1 = new SparkMax(31, MotorType.kBrushless);
+    FM2 = new SparkMax(32, MotorType.kBrushless);
+    FM3 = new SparkMax(33, MotorType.kBrushless);
 
     /* ---------------- Config Objects ---------------- */
     
-    SparkFlexConfig rightConfig = new SparkFlexConfig();
+    SparkMaxConfig fm1Config = new SparkMaxConfig();
+    SparkMaxConfig fm2Config = new SparkMaxConfig();
+    SparkMaxConfig fm3Config = new SparkMaxConfig();
+    shooterEncoder = MM.getEncoder();
+    shooterEncoder2 = FM1.getEncoder();
+    shooterEncoder3 = FM2.getEncoder();
+    shooterEncoder4 = FM3.getEncoder();
 
-    shooterEncoder2 = rightMotor.getEncoder();
-    shooterEncoder = leftMotor.getEncoder();
 
     /* ---------------- Common Motor Settings ---------------- */
-    leftConfig
+    MMConfig
         .inverted(true)
-        .smartCurrentLimit(30)
+        .smartCurrentLimit(60)
         .idleMode(IdleMode.kCoast);
     /* ---------------- Closed Loop (PID + FF) ---------------- */
-    leftConfig.closedLoop
+    MMConfig.closedLoop
         .p(Kp)
         .i(Ki)
         .d(Kd)
@@ -85,9 +95,9 @@ public class FuelShooterMax extends SubsystemBase {
         // .velocityFF(0.00006340000254567713)
         .outputRange(-1, 1);
     leftConfig.closedLoop.maxMotion
-    .cruiseVelocity(3000)
-    .allowedProfileError(5)
-    .maxAcceleration(4000)
+    //.cruiseVelocity(3000)
+    .allowedProfileError(50)
+    .maxAcceleration(12000)
     ;
       
     leftConfig.encoder
@@ -154,12 +164,8 @@ public class FuelShooterMax extends SubsystemBase {
     }
   }
   public void runShooterRPM(double rpm) {
-      shooterController.setReference(InitRPM, ControlType.kVelocity);
-  }
-
-  /** Stop shooter */
-  public void stopShooter() {
-      leftMotor.stopMotor();  
+   //   leftMotor.set(0.5);
+      shooterController.setReference(rpm, ControlType.kMAXMotionVelocityControl);
   }
 
   /** Get current shooter velocity */
@@ -167,17 +173,10 @@ public class FuelShooterMax extends SubsystemBase {
       return shooterEncoder.getVelocity();   
   }  
 
-  public void RampDown(double rpm){
-    
-    // RampDOwnRPM  = rpm;
-    // if (RampDOwnRPM<=0){
-    //   RampDOwnRPM = RampDOwnRPM;
-    // }
-    //  else {
-    //   RampDOwnRPM = RampDOwnRPM-5;
-    //  }
-    shooterController.setReference(RampDOwnRPM,ControlType.kVoltage);
+  public void Stop(){
+    shooterController.setReference(0,ControlType.kVoltage);
   }
+
   public static double mapRange(double value, double inputStart, double inputEnd, double outputStart, double outputEnd) {
     // Avoid division by zero if the input range is zero
     if (inputStart == inputEnd) {

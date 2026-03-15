@@ -5,59 +5,38 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
-
-import java.lang.reflect.Field;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.pathfinding.Pathfinding;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.DrivetoPose;
-import frc.robot.commands.FeedingCmd;
-import frc.robot.commands.FeedingStop;
-import frc.robot.commands.HopperCmd;
 import frc.robot.commands.IntakCmd;
 import frc.robot.commands.LimIMUCmd;
-import frc.robot.commands.PushCmd;
-import frc.robot.commands.ShootDropCmd;
-import frc.robot.commands.ShooterCommand;
-import frc.robot.commands.ShooterDecCommand;
-import frc.robot.commands.ShooterIncCommand;
-
+import frc.robot.commands.ShooterCmd;
+import frc.robot.commands.ShooterStop;
+import frc.robot.commands.TransferCmd;
+import frc.robot.commands.TransferStop;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.CheckSparkFlex;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.FeedingSub;
-import frc.robot.subsystems.FuelShooterMax;
+import frc.robot.subsystems.FeederSub;
+import frc.robot.subsystems.ShooterSub;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LimelightHelpers;
-import frc.robot.subsystems.Pushing;
-
+import frc.robot.subsystems.TransferSub;
 
 public class RobotContainer {
-
-    private Pushing pusher = new Pushing();
+    public double rpm = 2400;
+    private FeederSub feeder = new FeederSub();
     public BooleanSupplier override = ()-> true;
     public Hopper hopper;
     public double output;
@@ -85,9 +64,9 @@ public class RobotContainer {
 
     private Intake intake = new Intake();
 
-    private FeedingSub feed = new FeedingSub();
+    private TransferSub transfer = new TransferSub();
     public Timer timer = new Timer();
-    private FuelShooterMax fuelShooterMax = new FuelShooterMax();
+    private ShooterSub shooter = new ShooterSub();
     //private CheckSparkFlex cs= new CheckSparkFlex();
     private final SendableChooser<Command> autoChooser;
 
@@ -139,25 +118,29 @@ public class RobotContainer {
                         .whileTrue(drivetrain.applyRequest(
                                         () -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
         // new JoystickButton(joystick, XboxController.Button.kA.value).onTrue(new FlyWheelCommand(flyWheel, 300));
-        double rpm = 2500;
+        
 
-        joystick.y().onTrue(new ShooterCommand(fuelShooterMax, rpm)); //2700
-        joystick.a().onTrue(new ShootDropCmd(fuelShooterMax, 0));
-        joystick.x().onTrue(new ShooterIncCommand(fuelShooterMax, rpm));
-        joystick.b().onTrue(new ShooterDecCommand(fuelShooterMax, rpm));
-        joystick.povUp().whileTrue(new FeedingCmd(feed, 0.8));
-        joystick.povDown().whileTrue(new FeedingCmd(feed,-0.8));
-         joystick.povLeft().onTrue(new InstantCommand(()-> pusher.runPusher()));
-         joystick.povRight().onTrue(new InstantCommand(()-> pusher.ReversePusher()));
-         joystick.leftBumper().onTrue(new InstantCommand(()-> pusher.Stop()));
-         joystick.rightBumper().onTrue(new FeedingStop(feed));
+        // Shooter
+        joystick.y().onTrue(new ShooterCmd(shooter, rpm)); //2700
+        joystick.a().onTrue(new ShooterStop(shooter));
+        // joystick.x().onTrue(new ShooterIncCommand(Shooter, rpm));
+        // joystick.b().onTrue(new ShooterDecCommand(Shooter, rpm));
 
+        // Transfer
+        joystick.povUp().whileTrue(new TransferCmd(transfer, 0.8));
+        joystick.povDown().whileTrue(new TransferCmd(transfer,-0.8));
+        joystick.rightBumper().onTrue(new TransferStop(transfer));
+        
+        // Feeder
+        joystick.povLeft().onTrue(new InstantCommand(()-> feeder.runPusher()));
+        joystick.povRight().onTrue(new InstantCommand(()-> feeder.ReversePusher()));
+        joystick.leftBumper().onTrue(new InstantCommand(()-> feeder.Stop()));
+        
         //joystick.povLeft().onTrue(new InstantCommand(()-> drivetrain.AutoWon()));
         //joystick.povRight().onTrue(new InstantCommand(()-> drivetrain.AutoLost()));
         //joystick.povDownLeft().whileTrue(new HopperCmd(hopper, 0.8));
         //joystick.x().onTrue(new ShooterIncCommand(fs, rpm));
         SmartDashboard.putNumber("RPMWheel", rpm);
-        
 
         User1.R1().whileTrue(  
            drivetrain.applyRequest(() ->

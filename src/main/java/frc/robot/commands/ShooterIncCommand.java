@@ -2,16 +2,16 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.FuelShooterMax;
+import frc.robot.subsystems.ShooterSub;
 public class ShooterIncCommand extends Command{
 
-    private FuelShooterMax fs;
+    private ShooterSub shooter;
     private double rpm;
 
-    public ShooterIncCommand(FuelShooterMax fs,double rpm) {
-        this.fs = fs;
+    public ShooterIncCommand(ShooterSub shooter,double rpm) {
+        this.shooter = shooter;
         this.rpm = rpm;
-        addRequirements(fs);
+        addRequirements(shooter);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class ShooterIncCommand extends Command{
     public void execute() {
         
 
-       fs.increaseRPM();
+       shooter.increaseRPM();
        System.out.println("Flywheel RPM set to: " + rpm);
        SmartDashboard.putNumber("Shooter RPM Target", rpm);
     }

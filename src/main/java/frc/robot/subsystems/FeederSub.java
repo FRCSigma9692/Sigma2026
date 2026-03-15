@@ -11,7 +11,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Pushing extends SubsystemBase {
+public class FeederSub extends SubsystemBase {
   public static double Kp = 0.1;
   public static double Ki = 0;
   public static double Kd = 0.001;
@@ -22,8 +22,8 @@ public class Pushing extends SubsystemBase {
   //private final SparkClosedLoopController TransferController;
   //SparkMaxConfig configure = new SparkMaxConfig();
   /** Creates a new Intake. */
-  public Pushing() {
-    Pusher = new SparkMax(16, MotorType.kBrushless);
+  public FeederSub() {
+    Pusher = new SparkMax(17, MotorType.kBrushless);
     SparkMaxConfig configure = new SparkMaxConfig();
   //  PusherEncoder = Pusher.getEncoder();
     configure
@@ -59,4 +59,5 @@ public class Pushing extends SubsystemBase {
   public double GetCurrent(){
     return Pusher.getOutputCurrent();
   }
+ 
 }
