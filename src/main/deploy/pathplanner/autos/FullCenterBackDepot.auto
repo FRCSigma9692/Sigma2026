@@ -7,19 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Testing1"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
+            "pathName": "P1-Collect1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Testing2"
+            "pathName": "CollectFullBack"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ToDepot(ForCenter)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DepotShoot"
           }
         }
       ]

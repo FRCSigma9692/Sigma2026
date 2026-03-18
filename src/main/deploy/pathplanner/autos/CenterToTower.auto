@@ -5,6 +5,18 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "P1-Collect1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P2-Intake1"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Shoot"
@@ -25,25 +37,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ToTower(ForDepot)"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ToDepot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotShoot"
+            "pathName": "ToTower"
           }
         },
         {

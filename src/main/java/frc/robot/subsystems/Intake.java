@@ -4,24 +4,54 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
-  private SparkMax intake;
+  private final  SparkMax Lintake;
+  private final SparkMax Rintake;
+  SparkMaxConfig Lconfig = new SparkMaxConfig();
+
   /** Creates a new Intake. */
   public Intake() {
-    intake = new SparkMax(15, MotorType.kBrushless);
-  
+    Lintake = new SparkMax(15, MotorType.kBrushless);
+    Rintake = new SparkMax(16, MotorType.kBrushless);
+    SparkMaxConfig RConfig = new SparkMaxConfig();
+    Lconfig
+    .smartCurrentLimit(60)
+    .idleMode(IdleMode.kCoast);
+    RConfig
+    .smartCurrentLimit(60)
+    .apply(Lconfig)
+    .follow(Lintake, true);
+  Lintake.configure(Lconfig, ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+  Rintake.configure(RConfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
   }
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Left IntakeCurrent", GetCurrentL());
+    SmartDashboard.putNumber("Right IntakeCurrent", GetCurrentR());
     // This method will be called once per scheduler run
   }
   public void runIntake(double speed){
-    intake.set(speed);
+    Lintake.set(speed);
+  }
+  public void StopIntake(){
+    Lintake.set(0);
+  }
+  public double GetCurrentL(){
+    return Lintake.getOutputCurrent();
+  }
+  public double GetCurrentR(){
+    return Rintake.getOutputCurrent();
   }
 }

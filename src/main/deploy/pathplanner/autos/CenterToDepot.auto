@@ -5,27 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Shoot"
+            "pathName": "P1-Collect1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ToSource"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ToTower(ForDepot)"
+            "pathName": "P2-Intake1"
           }
         },
         {
@@ -37,7 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ToDepot"
+            "pathName": "ToDepot(ForCenter)"
           }
         },
         {

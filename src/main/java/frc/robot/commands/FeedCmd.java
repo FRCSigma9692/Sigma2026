@@ -13,10 +13,12 @@ import frc.robot.subsystems.ShooterSub;
 public class FeedCmd extends Command {
   private FeederSub feed;
   private RobotContainer m_RobotContainer;
+  private double vel;
   /** Creates a new FeedingCmd. */
-  public FeedCmd(FeederSub feed, RobotContainer robotContainer) {
+  public FeedCmd(FeederSub feed, RobotContainer robotContainer, double vel) {
     this.feed = feed;
     this.m_RobotContainer = robotContainer;
+    this.vel = vel;
   //  addRequirements(pusher);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -29,7 +31,7 @@ public class FeedCmd extends Command {
   @Override
   public void execute() {
     if (ShooterSub.SHOOTER_RPM< m_RobotContainer.rpm)
-    feed.runPusher();
+    feed.runFeeder(vel);
   }
 
   // Called once the command ends or is interrupted.

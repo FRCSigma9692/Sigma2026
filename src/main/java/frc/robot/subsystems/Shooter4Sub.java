@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.security.Timestamp;
 import java.util.Map;
 
 import com.revrobotics.RelativeEncoder;
@@ -12,32 +11,24 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Shooter4Sub extends SubsystemBase {
   public double InitRPM = 2400;
 
-  // Motors
-    public double ElapsedTime;
-    private final SparkMax MM;
-    private final SparkMax FM1;
-    private final SparkMax FM2;
-    private final SparkMax FM3;
-    private final RelativeEncoder shooterEncoder2;
-    SparkMaxConfig MMConfig = new SparkMaxConfig();
+
+    private  SparkMax MML1;
+    private  SparkMax FML2;
+    private SparkMax FMR1;
+    private  SparkMax FMR2;
+    SparkMaxConfig MML1Config = new SparkMaxConfig();
     // Closed-loop objects (ONLY from leader)
-    private final SparkClosedLoopController shooterController;
-    private final RelativeEncoder shooterEncoder;
-    private final RelativeEncoder shooterEncoder3;
-    private final RelativeEncoder shooterEncoder4;
+    private SparkClosedLoopController shooterController;
+    private RelativeEncoder shooterEncoder;
 
     // public static double Kp = 0.0002; // 0.00007
     // public static double Ki = 0.00000014; //0.00000047
@@ -57,62 +48,62 @@ public class Shooter4Sub extends SubsystemBase {
     public static double Kp = 0.00053; // 0.00055
     public static double Ki = 0.00000;//0
     public static double Kd = 0.0013; // 0.03
-    public static double Kf = 0.000165;
-    Timer timer = new Timer(); //0.0001486
+    public static double Kf = 0.000165; //0.0001486
     public double RampDOwnRPM;
     // Shooter RPM
     public static final double SHOOTER_RPM = 3000;
 
     public Shooter4Sub() {
       
-    MM = new SparkMax(30, MotorType.kBrushless);
-    FM1 = new SparkMax(31, MotorType.kBrushless);
-    FM2 = new SparkMax(32, MotorType.kBrushless);
-    FM3 = new SparkMax(33, MotorType.kBrushless);
+    MML1 = new SparkMax(21, MotorType.kBrushless);
+    FML2 = new SparkMax(22, MotorType.kBrushless);
+    FMR1 = new SparkMax(23, MotorType.kBrushless);
+    FMR2 = new SparkMax(24, MotorType.kBrushless);
 
     /* ---------------- Config Objects ---------------- */
-    
-    SparkMaxConfig fm1Config = new SparkMaxConfig();
-    SparkMaxConfig fm2Config = new SparkMaxConfig();
-    SparkMaxConfig fm3Config = new SparkMaxConfig();
-    shooterEncoder = MM.getEncoder();
-    shooterEncoder2 = FM1.getEncoder();
-    shooterEncoder3 = FM2.getEncoder();
-    shooterEncoder4 = FM3.getEncoder();
-
+    SparkMaxConfig FML2Config = new SparkMaxConfig();
+    SparkMaxConfig FMR1Config = new SparkMaxConfig();
+    SparkMaxConfig FMR2Config = new SparkMaxConfig();
+    shooterEncoder = MML1.getEncoder();
 
     /* ---------------- Common Motor Settings ---------------- */
-    MMConfig
+    MML1Config
         .inverted(true)
         .smartCurrentLimit(60)
         .idleMode(IdleMode.kCoast);
     /* ---------------- Closed Loop (PID + FF) ---------------- */
-    MMConfig.closedLoop
+    MML1Config.closedLoop
         .p(Kp)
         .i(Ki)
         .d(Kd)
         .velocityFF(Kf)
         // .velocityFF(0.00006340000254567713)
         .outputRange(-1, 1);
-    leftConfig.closedLoop.maxMotion
+    MML1Config.closedLoop.maxMotion
     //.cruiseVelocity(3000)
     .allowedProfileError(50)
-    .maxAcceleration(12000)
-    ;
+    .maxAcceleration(12000);
       
-    leftConfig.encoder
-            .positionConversionFactor(1.0)
-            .velocityConversionFactor(1.0);
+    MML1Config.encoder
+        .positionConversionFactor(1.0)
+        .velocityConversionFactor(1.0);
           
-    rightConfig
-      .follow(leftMotor, true)
-      .apply(leftConfig);
+    FML2Config
+      .follow(MML1, false)
+      .apply(MML1Config);
+     FMR1Config
+      .follow(MML1, true)
+      .apply(MML1Config);
+    FMR2Config
+      .follow(MML1, true)
+      .apply(MML1Config);
 
-    leftMotor.configure(leftConfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-    rightMotor.configure(rightConfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-    shooterController = leftMotor.getClosedLoopController();
+    MML1.configure(MML1Config,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+    FML2.configure(FML2Config,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+    FMR1.configure(FMR1Config,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+    FMR2.configure(FMR2Config,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
 
-
+    shooterController = MML1.getClosedLoopController();
   }
 
   @Override
@@ -141,7 +132,6 @@ public class Shooter4Sub extends SubsystemBase {
 
     // Display the applied output of the left and right side onto the dashboard
     SmartDashboard.putNumber("RPMLeftMotor", shooterEncoder.getVelocity());
-    SmartDashboard.putNumber("RPMRightMotor",shooterEncoder2.getVelocity());
     SmartDashboard.putNumber("InitRPM", InitRPM);
     SmartDashboard.putNumber("RPM", getShooterRPM());
     // This method will be called once per scheduler run

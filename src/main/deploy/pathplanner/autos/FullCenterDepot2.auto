@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Copy of P1-Collect1"
@@ -19,37 +13,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "P2-Intake1"
+            "pathName": "Copy of P2-Intake1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "P3-Shoot1"
+            "pathName": "CenterBackToDepot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Copy of ToSource"
+            "pathName": "DepotShoot"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ToTower"
+            "name": "Shoot"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

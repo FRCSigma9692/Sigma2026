@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.0,
-        "y": 7.299
+        "x": 15.919397590361445,
+        "y": 2.1445060240963856
       },
       "prevControl": null,
       "nextControl": {
-        "x": 13.605448979157723,
-        "y": 7.365506913514168
+        "x": 15.670186343692336,
+        "y": 2.0337191925609943
       },
       "isLocked": false,
-      "linkedName": "EndP3"
+      "linkedName": "Depot"
     },
     {
       "anchor": {
-        "x": 16.103181818181817,
-        "y": 7.42479797979798
+        "x": 15.307445783132529,
+        "y": 2.1445060240963856
       },
       "prevControl": {
-        "x": 14.687165364782247,
-        "y": 7.43993373109696
+        "x": 15.561988528476283,
+        "y": 2.1677531093340447
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Source"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,15 +33,9 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Shoot",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
-      "name": "CollectSource",
-      "waypointRelativePos": 1.0,
-      "endWaypointRelativePos": null,
+      "name": "StopIntake",
+      "waypointRelativePos": 0.3553349875930504,
+      "endWaypointRelativePos": 0.7186104218362295,
       "command": null
     }
   ],
@@ -55,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -29.999999999999996
   },
   "reversed": false,
   "folder": "SourceDepot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 69.39502454066394
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

@@ -4,6 +4,11 @@
 
 package frc.robot.subsystems;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -16,48 +21,62 @@ public class FeederSub extends SubsystemBase {
   public static double Ki = 0;
   public static double Kd = 0.001;
   public static double Kf = 0.000000001;
-  private final SparkMax Pusher;
-  // private final RelativeEncoder PusherEncoder;
-  // private final SparkClosedLoopController pushController;
-  //private final SparkClosedLoopController TransferController;
-  //SparkMaxConfig configure = new SparkMaxConfig();
+  private final SparkMax FeederL;
+  private final SparkMax FeederR;
+  private final RelativeEncoder FeederEncoder;
+  private final SparkClosedLoopController FeederController;
+  SparkMaxConfig lConfig = new SparkMaxConfig();
   /** Creates a new Intake. */
   public FeederSub() {
-    Pusher = new SparkMax(17, MotorType.kBrushless);
-    SparkMaxConfig configure = new SparkMaxConfig();
+    FeederL = new SparkMax(19, MotorType.kBrushless);
+    FeederR  = new SparkMax(20, MotorType.kBrushless);
+    SparkMaxConfig rConfig = new SparkMaxConfig();
+    FeederEncoder  = FeederL.getEncoder();
   //  PusherEncoder = Pusher.getEncoder();
-    configure
-    .smartCurrentLimit(30)
+    lConfig
+    .smartCurrentLimit(60)
     .idleMode(IdleMode.kCoast);
-    configure.encoder
-    .velocityConversionFactor(1)
-    .positionConversionFactor(1);
-    configure.closedLoop
+  
+    lConfig.closedLoop
     .pid(Kp, Ki, Kd)
     .velocityFF(Kf)
     .minOutput(-1)
     .maxOutput(1);
+    lConfig.closedLoop.maxMotion
+    .allowedProfileError(50)
+    .maxAcceleration(20000);
+     lConfig.encoder
+    .velocityConversionFactor(1.0)
+    .positionConversionFactor(1.0);
+    rConfig
+    .smartCurrentLimit(60)
+    .follow(FeederL, true)
+    .apply(lConfig);
+  
 
-    //Pusher.configure(configure, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    // pushController = Pusher.getClosedLoopController();
+    FeederL.configure(lConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    FeederR.configure(rConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    FeederController = FeederL.getClosedLoopController();
   }
 
   @Override
   public void periodic() {
-            SmartDashboard.putNumber("Pusher Current",GetCurrent());
+            SmartDashboard.putNumber("Left Pusher Current",GetCurrentL());
+            SmartDashboard.putNumber("Right Pusher Current",GetCurrentR());
     // This method will be called once per scheduler run
   }
-  public void runPusher(){
-    Pusher.set(1);
+  public void runFeeder(double vel){
+    FeederController.setReference(vel, ControlType.kMAXMotionVelocityControl);
   }
-  public void ReversePusher(){
-    Pusher.set(-1);
-  }
+
   public void Stop(){
-    Pusher.set(0);
+    FeederController.setReference(0, ControlType.kVoltage);
   }
-  public double GetCurrent(){
-    return Pusher.getOutputCurrent();
+  public double GetCurrentL(){
+    return FeederL.getOutputCurrent();
+  }
+   public double GetCurrentR(){
+    return FeederR.getOutputCurrent();
   }
  
 }

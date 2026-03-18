@@ -3,61 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.0,
-        "y": 7.299
+        "x": 13.329530120481929,
+        "y": 0.7676144578313244
       },
       "prevControl": null,
       "nextControl": {
-        "x": 11.851932881000916,
-        "y": 7.526428578427724
+        "x": 13.460002215807359,
+        "y": 0.4904722865057844
       },
       "isLocked": false,
-      "linkedName": "EndP3"
+      "linkedName": "EndCollectFull"
     },
     {
       "anchor": {
-        "x": 11.483187203794436,
-        "y": 2.7239336492917117
+        "x": 15.198168674698795,
+        "y": 2.1445060240963856
       },
       "prevControl": {
-        "x": 11.718181802128173,
-        "y": 2.638625157604391
+        "x": 14.230683275581635,
+        "y": 2.324313845748106
       },
       "nextControl": {
-        "x": 11.247247353770028,
-        "y": 2.809585289275069
+        "x": 15.844059474702778,
+        "y": 2.024466778150578
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 10.000177725121453,
-        "y": 3.551409952609248
+        "x": 15.919397590361445,
+        "y": 2.1445060240963856
       },
       "prevControl": {
-        "x": 11.038427728832072,
-        "y": 3.0328499278785905
-      },
-      "nextControl": {
-        "x": 9.776522266568382,
-        "y": 3.6631159768846433
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 8.85,
-        "y": 3.799
-      },
-      "prevControl": {
-        "x": 9.175222071456577,
-        "y": 3.7295384439998496
+        "x": 16.148660670307855,
+        "y": 2.244197749798601
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "EndP4"
+      "linkedName": "Depot"
     }
   ],
   "rotationTargets": [],
@@ -66,8 +50,8 @@
   "eventMarkers": [
     {
       "name": "StartIntake",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
+      "waypointRelativePos": 0.964764267990076,
+      "endWaypointRelativePos": 2.0,
       "command": null
     }
   ],
@@ -81,13 +65,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "AutoLines",
+  "folder": "SourceDepot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -108.95951403934069
+    "rotation": -61.504361381754784
   },
   "useDefaultConstraints": true
 }

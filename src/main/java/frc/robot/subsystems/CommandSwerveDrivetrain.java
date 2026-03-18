@@ -568,7 +568,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     //private final double BumpX2 = 11.294;
     //private final double BumpY1 = 4.970;
     //private final double BumpY2 = 6.120;
-        if (xOdo<=BumpX1 && xOdo>=BumpX2 && yOdo> BumpY1 && yOdo<BumpY2){
+        if (xOdo<=BumpX1 && xOdo>=BumpX2 && yOdo>= BumpY1 && yOdo<=BumpY2){
             SmartDashboard.putString("Is ", "in Bumper Zone");
             Rot45 = (0.25*FinalError)+(0.0015*((FinalError-LastRot45)/0.02));
             LastRot45 = FinalError;

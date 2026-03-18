@@ -3,77 +3,77 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.619686746987952,
-        "y": 6.8543493975903615
+        "x": 8.8054578313253,
+        "y": 1.4232771084337343
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.25655339550374,
-        "y": 6.041547846135569
+        "x": 8.164848209966062,
+        "y": 1.1524754068149248
       },
       "isLocked": false,
-      "linkedName": "EndP1"
+      "linkedName": "2EndP1"
     },
     {
       "anchor": {
-        "x": 7.996807228915662,
-        "y": 5.433746987951806
+        "x": 8.08422891566265,
+        "y": 2.4286265060240964
       },
       "prevControl": {
-        "x": 8.116123981164783,
-        "y": 5.735272423967134
+        "x": 8.050794538878554,
+        "y": 2.7269976949306223
       },
       "nextControl": {
-        "x": 7.760789180371099,
-        "y": 4.837305636226949
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 8.27,
-        "y": 4.493963855421687
-      },
-      "prevControl": {
-        "x": 8.02077051437036,
-        "y": 4.513576695419648
-      },
-      "nextControl": {
-        "x": 9.168441851168339,
-        "y": 4.423261963027539
+        "x": 8.11946568910666,
+        "y": 2.114170577815485
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 10.379048192771084,
-        "y": 6.9964096385542165
+        "x": 8.08422891566265,
+        "y": 3.707168674698795
       },
       "prevControl": {
-        "x": 9.366054470880227,
-        "y": 6.210876390370785
+        "x": 7.982761372199267,
+        "y": 3.233698701204924
       },
       "nextControl": {
-        "x": 10.89591294434066,
-        "y": 7.397216117802778
+        "x": 8.13661597207012,
+        "y": 3.9516182529781623
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 11.71222891566265,
-        "y": 7.44444578313253
+        "x": 10.346265060240965,
+        "y": 0.9533855421686745
       },
       "prevControl": {
-        "x": 11.421396163006703,
-        "y": 7.453995754296393
+        "x": 9.230393983770275,
+        "y": 1.5485689890857928
       },
       "nextControl": {
-        "x": 12.2765409299021,
-        "y": 7.425915671189521
+        "x": 10.896725725658884,
+        "y": 0.6597807672587002
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 11.439036144578314,
+        "y": 0.5927710843373495
+      },
+      "prevControl": {
+        "x": 11.027842482629625,
+        "y": 0.5202074969346409
+      },
+      "nextControl": {
+        "x": 11.685232034282798,
+        "y": 0.6362174178146108
       },
       "isLocked": false,
       "linkedName": null
@@ -81,15 +81,15 @@
     {
       "anchor": {
         "x": 13.0,
-        "y": 7.299
+        "y": 0.7
       },
       "prevControl": {
-        "x": 12.701597078222147,
-        "y": 7.315540684435756
+        "x": 12.65377057560418,
+        "y": 0.7370530284614252
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "EndP3"
+      "linkedName": "2EndP2"
     }
   ],
   "rotationTargets": [],
@@ -114,19 +114,9 @@
         "x": 0.4,
         "y": 5.5
       },
-      "rotationOffset": 105.00000000000001,
-      "minWaypointRelativePos": 0.9435215946843845,
-      "maxWaypointRelativePos": 1.8604651162790669,
-      "name": "Point Towards Zone"
-    },
-    {
-      "fieldPosition": {
-        "x": 0.4,
-        "y": 5.5
-      },
-      "rotationOffset": 100.0,
-      "minWaypointRelativePos": 1.298263027295284,
-      "maxWaypointRelativePos": 1.494789081885855,
+      "rotationOffset": -40.0,
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 2.133995037220841,
       "name": "Point Towards Zone"
     }
   ],
@@ -154,13 +144,13 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 69.39502454066394
+    "rotation": -70.0
   },
   "reversed": false,
-  "folder": "NeutralZone",
+  "folder": "NeutralZoneSide2",
   "idealStartingState": {
     "velocity": 2.0,
-    "rotation": -110.0
+    "rotation": 110.0
   },
   "useDefaultConstraints": true
 }

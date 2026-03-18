@@ -35,6 +35,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.TransferSub;
 
 public class RobotContainer {
+    public double TransferRPM = 1000;
+    public double FeederRPM = 1000;
     public double rpm = 2400;
     private FeederSub feeder = new FeederSub();
     public BooleanSupplier override = ()-> true;
@@ -73,6 +75,7 @@ public class RobotContainer {
     public RobotContainer() {
         SmartDashboard.putData("Field", field);
         NamedCommands.registerCommand("Align",new InstantCommand(()-> drivetrain.rotOverride(drivetrain.rot)));
+        
         autoChooser = AutoBuilder.buildAutoChooser("OTR");
         SmartDashboard.putData("Auto Mode", autoChooser);
         SmartDashboard.putData("Field", field);
@@ -127,13 +130,13 @@ public class RobotContainer {
         // joystick.b().onTrue(new ShooterDecCommand(Shooter, rpm));
 
         // Transfer
-        joystick.povUp().whileTrue(new TransferCmd(transfer, 0.8));
-        joystick.povDown().whileTrue(new TransferCmd(transfer,-0.8));
+        joystick.povUp().whileTrue(new TransferCmd(transfer, TransferRPM));
+        joystick.povDown().whileTrue(new TransferCmd(transfer,-TransferRPM));
         joystick.rightBumper().onTrue(new TransferStop(transfer));
         
         // Feeder
-        joystick.povLeft().onTrue(new InstantCommand(()-> feeder.runPusher()));
-        joystick.povRight().onTrue(new InstantCommand(()-> feeder.ReversePusher()));
+        joystick.povLeft().onTrue(new InstantCommand(()-> feeder.runFeeder(FeederRPM)));
+        joystick.povRight().onTrue(new InstantCommand(()-> feeder.runFeeder(-FeederRPM)));
         joystick.leftBumper().onTrue(new InstantCommand(()-> feeder.Stop()));
         
         //joystick.povLeft().onTrue(new InstantCommand(()-> drivetrain.AutoWon()));

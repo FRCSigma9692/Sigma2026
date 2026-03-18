@@ -19,9 +19,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class TransferSub extends SubsystemBase {
 
-        private final SparkMax Transfer;
-        private final SparkClosedLoopController shooterController;
-        private final RelativeEncoder shooterEncoder;
+        private final SparkMax TransferL;
+        private final SparkMax TransferR;
+        SparkMaxConfig leftconfig = new SparkMaxConfig();
+        private final SparkClosedLoopController TransferController;
+        private final RelativeEncoder TransferEncoder;
         public static double Kp = 0.0073; // 0.00055
         public static double Ki = 0.00000009;//0
         public static double Kd = 0.61; // 0.03
@@ -29,60 +31,58 @@ public class TransferSub extends SubsystemBase {
     
         public TransferSub() {
           
-        Transfer = new SparkMax(16, MotorType.kBrushless);
+        TransferL = new SparkMax(17, MotorType.kBrushless);
+        TransferR = new SparkMax(18,MotorType.kBrushless);
+        SparkMaxConfig rightConfig = new SparkMaxConfig();
         //rightTransfer = new SparkMax(18, TransferType.kBrushless);
     
         /* ---------------- Config Objects ---------------- */
-        SparkMaxConfig leftconfig = new SparkMaxConfig();
         //SparkMaxConfig rightConfig = new SparkMaxConfig();
       
     
         //shooterEncoder2 = rightTransfer.getEncoder();
-        shooterEncoder = Transfer.getEncoder();
+        TransferEncoder = TransferL.getEncoder();
           leftconfig
-          .smartCurrentLimit(50)
+          .smartCurrentLimit(60)
           .idleMode(IdleMode.kCoast);
-          leftconfig.encoder
-          .velocityConversionFactor(1)
-          .positionConversionFactor(1);
           leftconfig.closedLoop
           .pid(Kp, Ki, Kd)
           .velocityFF(Kf)
           .minOutput(-0.8)
           .maxOutput(0.8);
+          leftconfig.closedLoop.maxMotion
+          .maxAcceleration(12000)
+          .allowedProfileError(50);
+          leftconfig.encoder
+          .velocityConversionFactor(1)
+          .positionConversionFactor(1);
     
-        // rightConfig
-        //     .apply(leftconfig)
-        //     .follow(Transfer, false);
+        rightConfig
+            .follow(TransferR, true)
+            .apply(leftconfig);
     
-        Transfer.configure(leftconfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-        //rightTransfer.configure(rightConfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-        shooterController = Transfer.getClosedLoopController();
+        TransferL.configure(leftconfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+        TransferR.configure(rightConfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+        TransferController = TransferL.getClosedLoopController();
       }
     
       @Override
       public void periodic() {
-        SmartDashboard.putNumber("FeedingCurrent", Transfer.getOutputCurrent());
-        
-          }
-    
-        //shooterController.setReference(InitRPM, ControlType.kVelocity);
-        
-        // This method will be called once per scheduler run
+        SmartDashboard.putNumber("Left Transfer Current", TransferL.getOutputCurrent());
+        SmartDashboard.putNumber("Right Transfer Current", TransferR.getOutputCurrent());
+      }
      
   public void runShooterRPM(double rpm) {
-      Transfer.set(rpm);
-          //shooterController.setSetpoint(rpm, ControlType.kVelocity);
+    TransferController.setReference(rpm, ControlType.kVelocity);
   }
-
   /** Stop shooter */
   public void stopShooter() {
-      shooterController.setSetpoint(0, ControlType.kVoltage);
+      TransferController.setSetpoint(0, ControlType.kVoltage);
   }
 
   /** Get current shooter velocity */
   public double getShooterRPM() {
-      return shooterEncoder.getVelocity();   
+      return TransferEncoder.getVelocity();   
   }
 }
 

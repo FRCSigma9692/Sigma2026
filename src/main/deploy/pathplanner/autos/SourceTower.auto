@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1PathCycle1"
+            "pathName": "ToSource"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "2PathCycle2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
+            "pathName": "ToTower"
           }
         }
       ]

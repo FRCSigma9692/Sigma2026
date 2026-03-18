@@ -3,51 +3,58 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 12.750361445783133,
-        "y": 0.6364819277108438
+        "x": 13.0,
+        "y": 7.299
       },
       "prevControl": null,
       "nextControl": {
-        "x": 11.326149100316298,
-        "y": 0.6658326789238229
+        "x": 13.390157069652753,
+        "y": 6.506009159110331
       },
       "isLocked": false,
-      "linkedName": "Start2"
+      "linkedName": "EndP3"
     },
     {
       "anchor": {
-        "x": 11.20955421686747,
-        "y": 0.6364819277108438
+        "x": 15.198168674698795,
+        "y": 2.1445060240963856
       },
       "prevControl": {
-        "x": 12.705855989854141,
-        "y": 0.5990102789286366
+        "x": 14.36995590325927,
+        "y": 2.6929266321627354
       },
       "nextControl": {
-        "x": 10.851979507149291,
-        "y": 0.6454366146448935
+        "x": 15.58945653523579,
+        "y": 1.8854055443589162
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.8054578313253,
-        "y": 1.4232771084337343
+        "x": 15.919397590361445,
+        "y": 2.1445060240963856
       },
       "prevControl": {
-        "x": 9.353798189813782,
-        "y": 1.240480463399933
+        "x": 16.116415354137132,
+        "y": 2.2984020953809634
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "2EndP1"
+      "linkedName": "Depot"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "StartIntake",
+      "waypointRelativePos": 0.964764267990076,
+      "endWaypointRelativePos": 2.0,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.0,
     "maxAcceleration": 5.0,
@@ -57,14 +64,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.0,
-    "rotation": 110.0
+    "velocity": 0,
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "NeutralZoneSide2",
+  "folder": "SourceDepot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 70.0
+    "rotation": 69.39502454066394
   },
   "useDefaultConstraints": true
 }

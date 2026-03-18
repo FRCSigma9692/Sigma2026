@@ -3,9 +3,9 @@
   "robotLength": 0.86,
   "holonomicMode": true,
   "pathFolders": [
-    "AutoLines",
-    "Full Cycle",
     "AlignTest",
+    "NeutralZone",
+    "NeutralZoneSide2",
     "SourceDepot"
   ],
   "autoFolders": [],
