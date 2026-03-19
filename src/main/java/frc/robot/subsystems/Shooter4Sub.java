@@ -45,10 +45,10 @@ public class Shooter4Sub extends SubsystemBase {
     public double StartingRPM = 2000;
     public double Poutput;
     public double currenttime;
-    public static double Kp = 0.00053; // 0.00055
-    public static double Ki = 0.00000;//0
-    public static double Kd = 0.0013; // 0.03
-    public static double Kf = 0.000165; //0.0001486
+    public static double Kp = 0.0007; // 0.00055
+    public static double Ki = 1e-7;//0
+    public static double Kd = 0.011; // 0.03
+    public static double Kf = 0.00004; //0.0001486
     public double RampDOwnRPM;
     // Shooter RPM
     public static final double SHOOTER_RPM = 3000;
@@ -68,7 +68,6 @@ public class Shooter4Sub extends SubsystemBase {
 
     /* ---------------- Common Motor Settings ---------------- */
     MML1Config
-        .inverted(true)
         .smartCurrentLimit(60)
         .idleMode(IdleMode.kCoast);
     /* ---------------- Closed Loop (PID + FF) ---------------- */
@@ -82,17 +81,17 @@ public class Shooter4Sub extends SubsystemBase {
     MML1Config.closedLoop.maxMotion
     //.cruiseVelocity(3000)
     .allowedProfileError(50)
-    .maxAcceleration(12000);
+    .maxAcceleration(20000);
       
     MML1Config.encoder
         .positionConversionFactor(1.0)
         .velocityConversionFactor(1.0);
           
     FML2Config
-      .follow(MML1, false)
+      .follow(MML1, true)
       .apply(MML1Config);
      FMR1Config
-      .follow(MML1, true)
+      .follow(MML1, false)
       .apply(MML1Config);
     FMR2Config
       .follow(MML1, true)

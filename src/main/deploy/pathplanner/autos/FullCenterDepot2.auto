@@ -7,25 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Copy of P1-Collect1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Copy of P2-Intake1"
+            "pathName": "Copy of CollectFull"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FeederTransfer"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CenterBackToDepot"
+            "pathName": "ToDepot(ForCenter)"
           }
         },
         {
@@ -37,7 +37,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FeederTransfer"
           }
         }
       ]

@@ -23,7 +23,7 @@ public class Hopper extends SubsystemBase {
   RelativeEncoder hoppereEncoder;
   /** Creates a new Intake. */
   public Hopper() {
-    hopper = new SparkMax(14, MotorType.kBrushless);
+    hopper = new SparkMax(16, MotorType.kBrushless);
     hoppereEncoder = hopper.getEncoder();
     configure
     .smartCurrentLimit(30)

@@ -19,7 +19,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FeederTransfer"
           }
         },
         {
@@ -32,6 +38,18 @@
           "type": "path",
           "data": {
             "pathName": "DepotShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FeederTransfer"
           }
         }
       ]

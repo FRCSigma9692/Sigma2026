@@ -142,6 +142,12 @@
       "waypointRelativePos": 3.6526054590570793,
       "endWaypointRelativePos": 5.0,
       "command": null
+    },
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 3.781637717121595,
+      "endWaypointRelativePos": null,
+      "command": null
     }
   ],
   "globalConstraints": {

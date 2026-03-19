@@ -16,10 +16,12 @@ public class TransferCmd extends Command {
   private RobotContainer m_robotContainer = new RobotContainer();
   private TransferSub feedingsub;
   private double rpm;
+  private CommandSwerveDrivetrain commandSwerveDrivetrain;
   /** Creates a new FeedingCmd. */
-  public TransferCmd(TransferSub feed, double speed) {
+  public TransferCmd(TransferSub feed, double speed, CommandSwerveDrivetrain commandSwerveDrivetrain) {
     this.feedingsub = feed;
     this.rpm = speed;
+    this.commandSwerveDrivetrain = commandSwerveDrivetrain;
     addRequirements(feed);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -31,7 +33,7 @@ public class TransferCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (ShooterSub.SHOOTER_RPM< m_robotContainer.rpm)
+    if (ShooterSub.SHOOTER_RPM< m_robotContainer.rpm && !commandSwerveDrivetrain.AutoAllign())
     feedingsub.runShooterRPM(rpm);
   }
 

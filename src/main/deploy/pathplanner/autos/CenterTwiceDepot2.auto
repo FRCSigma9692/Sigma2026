@@ -19,7 +19,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FeederTransfer"
           }
         },
         {
@@ -37,7 +43,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FeederTransfer"
           }
         },
         {
@@ -55,13 +67,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FeederTransfer"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

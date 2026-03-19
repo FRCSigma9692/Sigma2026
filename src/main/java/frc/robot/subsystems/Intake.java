@@ -22,8 +22,8 @@ public class Intake extends SubsystemBase {
 
   /** Creates a new Intake. */
   public Intake() {
-    Lintake = new SparkMax(15, MotorType.kBrushless);
-    Rintake = new SparkMax(16, MotorType.kBrushless);
+    Lintake = new SparkMax(14, MotorType.kBrushless);
+    Rintake = new SparkMax(15, MotorType.kBrushless);
     SparkMaxConfig RConfig = new SparkMaxConfig();
     Lconfig
     .smartCurrentLimit(60)

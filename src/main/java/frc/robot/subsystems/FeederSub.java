@@ -17,10 +17,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class FeederSub extends SubsystemBase {
-  public static double Kp = 0.1;
-  public static double Ki = 0;
-  public static double Kd = 0.001;
-  public static double Kf = 0.000000001;
+  public static double Kp = 0.0004;
+  public static double Ki = 0.0000017;
+  public static double Kd = 0.011;
+  public static double Kf = 0.00008;
   private final SparkMax FeederL;
   private final SparkMax FeederR;
   private final RelativeEncoder FeederEncoder;

@@ -7,18 +7,20 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FeederSub;
 import frc.robot.subsystems.ShooterSub;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class FeedCmd extends Command {
   private FeederSub feed;
-  private RobotContainer m_RobotContainer;
+  private RobotContainer m_RobotContainer = new RobotContainer();
   private double vel;
+  private CommandSwerveDrivetrain commandSwerveDrivetrain;
   /** Creates a new FeedingCmd. */
-  public FeedCmd(FeederSub feed, RobotContainer robotContainer, double vel) {
+  public FeedCmd(FeederSub feed,  double vel, CommandSwerveDrivetrain commandSwerveDrivetrain) {
     this.feed = feed;
-    this.m_RobotContainer = robotContainer;
     this.vel = vel;
+    this.commandSwerveDrivetrain = commandSwerveDrivetrain;
   //  addRequirements(pusher);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -30,7 +32,9 @@ public class FeedCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (ShooterSub.SHOOTER_RPM< m_RobotContainer.rpm)
+    if (ShooterSub.SHOOTER_RPM< m_RobotContainer.rpm && !commandSwerveDrivetrain.AutoAllign()){
+
+    }
     feed.runFeeder(vel);
   }
 

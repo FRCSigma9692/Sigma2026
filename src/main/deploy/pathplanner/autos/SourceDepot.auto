@@ -11,6 +11,18 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FeederTransfer"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "ToSource"
@@ -31,7 +43,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FeederTransfer"
           }
         },
         {
@@ -49,7 +67,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FeederTransfer"
           }
         }
       ]

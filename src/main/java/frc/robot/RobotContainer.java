@@ -17,11 +17,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import frc.robot.commands.FeedCmd;
 import frc.robot.commands.IntakCmd;
 import frc.robot.commands.LimIMUCmd;
+import frc.robot.commands.ShooterAutoCmd;
 import frc.robot.commands.ShooterCmd;
 import frc.robot.commands.ShooterStop;
 import frc.robot.commands.TransferCmd;
@@ -65,17 +68,25 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private Intake intake = new Intake();
-
+    
+    private IntakCmd intakCmdOn = new IntakCmd(intake,0.6);
+    private IntakCmd intakCmdOff = new IntakCmd(intake, 0);
     private TransferSub transfer = new TransferSub();
+    private TransferCmd transferCmd  = new TransferCmd(transfer, 0.6, drivetrain);
+    private FeedCmd feedCmd = new FeedCmd(feeder,0.6, drivetrain);
     public Timer timer = new Timer();
     private ShooterSub shooter = new ShooterSub();
+     private ShooterAutoCmd shooterCmd = new ShooterAutoCmd(shooter);
     //private CheckSparkFlex cs= new CheckSparkFlex();
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
         SmartDashboard.putData("Field", field);
         NamedCommands.registerCommand("Align",new InstantCommand(()-> drivetrain.rotOverride(drivetrain.rot)));
-        
+        NamedCommands.registerCommand("Shoot", shooterCmd);
+        NamedCommands.registerCommand("StartIntake", intakCmdOn);
+        NamedCommands.registerCommand("StopIntake", intakCmdOff);
+        NamedCommands.registerCommand("FeederTransfer", new ParallelCommandGroup(feedCmd,transferCmd));
         autoChooser = AutoBuilder.buildAutoChooser("OTR");
         SmartDashboard.putData("Auto Mode", autoChooser);
         SmartDashboard.putData("Field", field);
@@ -124,20 +135,20 @@ public class RobotContainer {
         
 
         // Shooter
-        joystick.y().onTrue(new ShooterCmd(shooter, rpm)); //2700
-        joystick.a().onTrue(new ShooterStop(shooter));
+        joystick.y().onTrue(new ParallelCommandGroup(new ShooterCmd(shooter, rpm), new InstantCommand(()-> feeder.runFeeder(FeederRPM)))); //2700
+        joystick.a().onTrue(new ShooterStop(shooter).alongWith(new InstantCommand(()-> feeder.Stop())));
         // joystick.x().onTrue(new ShooterIncCommand(Shooter, rpm));
         // joystick.b().onTrue(new ShooterDecCommand(Shooter, rpm));
 
         // Transfer
-        joystick.povUp().whileTrue(new TransferCmd(transfer, TransferRPM));
-        joystick.povDown().whileTrue(new TransferCmd(transfer,-TransferRPM));
+        joystick.povUp().whileTrue(new TransferCmd(transfer, TransferRPM,drivetrain));
+        joystick.povDown().whileTrue(new TransferCmd(transfer,-TransferRPM,drivetrain));
         joystick.rightBumper().onTrue(new TransferStop(transfer));
         
         // Feeder
-        joystick.povLeft().onTrue(new InstantCommand(()-> feeder.runFeeder(FeederRPM)));
-        joystick.povRight().onTrue(new InstantCommand(()-> feeder.runFeeder(-FeederRPM)));
-        joystick.leftBumper().onTrue(new InstantCommand(()-> feeder.Stop()));
+        //joystick.povLeft().onTrue(new InstantCommand(()-> feeder.runFeeder(FeederRPM)));
+        //joystick.povRight().onTrue(new InstantCommand(()-> feeder.runFeeder(-FeederRPM)));
+        //joystick.leftBumper().onTrue(new InstantCommand(()-> feeder.Stop()));
         
         //joystick.povLeft().onTrue(new InstantCommand(()-> drivetrain.AutoWon()));
         //joystick.povRight().onTrue(new InstantCommand(()-> drivetrain.AutoLost()));
