@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.96333734939759,
-        "y": 2.373987951807229
+        "x": 13.821277108433735,
+        "y": 4.013144578313253
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.09380944472302,
-        "y": 2.096845780481689
+        "x": 13.935283306223079,
+        "y": 3.549216177421772
       },
       "isLocked": false,
-      "linkedName": "EndCollectFull"
+      "linkedName": "ShootStart"
     },
     {
       "anchor": {
-        "x": 15.198168674698795,
-        "y": 2.1445060240963856
+        "x": 14.575289156626503,
+        "y": 2.8001686746987944
       },
       "prevControl": {
-        "x": 14.230683275581635,
-        "y": 2.324313845748106
+        "x": 14.03947887530066,
+        "y": 3.5443785468368127
       },
       "nextControl": {
-        "x": 15.844059474702778,
-        "y": 2.024466778150578
+        "x": 15.007067618703276,
+        "y": 2.200453056590503
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 2.1445060240963856
       },
       "prevControl": {
-        "x": 16.148660670307855,
-        "y": 2.244197749798601
+        "x": 15.708405853397716,
+        "y": 2.2786048195161377
       },
       "nextControl": null,
       "isLocked": false,
@@ -50,8 +50,8 @@
   "eventMarkers": [
     {
       "name": "StartIntake",
-      "waypointRelativePos": 0.964764267990076,
-      "endWaypointRelativePos": 2.0,
+      "waypointRelativePos": 1.2,
+      "endWaypointRelativePos": null,
       "command": null
     }
   ],
@@ -71,7 +71,7 @@
   "folder": "SourceDepot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -43.87669728592437
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

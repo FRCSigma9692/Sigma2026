@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 15.670186343692336,
-        "y": 2.0337191925609943
+        "x": 15.335537629017402,
+        "y": 2.2883077234767857
       },
       "isLocked": false,
       "linkedName": "Depot"
     },
     {
       "anchor": {
-        "x": 15.307445783132529,
-        "y": 2.1445060240963856
+        "x": 14.487867469879518,
+        "y": 2.6690361445783126
       },
       "prevControl": {
-        "x": 15.561988528476283,
-        "y": 2.1677531093340447
+        "x": 15.458149717930244,
+        "y": 2.294815967267568
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "EndDepotShoot"
     }
   ],
   "rotationTargets": [],
@@ -40,8 +40,8 @@
     },
     {
       "name": "StopIntake",
-      "waypointRelativePos": 0.3553349875930504,
-      "endWaypointRelativePos": 0.7186104218362295,
+      "waypointRelativePos": 0.5307506053268771,
+      "endWaypointRelativePos": null,
       "command": null
     }
   ],

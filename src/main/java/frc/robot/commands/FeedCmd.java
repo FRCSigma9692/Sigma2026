@@ -9,11 +9,11 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FeederSub;
-import frc.robot.subsystems.ShooterSub;
+import frc.robot.subsystems.Shooter4Sub;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class FeedCmd extends Command {
   private FeederSub feed;
-  private RobotContainer m_RobotContainer = new RobotContainer();
+  //private RobotContainer m_RobotContainer = new RobotContainer();
   private double vel;
   private CommandSwerveDrivetrain commandSwerveDrivetrain;
   /** Creates a new FeedingCmd. */
@@ -32,9 +32,6 @@ public class FeedCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (ShooterSub.SHOOTER_RPM< m_RobotContainer.rpm && !commandSwerveDrivetrain.AutoAllign()){
-
-    }
     feed.runFeeder(vel);
   }
 
@@ -43,6 +40,7 @@ public class FeedCmd extends Command {
   public void end(boolean interrupted) {
     //pusher.Stop();
       super.end(interrupted);
+        feed.FeederNoPID(0);
   }
 
   // Returns true when the command should end.

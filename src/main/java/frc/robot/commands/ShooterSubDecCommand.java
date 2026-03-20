@@ -2,14 +2,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Shooter4Sub;
 
-import frc.robot.subsystems.ShooterSub;
 public class ShooterSubDecCommand extends Command{
 
-    private ShooterSub shooter;
+    private Shooter4Sub shooter;
     private double rpm;
 
-    public ShooterSubDecCommand(ShooterSub shooter,double rpm) {
+    public ShooterSubDecCommand(Shooter4Sub shooter,double rpm) {
         this.shooter = shooter;
         this.rpm = rpm;
         addRequirements(shooter);

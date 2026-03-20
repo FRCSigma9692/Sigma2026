@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class TransferSub extends SubsystemBase {
 
         private final SparkMax TransferL;
-        private final SparkMax TransferR;
         SparkMaxConfig leftconfig = new SparkMaxConfig();
         private final SparkClosedLoopController TransferController;
         private final RelativeEncoder TransferEncoder;
@@ -32,15 +31,8 @@ public class TransferSub extends SubsystemBase {
         public TransferSub() {
           
         TransferL = new SparkMax(17, MotorType.kBrushless);
-        TransferR = new SparkMax(18,MotorType.kBrushless);
-        SparkMaxConfig rightConfig = new SparkMaxConfig();
-        //rightTransfer = new SparkMax(18, TransferType.kBrushless);
-    
-        /* ---------------- Config Objects ---------------- */
-        //SparkMaxConfig rightConfig = new SparkMaxConfig();
-      
-    
-        //shooterEncoder2 = rightTransfer.getEncoder();
+
+       
         TransferEncoder = TransferL.getEncoder();
           leftconfig
           .smartCurrentLimit(60)
@@ -51,33 +43,29 @@ public class TransferSub extends SubsystemBase {
           .minOutput(-0.8)
           .maxOutput(0.8);
           leftconfig.closedLoop.maxMotion
-          .maxAcceleration(12000)
+          .maxAcceleration(10000)
           .allowedProfileError(50);
           leftconfig.encoder
           .velocityConversionFactor(1)
           .positionConversionFactor(1);
     
-        rightConfig
-            .follow(TransferR, true)
-            .apply(leftconfig);
     
         TransferL.configure(leftconfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-        TransferR.configure(rightConfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+
         TransferController = TransferL.getClosedLoopController();
       }
     
       @Override
       public void periodic() {
         SmartDashboard.putNumber("Left Transfer Current", TransferL.getOutputCurrent());
-        SmartDashboard.putNumber("Right Transfer Current", TransferR.getOutputCurrent());
+
       }
-     
   public void runShooterRPM(double rpm) {
-    TransferController.setReference(rpm, ControlType.kVelocity);
+    TransferL.set(rpm);
   }
   /** Stop shooter */
   public void stopShooter() {
-      TransferController.setSetpoint(0, ControlType.kVoltage);
+      TransferL.set(0);
   }
 
   /** Get current shooter velocity */

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.0,
-        "y": 7.299
+        "x": 14.138180722891565,
+        "y": 5.215192771084337
       },
       "prevControl": null,
       "nextControl": {
-        "x": 13.390157069652753,
-        "y": 6.506009159110331
+        "x": 14.528337792544319,
+        "y": 4.422201930194667
       },
       "isLocked": false,
       "linkedName": "EndP3"
@@ -71,7 +71,7 @@
   "folder": "SourceDepot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 69.39502454066394
+    "rotation": 31.6075022462488
   },
   "useDefaultConstraints": true
 }

@@ -62,6 +62,6 @@
     }
   },
   "resetOdom": false,
-  "folder": null,
+  "folder": "Side1Autos(NoRamp)",
   "choreoAuto": false
 }

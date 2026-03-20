@@ -5,14 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Shooter4Sub;
 
-import frc.robot.subsystems.ShooterSub;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ShooterStop extends Command {
-  ShooterSub shooter;
+  Shooter4Sub shooter;
   /** Creates a new ShootDrop. */
-  public ShooterStop(ShooterSub shooter) {
+  public ShooterStop(Shooter4Sub shooter) {
     this.shooter = shooter;
     addRequirements(shooter);
     // Use addRequirements() here to declare subsystem dependencies.

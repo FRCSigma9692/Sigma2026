@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Robot;
 import frc.robot.commands.ShooterCmd;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.subsystems.LimelightHelpers.LimelightTarget_Detector;
@@ -43,6 +44,7 @@ import frc.robot.subsystems.LimelightHelpers.PoseEstimate;
  * https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/tuner-swerve/index.html
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
+ 
     public int checkcase = 0;
     public boolean wonAuto;
     double LensHeight = 13;
@@ -99,6 +101,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private boolean autoRunning = false;
     private boolean visionEnabled = true;
     private double autoStartTime = 0;
+    boolean Alliances;
     
 
     private final Field2d field = new Field2d();
@@ -272,6 +275,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue,
                     this // Subsystem for requirements
                     
+
             );
         } catch (Exception ex) {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder",
@@ -315,6 +319,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     @Override
     public void periodic() {
+        if (DriverStation.getAlliance().equals(Alliance.Blue)){
+            Alliances=true;
+        }
+        else {
+            Alliances=false;
+        }
+        
         if (!BumperPos()){
             Rot45=-User1.getRightX() * MaxAngularRate * 0.6;
         }
@@ -528,6 +539,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("DistanceFromFuel", distance);
         SmartDashboard.putBoolean("Won Auto Or Not", wonAuto);
         SmartDashboard.putNumber("CheckCase", checkcase);
+        SmartDashboard.putBoolean("Works", Alliances);
 
     
         
@@ -640,7 +652,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
     public Pose2d GetPose(){
         return getState().Pose;
-    }
+    } 
 
     public double GetLimHeading(){
         if (rejectUpdate && !rejectUpdate2)

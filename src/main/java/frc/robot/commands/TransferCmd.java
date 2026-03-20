@@ -7,13 +7,13 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.ShooterSub;
+import frc.robot.subsystems.Shooter4Sub;
 import frc.robot.subsystems.TransferSub;
 
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class TransferCmd extends Command {
-  private RobotContainer m_robotContainer = new RobotContainer();
+  //private RobotContainer m_robotContainer = new RobotContainer();
   private TransferSub feedingsub;
   private double rpm;
   private CommandSwerveDrivetrain commandSwerveDrivetrain;
@@ -33,7 +33,6 @@ public class TransferCmd extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (ShooterSub.SHOOTER_RPM< m_robotContainer.rpm && !commandSwerveDrivetrain.AutoAllign())
     feedingsub.runShooterRPM(rpm);
   }
 

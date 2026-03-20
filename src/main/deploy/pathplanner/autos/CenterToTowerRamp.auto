@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Copy of CollectFull"
+            "pathName": "P1-Collect1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "P2-Intake1 Ramp"
           }
         },
         {
@@ -25,7 +31,7 @@
       ]
     }
   },
-  "resetOdom": false,
-  "folder": "Side2Autos(NoRamp)",
+  "resetOdom": true,
+  "folder": "Side1Autos(Ramp)",
   "choreoAuto": false
 }

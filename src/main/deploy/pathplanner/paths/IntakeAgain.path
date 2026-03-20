@@ -89,7 +89,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "EndP3"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],

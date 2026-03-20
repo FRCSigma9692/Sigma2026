@@ -4,12 +4,15 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
 import com.ctre.phoenix6.HootAutoReplay;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.subsystems.LimelightHelpers;
 
 public class Robot extends TimedRobot {
+    public Optional Alliance;
     boolean Allianceshift;
     double Matchtime;
     boolean AutoResult = false;
@@ -51,6 +55,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
+
         m_robotContainer.drivetrain.checkcase=0;
         
     }
@@ -75,11 +80,17 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        // m_robotContainer.shooter.NoPID(0);
+        // m_robotContainer.transfer.runShooterRPM(0);
+        // m_robotContainer.feeder.FeederNoPID(0);
+     
+
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
         LimelightHelpers.SetIMUMode("limelight-l", 1);
     }
+    
 
     @Override
     public void teleopPeriodic() {

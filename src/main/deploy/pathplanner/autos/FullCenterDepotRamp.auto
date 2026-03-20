@@ -5,9 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Shoot"
+            "pathName": "P1-Collect1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CollectFullRamp"
           }
         },
         {
@@ -25,19 +31,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ToSource"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
+            "pathName": "CollectFullRampEndDepot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ToTower"
+            "pathName": "DepotShoot"
           }
         },
         {
@@ -56,6 +56,6 @@
     }
   },
   "resetOdom": false,
-  "folder": "Side1Autos(NoRamp)",
+  "folder": "Side1Autos(Ramp)",
   "choreoAuto": false
 }

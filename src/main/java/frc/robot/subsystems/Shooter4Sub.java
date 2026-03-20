@@ -18,8 +18,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Shooter4Sub extends SubsystemBase {
-  public double InitRPM = 2400;
-
+    public double InitRPM = 2400;
 
     private  SparkMax MML1;
     private  SparkMax FML2;
@@ -51,7 +50,7 @@ public class Shooter4Sub extends SubsystemBase {
     public static double Kf = 0.00004; //0.0001486
     public double RampDOwnRPM;
     // Shooter RPM
-    public static final double SHOOTER_RPM = 3000;
+    public static final double SHOOTER_RPM = 2600;
 
     public Shooter4Sub() {
       
@@ -79,9 +78,9 @@ public class Shooter4Sub extends SubsystemBase {
         // .velocityFF(0.00006340000254567713)
         .outputRange(-1, 1);
     MML1Config.closedLoop.maxMotion
-    //.cruiseVelocity(3000)
+    .cruiseVelocity(2600)
     .allowedProfileError(50)
-    .maxAcceleration(20000);
+    .maxAcceleration(12000);
       
     MML1Config.encoder
         .positionConversionFactor(1.0)
@@ -164,6 +163,9 @@ public class Shooter4Sub extends SubsystemBase {
 
   public void Stop(){
     shooterController.setReference(0,ControlType.kVoltage);
+  }
+  public void NoPID(double vel){
+    MML1.set(vel);
   }
 
   public static double mapRange(double value, double inputStart, double inputEnd, double outputStart, double outputEnd) {

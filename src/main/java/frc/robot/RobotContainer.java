@@ -11,6 +11,8 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.FeedCmd;
+import frc.robot.commands.FeederStop;
 import frc.robot.commands.IntakCmd;
 import frc.robot.commands.LimIMUCmd;
 import frc.robot.commands.ShooterAutoCmd;
@@ -32,16 +35,17 @@ import frc.robot.commands.TransferStop;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FeederSub;
-import frc.robot.subsystems.ShooterSub;
+import frc.robot.subsystems.Shooter4Sub;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.TransferSub;
 
 public class RobotContainer {
-    public double TransferRPM = 1000;
-    public double FeederRPM = 1000;
-    public double rpm = 2400;
-    private FeederSub feeder = new FeederSub();
+
+    public double TransferRPM = 0.6;
+    public double FeederRPM = 5000;
+    public double rpm = 2600;
+    public FeederSub feeder = new FeederSub();
     public BooleanSupplier override = ()-> true;
     public Hopper hopper;
     public double output;
@@ -71,11 +75,11 @@ public class RobotContainer {
     
     private IntakCmd intakCmdOn = new IntakCmd(intake,0.6);
     private IntakCmd intakCmdOff = new IntakCmd(intake, 0);
-    private TransferSub transfer = new TransferSub();
+    public TransferSub transfer = new TransferSub();
     private TransferCmd transferCmd  = new TransferCmd(transfer, 0.6, drivetrain);
     private FeedCmd feedCmd = new FeedCmd(feeder,0.6, drivetrain);
     public Timer timer = new Timer();
-    private ShooterSub shooter = new ShooterSub();
+    public Shooter4Sub shooter = new Shooter4Sub();
      private ShooterAutoCmd shooterCmd = new ShooterAutoCmd(shooter);
     //private CheckSparkFlex cs= new CheckSparkFlex();
     private final SendableChooser<Command> autoChooser;
@@ -135,15 +139,20 @@ public class RobotContainer {
         
 
         // Shooter
-        joystick.y().onTrue(new ParallelCommandGroup(new ShooterCmd(shooter, rpm), new InstantCommand(()-> feeder.runFeeder(FeederRPM)))); //2700
-        joystick.a().onTrue(new ShooterStop(shooter).alongWith(new InstantCommand(()-> feeder.Stop())));
+        
+        joystick.y().onTrue(new ShooterCmd(shooter, rpm)); //2700
+        joystick.a().onTrue(new ShooterStop(shooter));
+        joystick.rightBumper().whileTrue(new InstantCommand(()-> feeder.FeederNoPID(0.8)));
+        joystick.leftBumper().onTrue(new FeederStop(feeder));
+        //joystick.whileTrue(new InstantCommand(()-> shooter.NoPID(joystick.getRightTriggerAxis()*0.5)));
+       // joystick.a().onTrue(new ShooterStop(shooter).alongWith(new InstantCommand(()-> feeder.Stop())));
         // joystick.x().onTrue(new ShooterIncCommand(Shooter, rpm));
         // joystick.b().onTrue(new ShooterDecCommand(Shooter, rpm));
 
         // Transfer
         joystick.povUp().whileTrue(new TransferCmd(transfer, TransferRPM,drivetrain));
-        joystick.povDown().whileTrue(new TransferCmd(transfer,-TransferRPM,drivetrain));
-        joystick.rightBumper().onTrue(new TransferStop(transfer));
+        joystick.povDown().whileTrue(new TransferStop(transfer));
+        
         
         // Feeder
         //joystick.povLeft().onTrue(new InstantCommand(()-> feeder.runFeeder(FeederRPM)));
@@ -169,9 +178,9 @@ public class RobotContainer {
         //         .withRotationalRate(drivetrain.Rot45)));
         
         User1.R2().onTrue(new LimIMUCmd(drivetrain));
-        joystick.leftTrigger().whileTrue(new IntakCmd(intake, 0.8));
+        joystick.leftTrigger().whileTrue(new IntakCmd(intake, 0.7));
         // joystick.rightTrigger().whileTrue(new FeedingCmd(feed, 0.6));
-        joystick.rightTrigger().whileTrue(new IntakCmd(intake, -0.8));
+        //joystick.rightTrigger().whileTrue(new IntakCmd(intake, -0.8));
         
         // joystick.rightBumper().whileTrue(new IntakCmd(intake, -0.8));
         //joystick.rightBumper().whileTrue(new CheckFlex(cs));

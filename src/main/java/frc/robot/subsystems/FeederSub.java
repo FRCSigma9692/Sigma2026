@@ -44,7 +44,7 @@ public class FeederSub extends SubsystemBase {
     .maxOutput(1);
     lConfig.closedLoop.maxMotion
     .allowedProfileError(50)
-    .maxAcceleration(20000);
+    .maxAcceleration(10000);
      lConfig.encoder
     .velocityConversionFactor(1.0)
     .positionConversionFactor(1.0);
@@ -66,7 +66,11 @@ public class FeederSub extends SubsystemBase {
     // This method will be called once per scheduler run
   }
   public void runFeeder(double vel){
+    if ((Shooter4Sub.SHOOTER_RPM>=2600))
     FeederController.setReference(vel, ControlType.kMAXMotionVelocityControl);
+  }
+  public void FeederNoPID(double pow){
+    FeederL.set(pow);
   }
 
   public void Stop(){
