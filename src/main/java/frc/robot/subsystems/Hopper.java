@@ -14,6 +14,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Hopper extends SubsystemBase {
@@ -41,6 +42,7 @@ public class Hopper extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Hopper position", hoppereEncoder.getPosition());
     // This method will be called once per scheduler run
   }
   public void runHopper(double position){

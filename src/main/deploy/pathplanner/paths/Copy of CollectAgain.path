@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.0,
-        "y": 0.7
+        "x": 12.925204819277107,
+        "y": 0.48349397590361487
       },
       "prevControl": null,
       "nextControl": {
-        "x": 11.439727473769924,
-        "y": 0.5112347622315889
+        "x": 11.364932293047032,
+        "y": 0.29472873813520384
       },
       "isLocked": false,
       "linkedName": "2EndP2"
@@ -106,13 +106,13 @@
   },
   "goalEndState": {
     "velocity": 2.0,
-    "rotation": 110.0
+    "rotation": 85.0
   },
   "reversed": false,
   "folder": "NeutralZoneSide2",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -70.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

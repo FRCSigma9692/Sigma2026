@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 12.750361445783133,
-        "y": 0.6364819277108438
+        "x": 12.116554216867469,
+        "y": 0.49442168674698794
       },
       "prevControl": null,
       "nextControl": {
-        "x": 11.326149100316298,
-        "y": 0.6658326789238229
+        "x": 10.892933701852682,
+        "y": 0.6706590238415594
       },
       "isLocked": false,
       "linkedName": "Start2"
@@ -20,24 +20,24 @@
         "y": 0.6364819277108438
       },
       "prevControl": {
-        "x": 12.705855989854141,
-        "y": 0.5990102789286366
+        "x": 12.56301584937716,
+        "y": 0.4458790687254529
       },
       "nextControl": {
-        "x": 10.851979507149291,
-        "y": 0.6454366146448935
+        "x": 10.961996945483406,
+        "y": 0.6713444776014755
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.8054578313253,
-        "y": 1.4232771084337343
+        "x": 8.510409638554217,
+        "y": 1.4560602409638557
       },
       "prevControl": {
-        "x": 9.353798189813782,
-        "y": 1.240480463399933
+        "x": 9.263339320082977,
+        "y": 1.2663834763123627
       },
       "nextControl": null,
       "isLocked": false,
@@ -58,13 +58,13 @@
   },
   "goalEndState": {
     "velocity": 2.0,
-    "rotation": 110.0
+    "rotation": 85.0
   },
   "reversed": false,
   "folder": "NeutralZoneSide2",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 70.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

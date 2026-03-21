@@ -44,10 +44,10 @@ public class Shooter4Sub extends SubsystemBase {
     public double StartingRPM = 2000;
     public double Poutput;
     public double currenttime;
-    public static double Kp = 0.0007; // 0.00055
-    public static double Ki = 1e-7;//0
-    public static double Kd = 0.011; // 0.03
-    public static double Kf = 0.00004; //0.0001486
+    public static double Kp = 0.0007; // 0.00055 //0.00072
+    public static double Ki = 1e-7;//1e-7;//0 // 1e-9
+    public static double Kd = 0.0001;//0.011; // 0.0007
+    public static double Kf = 8e-7; // 0.00004; // 0.00006
     public double RampDOwnRPM;
     // Shooter RPM
     public static final double SHOOTER_RPM = 2600;
@@ -80,7 +80,7 @@ public class Shooter4Sub extends SubsystemBase {
     MML1Config.closedLoop.maxMotion
     .cruiseVelocity(2600)
     .allowedProfileError(50)
-    .maxAcceleration(12000);
+    .maxAcceleration(17000);
       
     MML1Config.encoder
         .positionConversionFactor(1.0)
@@ -166,6 +166,9 @@ public class Shooter4Sub extends SubsystemBase {
   }
   public void NoPID(double vel){
     MML1.set(vel);
+  }
+  public double GetVel(){
+   return  shooterEncoder.getVelocity();
   }
 
   public static double mapRange(double value, double inputStart, double inputEnd, double outputStart, double outputEnd) {

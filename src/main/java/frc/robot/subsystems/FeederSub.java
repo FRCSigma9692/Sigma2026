@@ -15,8 +15,10 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.generated.TunerConstants;
 
 public class FeederSub extends SubsystemBase {
+  
   public static double Kp = 0.0004;
   public static double Ki = 0.0000017;
   public static double Kd = 0.011;
@@ -25,6 +27,7 @@ public class FeederSub extends SubsystemBase {
   private final SparkMax FeederR;
   private final RelativeEncoder FeederEncoder;
   private final SparkClosedLoopController FeederController;
+  CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
   SparkMaxConfig lConfig = new SparkMaxConfig();
   /** Creates a new Intake. */
   public FeederSub() {
@@ -66,11 +69,10 @@ public class FeederSub extends SubsystemBase {
     // This method will be called once per scheduler run
   }
   public void runFeeder(double vel){
-    if ((Shooter4Sub.SHOOTER_RPM>=2600))
     FeederController.setReference(vel, ControlType.kMAXMotionVelocityControl);
   }
   public void FeederNoPID(double pow){
-    FeederL.set(pow);
+      FeederL.set(pow);
   }
 
   public void Stop(){

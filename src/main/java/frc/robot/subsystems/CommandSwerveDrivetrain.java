@@ -16,6 +16,7 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
@@ -30,10 +31,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Robot;
 import frc.robot.commands.ShooterCmd;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
-import frc.robot.subsystems.LimelightHelpers.LimelightTarget_Detector;
 import frc.robot.subsystems.LimelightHelpers.PoseEstimate;
 
 /**
@@ -44,7 +43,8 @@ import frc.robot.subsystems.LimelightHelpers.PoseEstimate;
  * https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/tuner-swerve/index.html
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
- 
+    public double LimelightDistance = 40;
+    public double shooterspeed = 2600;
     public int checkcase = 0;
     public boolean wonAuto;
     double LensHeight = 13;
@@ -319,23 +319,28 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     @Override
     public void periodic() {
-        if (DriverStation.getAlliance().equals(Alliance.Blue)){
-            Alliances=true;
-        }
-        else {
-            Alliances=false;
-        }
+            if (LimelightHelpers.getTV("limelight-l") == true){
+                
+                LimelightDistance = getDistance();
+            }else{
+                LimelightDistance = 0;
+            }      
         
         if (!BumperPos()){
             Rot45=-User1.getRightX() * MaxAngularRate * 0.6;
         }
-        calcdist = Math.sqrt(Math.pow((HubY-yOdo),2) + Math.pow((HubX-xOdo),2));
+        calcdist = Math.sqrt((((yOdo-HubY) * (yOdo-HubY)) + ((xOdo-HubX) * (xOdo-HubX))));
+
+                shooterspeed = mapRange(LimelightDistance,44, 70, 2300, 2700);
+                if (LimelightDistance < 44){
+                    shooterspeed = 44;
+                }
                 // if (getState().Pose.getRotation().getDegrees()>0){
                 //     Heading = getState().Pose.getRotation().getDegrees();
                 // }else {
                 //     Heading = 360 - Math.abs(getState().Pose.getRotation().getDegrees());
                 // }
-                Heading = GetLimHeading();
+                Heading = GetHeading();
                 //Heading = getState().Pose.getRotation().getDegrees();
                 xOdo = getState().Pose.getX();
                 yOdo = getState().Pose.getY();
@@ -403,10 +408,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     rot=0;
                 }
 
-                // if (Math.abs(Error)>180){
-                //     boolean 
-                // }
-
                 
         /*
          * Periodically try to apply the operator perspective.
@@ -418,61 +419,25 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         
         LimelightHelpers.setPipelineIndex("limelight-l",1);
         // LimelightHelpers.setPipelineIndex("limelight-ll", 0);
-         LimelightHelpers.setPipelineIndex("limelight-ll", 4);
-          if (!LimSeed){
-            LimelightHelpers.SetIMUMode("limelight-l", 4);
-            LimelightHelpers.SetIMUMode("limelight-ll", 4);
-            LimelightHelpers.SetRobotOrientation("limelight-ll", GetLimHeading(), 0,0, 0, 0, 0);
-        LimelightHelpers.SetRobotOrientation("limelight-l", GetLimHeading(), 0,0,0,0,0);
-
-            //imelightHelpers.SetRobotOrientation("limelight-ll", Lime);
-            //LimelightHelpers.SetRobo  tOrientation("limelight-l", getState().Pose.getRotation().getDegrees(), 0,0,0,0,0);
-        }
-        else {
-            LimelightHelpers.SetRobotOrientation("limelight-ll", GetHeading(), 0,0, 0, 0, 0);
+        //   if (!LimSeed){
+        // LimelightHelpers.SetIMUMode("limelight-l", 4);
+        // LimelightHelpers.SetRobotOrientation("limelight-l", GetLimHeading(), 0,0,0,0,0);
             LimelightHelpers.SetRobotOrientation("limelight-l", GetHeading(), 0,0,0,0,0);
-            LimelightHelpers.SetIMUMode("limelight-ll", 1);
             LimelightHelpers.SetIMUMode("limelight-l", 1);
-        }
+        
         // LimelightHelpers.SetIMUAssistAlpha("limelight-l", 0.001);
         //LimelightHelpers.SetIMUMode("limelight-l", 0);
         //LimelightHelpers.SetIMUMode("limelight-ll", 0);
         // LimelightHelpers.setPipelineIndex("limelight-ll",0);
         // LimelightHelpers.SetIMUAssistAlpha("limelight-ll", 0.001);
         
-         
-        
-        //LimelightHelpers.setLimelightNTDoubleArray("null", null, null);
-        //LimelightHelpers.SetRobotOrientation("limelight-ll", getState().Pose.getRotation().getDegrees(), 0,0, 0, 0, 0);
-        //LimelightHelpers.SetRobotOrientation("limelight-l", getState().Pose.getRotation().getDegrees(), 0,0,0,0,0);
-
         //LimelightHelpers.SetRobotOrientation("limelight-ll", getState().Pose.getRotation().getDegrees(), 0,0,0,0,0);
 
         //lim2mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-ll");
         mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-l");
-        LimelightTarget_Detector limelightTarget_Detector = new LimelightTarget_Detector();
-        LimelightHelpers.LimelightResults limelightResults = LimelightHelpers.getLatestResults("limelight-ll");
-        LimelightHelpers.LimelightTarget_Detector[] detections = limelightResults.targets_Detector;
-        for (LimelightHelpers.LimelightTarget_Detector detection : detections){
-            if (detection.className.contentEquals("Fuel")){
-                double[] BotSpace= LimelightHelpers.getTargetPose_RobotSpace("limelight-ll");
-                ty = detection.ty;
-                tx= detection.tx;
-                offsetAngleVertical = detection.ty;
-                double angleToGoalDefrees = Math.toRadians(ty);
-                distance = (goalHeight-LensHeight)/Math.tan(angleToGoalDefrees);
-                double Hdist = distance * Math.tan(Math.toRadians(tx));
-                DetectedFuel = true;
-            } else {
-                DetectedFuel = false;
-
-            }
-        }
-    
-       // double data = LimelightHelpers.getIMUData("limelight-l").robotYaw;
         
         rejectUpdate = false;
-        rejectUpdate2 = false;
+
 
         // ✅ 4. Normal rejection rules (only used BEFORE auto, or in teleop)
         if (mt2 == null || mt2.tagCount == 0)
@@ -485,26 +450,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
            rejectUpdate = true;
            //rejectUpdate2 = true;
 
-        // //✅ 5. Apply MT2 once vision is enabled
-        // if (!rejectUpdate) {
-        //     // We trust X/Y but ignore theta
-        //     setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
-        //     addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
-        // }
-        // if (!rejectUpdate2) {
-        //     // We trust X/Y but ignore theta
-        //     // SmartDashboard.putString("runing", "lime2");
-        //     // setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
-        //     // addVisionMeasurement(lim2mt2.pose, lim2mt2.timestampSeconds);
-        // }
-        // if (!rejectUpdate && !rejectUpdate2){
-        //     setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
-        //     addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
-        // }
-        // else {
-        //     SmartDashboard.putString("not runing", "lime2");
-        // }
-
+        //✅ 5. Apply MT2 once vision is enabled
+        if (!rejectUpdate) {
+            // We trust X/Y but ignore theta
+            setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
+            addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
+        }
         field.setRobotPose(getState().Pose);
         
         
@@ -515,8 +466,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       //pathDone = false;
         SmartDashboard.putNumber("Vision X", (mt2 != null) ? mt2.pose.getX() : -99);
         SmartDashboard.putNumber("Vision Y", (mt2 != null) ? mt2.pose.getY() : -99);
-        SmartDashboard.putNumber("Vision 2 X", (lim2mt2 != null) ? lim2mt2.pose.getX() : -99);
-        SmartDashboard.putNumber("Vision 2 Y", (lim2mt2 != null) ? lim2mt2.pose.getY() : -99);
+
         SmartDashboard.putNumber("Robot X", getState().Pose.getX());
         SmartDashboard.putNumber("Robot Y", getState().Pose.getY());
         SmartDashboard.putNumber("Heading", GetHeading());
@@ -528,7 +478,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("Dist",calcdist);
         SmartDashboard.putNumber("LimelightTags", lim2mt2.tagCount);
         SmartDashboard.putBoolean("Lim2mt2", rejectUpdate2);
-        SmartDashboard.putNumber("LimelightYaw",GetLimHeading());
+        //SmartDashboard.putNumber("LimelightYaw",GetLimHeading());
         SmartDashboard.putBoolean("LimelightSeeding", LimSeed);
         SmartDashboard.putBoolean("Reject Update Lim1", rejectUpdate);
         SmartDashboard.putBoolean("Reject Update Lim2", rejectUpdate2);
@@ -540,8 +490,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putBoolean("Won Auto Or Not", wonAuto);
         SmartDashboard.putNumber("CheckCase", checkcase);
         SmartDashboard.putBoolean("Works", Alliances);
-
-    
+        SmartDashboard.putNumber("Shooter Speed", shooterspeed);
+        SmartDashboard.putNumber("DistanceLimelight",LimelightDistance);
+        SmartDashboard.putNumber("NoLimelightDistance",calcdist);
         
         //SmartDashboard.putData("null", field);
         //  SmartDashboard.putNumber("Best Velocity", shooterCalc.bestVelocity);
@@ -616,7 +567,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         }
     }
-     public void AutoLost(){
+    public void AutoLost(){
         if (checkcase==0){
         wonAuto = false;
         checkcase++;
@@ -626,7 +577,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
     }
     
-   
     private void startSimThread() {
         m_lastSimTime = Utils.getCurrentTimeSeconds();
 
@@ -654,17 +604,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return getState().Pose;
     } 
 
-    public double GetLimHeading(){
-        if (rejectUpdate && !rejectUpdate2)
-        return LimelightHelpers.getIMUData("limelight-ll").robotYaw;
-        else if (rejectUpdate2 && !rejectUpdate)
-        return LimelightHelpers.getIMUData("limelight-l").robotYaw;
-        else if (!rejectUpdate2 && !rejectUpdate)
-        return LimelightHelpers.getIMUData("limelight-l").robotYaw;
-        else 
-        return LimelightHelpers.getIMUData("limelight-l").robotYaw;        
-
-    }
+    // public double GetLimHeading(){
+    //     return LimelightHelpers.getIMUData("limelight-l").robotYaw;
+    // }
     public void SetNSeed(){
         LimSeed = true;
     }
@@ -731,5 +673,35 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
          calcdist = Math.sqrt(Math.pow((HubY-yOdo),2) + Math.pow((HubX-xOdo),2));
         //InterpolatingTreeMap table = new InterpolatingTreeMap<>(null, getKinematics());
 
+    }
+      public  double mapRange(double value, double inputStart, double inputEnd, double outputStart, double outputEnd) {
+    // Avoid division by zero if the input range is zero
+    if (inputStart == inputEnd) {
+        throw new IllegalArgumentException("Input range cannot be zero.");
+    }
+    
+    // Calculate the proportion of the value within the input range
+    double proportion = (value - inputStart) / (inputEnd - inputStart);
+    
+    // Apply the proportion to the output range and shift by the output start
+    return outputStart + proportion * (outputEnd - outputStart);
+}
+ public double getDistance(){
+    double ty = LimelightHelpers.getTY("limelight-l");
+
+    // how many degrees back is your limelight rotated from perfectly vertical?
+    double limelightMountAngleDegrees = 20;
+
+    // distance from the center of the Limelight lens to the floor
+    double limelightLensHeightInches = 10.11;
+
+    // distance from the target to the floor
+    double goalHeightInches = 44.25;
+
+    double angleToGoalDegrees = limelightMountAngleDegrees + ty;
+    double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+
+    double distance = (goalHeightInches - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
+    return distance;
     }
 }

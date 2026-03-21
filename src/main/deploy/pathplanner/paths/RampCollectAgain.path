@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 11.998379062926915,
-        "y": 2.2211550118599397
+        "x": 12.254180477238073,
+        "y": 1.8409782537151926
       },
       "isLocked": false,
       "linkedName": "RampShoot2"
@@ -20,12 +20,12 @@
         "y": 2.559759036144578
       },
       "prevControl": {
-        "x": 10.05933338611416,
-        "y": 2.46486465273394
+        "x": 10.06516796169864,
+        "y": 2.4437741200513057
       },
       "nextControl": {
-        "x": 7.904104447397421,
-        "y": 3.16470458008053
+        "x": 7.934893319342243,
+        "y": 3.2727016173837864
       },
       "isLocked": false,
       "linkedName": null
@@ -36,12 +36,12 @@
         "y": 2.9859397590361447
       },
       "prevControl": {
-        "x": 8.990443606550958,
-        "y": 3.0754151670375585
+        "x": 8.925969169222638,
+        "y": 3.123656133881935
       },
       "nextControl": {
-        "x": 8.010922408049353,
-        "y": 2.9555812922361615
+        "x": 8.014238096794717,
+        "y": 2.9353807019791653
       },
       "isLocked": false,
       "linkedName": null
@@ -52,8 +52,8 @@
         "y": 4.1333493975903615
       },
       "prevControl": {
-        "x": 8.545303399306757,
-        "y": 3.6968271885073087
+        "x": 8.46242174801245,
+        "y": 3.880996080412637
       },
       "nextControl": null,
       "isLocked": false,
@@ -82,19 +82,9 @@
         "x": 0.4,
         "y": 5.5
       },
-      "rotationOffset": -59.99999999999999,
+      "rotationOffset": -40.0,
       "minWaypointRelativePos": 0.8658595641646502,
-      "maxWaypointRelativePos": 3.0,
-      "name": "Point Towards Zone"
-    },
-    {
-      "fieldPosition": {
-        "x": 0.4,
-        "y": 5.5
-      },
-      "rotationOffset": 149.74000000000004,
-      "minWaypointRelativePos": 0.18595641646489114,
-      "maxWaypointRelativePos": 0.6043583535108933,
+      "maxWaypointRelativePos": 2.283777239709432,
       "name": "Point Towards Zone"
     }
   ],
@@ -116,7 +106,7 @@
   },
   "goalEndState": {
     "velocity": 2.0,
-    "rotation": 110.0
+    "rotation": 85.0
   },
   "reversed": false,
   "folder": "NeutralZoneSide2",
