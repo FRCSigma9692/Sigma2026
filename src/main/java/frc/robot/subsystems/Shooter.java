@@ -15,20 +15,21 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-public class Shooter4Sub extends SubsystemBase {
+public class Shooter extends SubsystemBase {
+  CommandSwerveDrivetrain commandSwerveDrivetrain;
     public double InitRPM = 2400;
-
-    private  SparkMax MML1;
-    private  SparkMax FML2;
-    private SparkMax FMR1;
-    private  SparkMax FMR2;
-    SparkMaxConfig MML1Config = new SparkMaxConfig();
+    private  SparkMax M1;
+    private  SparkMax M2;
+    SparkMaxConfig M1Config = new SparkMaxConfig();
     // Closed-loop objects (ONLY from leader)
     private SparkClosedLoopController shooterController;
     private RelativeEncoder shooterEncoder;
-
+    //InterpolatingDoubleTreeMap speedmap = new InterpolatingDoubleTreeMap();
     // public static double Kp = 0.0002; // 0.00007
     // public static double Ki = 0.00000014; //0.00000047
     // public static double Kd = 0.007; // 0.010
@@ -40,72 +41,66 @@ public class Shooter4Sub extends SubsystemBase {
     // public static double Kd = 0.010; // 0.010
     // public static double Kf = 0; //00006340000254567713
     public boolean reach1 = false;
+    public double speed;
     long Starttime = 0;
     public double StartingRPM = 2000;
     public double Poutput;
     public double currenttime;
-    public static double Kp = 0.0007; // 0.00055 //0.00072
-    public static double Ki = 1e-7;//1e-7;//0 // 1e-9
-    public static double Kd = 0.0001;//0.011; // 0.0007
-    public static double Kf = 8e-7; // 0.00004; // 0.00006
+    public static double Kp = 0.0008; // 0.00055 //0.00072
+    public static double Ki = 0;//1e-7;//0 // 1e-9
+    public static double Kd = 0.0007;//0.011; // 0.0007
+    public static double Kf = 0.0000125; // 0.00004; // 0.00006
     public double RampDOwnRPM;
     // Shooter RPM
     public static final double SHOOTER_RPM = 2600;
 
-    public Shooter4Sub() {
+    public Shooter(CommandSwerveDrivetrain commandSwerveDrivetrain) {
+
+      this.commandSwerveDrivetrain = commandSwerveDrivetrain;
       
-    MML1 = new SparkMax(21, MotorType.kBrushless);
-    FML2 = new SparkMax(22, MotorType.kBrushless);
-    FMR1 = new SparkMax(23, MotorType.kBrushless);
-    FMR2 = new SparkMax(24, MotorType.kBrushless);
+    M1 = new SparkMax(22, MotorType.kBrushless);
+    M2 = new SparkMax(23, MotorType.kBrushless);
+    
 
     /* ---------------- Config Objects ---------------- */
-    SparkMaxConfig FML2Config = new SparkMaxConfig();
-    SparkMaxConfig FMR1Config = new SparkMaxConfig();
-    SparkMaxConfig FMR2Config = new SparkMaxConfig();
-    shooterEncoder = MML1.getEncoder();
+    SparkMaxConfig M2Config = new SparkMaxConfig();
+    shooterEncoder = M1.getEncoder();
 
     /* ---------------- Common Motor Settings ---------------- */
-    MML1Config
+    M1Config
+        .inverted(true)
         .smartCurrentLimit(60)
         .idleMode(IdleMode.kCoast);
     /* ---------------- Closed Loop (PID + FF) ---------------- */
-    MML1Config.closedLoop
+    M1Config.closedLoop
         .p(Kp)
         .i(Ki)
         .d(Kd)
         .velocityFF(Kf)
         // .velocityFF(0.00006340000254567713)
         .outputRange(-1, 1);
-    MML1Config.closedLoop.maxMotion
+    M1Config.closedLoop.maxMotion
     .cruiseVelocity(2600)
     .allowedProfileError(50)
-    .maxAcceleration(17000);
-      
-    MML1Config.encoder
+    .maxAcceleration(8000);
+    
+    M1Config.encoder
         .positionConversionFactor(1.0)
         .velocityConversionFactor(1.0);
           
-    FML2Config
-      .follow(MML1, true)
-      .apply(MML1Config);
-     FMR1Config
-      .follow(MML1, false)
-      .apply(MML1Config);
-    FMR2Config
-      .follow(MML1, true)
-      .apply(MML1Config);
+    M2Config
+      .follow(M1, true)
+      .apply(M1Config);
 
-    MML1.configure(MML1Config,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-    FML2.configure(FML2Config,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-    FMR1.configure(FMR1Config,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-    FMR2.configure(FMR2Config,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-
-    shooterController = MML1.getClosedLoopController();
+    M1.configure(M1Config,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+    M2.configure(M2Config,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+    
+    shooterController = M1.getClosedLoopController();
   }
 
   @Override
   public void periodic() {
+    speed = commandSwerveDrivetrain.shooterspeed;
     // double vel = getShooterRPM();
     // if (vel>=2480){
     //   reach1 = true;
@@ -128,10 +123,12 @@ public class Shooter4Sub extends SubsystemBase {
     SmartDashboard.putNumber("Changed Ki:",Ki);
     SmartDashboard.putNumber("Changed Kd:",Kd);
 
-    // Display the applied output of the left and right side onto the dashboard
+    //splay the applied output of the left and right side onto the dashboard
     SmartDashboard.putNumber("RPMLeftMotor", shooterEncoder.getVelocity());
     SmartDashboard.putNumber("InitRPM", InitRPM);
     SmartDashboard.putNumber("RPM", getShooterRPM());
+    SmartDashboard.putNumber("Speed", speed);
+    SmartDashboard.putNumber("Applied Output", GetPow());
     // This method will be called once per scheduler run
   }
   public void increaseRPM(){
@@ -151,9 +148,11 @@ public class Shooter4Sub extends SubsystemBase {
       InitRPM-=50;
     }
   }
-  public void runShooterRPM(double rpm) {
-   //   leftMotor.set(0.5);
-      shooterController.setReference(rpm, ControlType.kMAXMotionVelocityControl);
+  public void runShooterRPM() {
+      M1.set(speed);
+
+      // shooterController.setReference(rpm, ControlType.kMAXMotionVelocityControl);
+      SmartDashboard.putNumber("Set Speed", speed);
   }
 
   /** Get current shooter velocity */
@@ -165,10 +164,13 @@ public class Shooter4Sub extends SubsystemBase {
     shooterController.setReference(0,ControlType.kVoltage);
   }
   public void NoPID(double vel){
-    MML1.set(vel);
+    M1.set(vel);
   }
   public double GetVel(){
    return  shooterEncoder.getVelocity();
+  }
+  public double GetPow(){
+    return M1.getAppliedOutput();
   }
 
   public static double mapRange(double value, double inputStart, double inputEnd, double outputStart, double outputEnd) {
@@ -182,6 +184,5 @@ public class Shooter4Sub extends SubsystemBase {
     
     // Apply the proportion to the output range and shift by the output start
     return outputStart + proportion * (outputEnd - outputStart);
-}
-
+  }
 }

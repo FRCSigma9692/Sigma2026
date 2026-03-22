@@ -5,28 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Align"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "New New New Path"
-                }
-              }
-            ]
+            "pathName": "Testing2"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

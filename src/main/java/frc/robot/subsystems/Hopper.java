@@ -27,8 +27,8 @@ public class Hopper extends SubsystemBase {
     hopper = new SparkMax(16, MotorType.kBrushless);
     hoppereEncoder = hopper.getEncoder();
     configure
-    .smartCurrentLimit(30)
-    .idleMode(IdleMode.kCoast);
+    .smartCurrentLimit(50)
+    .idleMode(IdleMode.kBrake);
     configure.encoder
     .velocityConversionFactor(1)
     .positionConversionFactor(1);
@@ -42,10 +42,16 @@ public class Hopper extends SubsystemBase {
 
   @Override
   public void periodic() {
+    
     SmartDashboard.putNumber("Hopper position", hoppereEncoder.getPosition());
     // This method will be called once per scheduler run
   }
   public void runHopper(double position){
-    closedLoopController.setSetpoint(position, ControlType.kPosition);
+    if (hoppereEncoder.getPosition()<=16.26){
+        hopper.set(0.5);
+    }
+    else {
+      hopper.set(0);
+    }
   }
 }

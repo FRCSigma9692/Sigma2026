@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
+        m_robotContainer.field.setRobotPose(m_robotContainer.drivetrain.GetPose());
         Matchtime = DriverStation.getMatchTime();
         //SmartDashboard.putBoolean("Result Of Selection",m_robotContainer.drivetrain.wonAuto);
          SmartDashboard.putNumber("MatchTime",DriverStation.getMatchTime());
@@ -55,8 +56,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
-
-        m_robotContainer.drivetrain.checkcase=0;
+        m_robotContainer.drivetrain.checkcase = 0;
+        CommandScheduler.getInstance().cancelAll();
         
     }
 
@@ -65,8 +66,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-        m_robotContainer.timer.reset();
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
         }
@@ -80,15 +81,16 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+
         // m_robotContainer.shooter.NoPID(0);
         // m_robotContainer.transfer.runShooterRPM(0);
         // m_robotContainer.feeder.FeederNoPID(0);
      
-
+        CommandScheduler.getInstance().cancelAll();
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
-        LimelightHelpers.SetIMUMode("limelight-l", 1);
+        // LimelightHelpers.SetIMUMode("limelight-l", 1);
     }
     
 

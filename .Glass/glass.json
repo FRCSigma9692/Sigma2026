@@ -28,17 +28,19 @@
       "/Pose": {
         "builtin": "",
         "height": 8.051901817321777,
-        "image": "E:\\RebuiltSigma26\\assets\\FE-2026-_REBUILT_Playing_Field_With_Background.png",
-        "width": 17.54825210571289
+        "image": "E:\\RebuiltSigma26\\AdvantageScope\\FE-2026-_REBUILT_Playing_Field_With_Background.png",
+        "width": 17.54825210571289,
+        "window": {
+          "visible": true
+        }
       },
       "/SmartDashboard/Field": {
         "builtin": "",
         "height": 8.051901817321777,
-        "image": "E:\\RebuiltSigma26\\assets\\FE-2026-_REBUILT_Playing_Field_With_Background.png",
+        "image": "E:\\RebuiltSigma26\\AdvantageScope\\FE-2026-_REBUILT_Playing_Field_With_Background.png",
         "width": 17.54825210571289,
         "window": {
-          "name": "BotView",
-          "visible": true
+          "name": "BotView"
         }
       }
     }

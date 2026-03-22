@@ -35,12 +35,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "IntakeAgain"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Align"

@@ -17,8 +17,9 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 public class TransferSub extends SubsystemBase {
-
+        private Shooter s4;
         private final SparkMax TransferL;
         SparkMaxConfig leftconfig = new SparkMaxConfig();
         private final SparkClosedLoopController TransferController;
@@ -28,14 +29,15 @@ public class TransferSub extends SubsystemBase {
         public static double Kd = 0.61; // 0.03
         public static double Kf = 0.000195;  
     
-        public TransferSub() {
+        public TransferSub(Shooter s4) {
+
           
         TransferL = new SparkMax(17, MotorType.kBrushless);
 
-       
+        this.s4 = s4;
         TransferEncoder = TransferL.getEncoder();
           leftconfig
-          .smartCurrentLimit(60)
+          .smartCurrentLimit(70)
           .idleMode(IdleMode.kCoast);
           leftconfig.closedLoop
           .pid(Kp, Ki, Kd)
@@ -61,8 +63,11 @@ public class TransferSub extends SubsystemBase {
 
       }
   public void runShooterRPM(double rpm) {
-    TransferL.set(rpm);
+          if (s4.GetPow()>=s4.speed)
+          TransferL.set(rpm);
   }
+
+  
   /** Stop shooter */
   public void stopShooter() {
       TransferL.set(0);
@@ -73,7 +78,3 @@ public class TransferSub extends SubsystemBase {
       return TransferEncoder.getVelocity();   
   }
 }
-
-
-
- 

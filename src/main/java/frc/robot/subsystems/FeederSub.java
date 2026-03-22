@@ -15,10 +15,9 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.generated.TunerConstants;
+
 
 public class FeederSub extends SubsystemBase {
-  
   public static double Kp = 0.0004;
   public static double Ki = 0.0000017;
   public static double Kd = 0.011;
@@ -27,10 +26,15 @@ public class FeederSub extends SubsystemBase {
   private final SparkMax FeederR;
   private final RelativeEncoder FeederEncoder;
   private final SparkClosedLoopController FeederController;
-  CommandSwerveDrivetrain commandSwerveDrivetrain = TunerConstants.createDrivetrain();
+
+  private Shooter s4;
+
+  CommandSwerveDrivetrain commandSwerveDrivetrain;
   SparkMaxConfig lConfig = new SparkMaxConfig();
   /** Creates a new Intake. */
-  public FeederSub() {
+  public FeederSub(Shooter s4, CommandSwerveDrivetrain commandSwerveDrivetrain) {
+    this.commandSwerveDrivetrain = commandSwerveDrivetrain;
+    this.s4 = s4;
     FeederL = new SparkMax(19, MotorType.kBrushless);
     FeederR  = new SparkMax(20, MotorType.kBrushless);
     SparkMaxConfig rConfig = new SparkMaxConfig();
@@ -38,7 +42,7 @@ public class FeederSub extends SubsystemBase {
   //  PusherEncoder = Pusher.getEncoder();
     lConfig
     .smartCurrentLimit(60)
-    .idleMode(IdleMode.kCoast);
+    .idleMode(IdleMode.kBrake);
   
     lConfig.closedLoop
     .pid(Kp, Ki, Kd)
@@ -64,14 +68,25 @@ public class FeederSub extends SubsystemBase {
 
   @Override
   public void periodic() {
-            SmartDashboard.putNumber("Left Pusher Current",GetCurrentL());
-            SmartDashboard.putNumber("Right Pusher Current",GetCurrentR());
+    SmartDashboard.putNumber("Left Pusher Current",GetCurrentL());
+    SmartDashboard.putNumber("Right Pusher Current",GetCurrentR());
+    SmartDashboard.putNumber("AppliedOutputFeeder",FeederL.getAppliedOutput());
+    // if ( s4.GetVel() > 2500 ){
+    //   FeederNoPID(0.8);
+    // }
+    // if (s4.GetPow()<=s4.speed && s4.GetPow() != 0)
+    //   FeederL.set(0.8);
+    // else{
+    //   FeederL.set(0);
+    // }
     // This method will be called once per scheduler run
   }
   public void runFeeder(double vel){
     FeederController.setReference(vel, ControlType.kMAXMotionVelocityControl);
   }
+
   public void FeederNoPID(double pow){
+    if (s4.GetPow()>=s4.speed)
       FeederL.set(pow);
   }
 
@@ -83,6 +98,9 @@ public class FeederSub extends SubsystemBase {
   }
    public double GetCurrentR(){
     return FeederR.getOutputCurrent();
+  }
+  public double FeederVel(){
+    return FeederEncoder.getVelocity();
   }
  
 }
