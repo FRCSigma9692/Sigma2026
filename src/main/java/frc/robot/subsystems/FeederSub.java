@@ -71,14 +71,12 @@ public class FeederSub extends SubsystemBase {
     SmartDashboard.putNumber("Left Pusher Current",GetCurrentL());
     SmartDashboard.putNumber("Right Pusher Current",GetCurrentR());
     SmartDashboard.putNumber("AppliedOutputFeeder",FeederL.getAppliedOutput());
-    // if ( s4.GetVel() > 2500 ){
-    //   FeederNoPID(0.8);
-    // }
-    // if (s4.GetPow()<=s4.speed && s4.GetPow() != 0)
-    //   FeederL.set(0.8);
-    // else{
-    //   FeederL.set(0);
-    // }
+    if(s4.GetPow()>=s4.speed){
+      FeederNoPID(0.8);
+    }
+    else{
+      Stop();
+    }
     // This method will be called once per scheduler run
   }
   public void runFeeder(double vel){
@@ -86,7 +84,6 @@ public class FeederSub extends SubsystemBase {
   }
 
   public void FeederNoPID(double pow){
-    if (s4.GetPow()>=s4.speed)
       FeederL.set(pow);
   }
 

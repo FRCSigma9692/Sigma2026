@@ -85,9 +85,10 @@
             autoChooser = AutoBuilder.buildAutoChooser("AutoChooser");
             NamedCommands.registerCommand("Align",new InstantCommand(()-> drivetrain.rotOverride(drivetrain.rot)));
             NamedCommands.registerCommand("Shoot", Commands.run(()->shooter.runShooterRPM()));
-            NamedCommands.registerCommand("StartIntake", intakCmdOn);
-            NamedCommands.registerCommand("StopIntake", intakCmdOff);
-            NamedCommands.registerCommand("FeederTransfer", new ParallelCommandGroup(feedCmd,transferCmd));
+            NamedCommands.registerCommand("StartIntake",Commands.run(()-> intake.runIntake(0.5)));
+            NamedCommands.registerCommand("StopIntake", Commands.run(()-> intake.StopIntake()));
+            NamedCommands.registerCommand("FeederTransfer",(Commands.run(()->feeder.FeederNoPID(FeederRPM))).alongWith(Commands.run(()-> transfer.runShooterRPM(FeederRPM))));
+            NamedCommands.registerCommand("FeederTransferOff", (Commands.run(()->feeder.Stop())).alongWith(Commands.run(()-> transfer.stopShooter())));
             SmartDashboard.putData("Auto Mode", autoChooser);
             SmartDashboard.putData("Field", field);
             configureBindings();
@@ -132,11 +133,12 @@
             // Shooter ----------------------                       
             joystick.leftTrigger(0.7).whileTrue(
                 new ParallelCommandGroup(
-                    Commands.run(() -> shooter.runShooterRPM(), shooter),
-                    Commands.run(() -> transfer.runShooterRPM(TransferRPM)),
-                    //ew TransferCmd(transfer,TransferRPM, drivetrain),  
-                    Commands.run(() -> feeder.FeederNoPID(0.6)))
+                    Commands.run(() -> shooter.runShooterRPM(), shooter))
+                    // Commands.run(() -> transfer.runShooterRPM(TransferRPM)),
+                    // //ew TransferCmd(transfer,TransferRPM, drivetrain),  
+                    // Commands.run(() -> feeder.FeederNoPID(0.6)))
             );
+
             joystick.leftTrigger(0.7).whileFalse(
                 new ParallelCommandGroup(
                 new InstantCommand(()-> shooter.Stop()),
