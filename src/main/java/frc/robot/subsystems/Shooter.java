@@ -20,47 +20,36 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 public class Shooter extends SubsystemBase {
   CommandSwerveDrivetrain commandSwerveDrivetrain;
-    public double InitRPM = 2400;
-    private  SparkMax M1;
-    private  SparkMax M2;
-    SparkMaxConfig M1Config = new SparkMaxConfig();
-    // Closed-loop objects (ONLY from leader)
-    private SparkClosedLoopController shooterController;
-    private RelativeEncoder shooterEncoder;
-    //InterpolatingDoubleTreeMap speedmap = new InterpolatingDoubleTreeMap();
-    // public static double Kp = 0.0002; // 0.00007
-    // public static double Ki = 0.00000014; //0.00000047
-    // public static double Kd = 0.007; // 0.010
-    // public static double Kf = 0.00004; //00006340000254567713
-    
-    // public static double Kp = 0.00007; // 0.00007
-    // public static double Ki = 0.00000047; //0.0000004
-  
-    // public static double Kd = 0.010; // 0.010
-    // public static double Kf = 0; //00006340000254567713
-    public boolean reach1 = false;
-    public double speed;
-    long Starttime = 0;
-    public double StartingRPM = 2000;
-    public double Poutput;
-    public double currenttime;
-    public static double Kp = 0.0008; // 0.00055 //0.00072
-    public static double Ki = 0;//1e-7;//0 // 1e-9
-    public static double Kd = 0.0007;//0.011; // 0.0007
-    public static double Kf = 0.0000125; // 0.00004; // 0.00006
-    public double RampDOwnRPM;
-    // Shooter RPM
-    public static final double SHOOTER_RPM = 2600;
+  public double InitRPM = 2000;
+  private SparkMax M1;
+  private SparkMax M2;
+  SparkMaxConfig M1Config = new SparkMaxConfig();
+  // Closed-loop objects (ONLY from leader)
+  private SparkClosedLoopController shooterController;
+  private RelativeEncoder shooterEncoder;
+  public boolean reach1 = false;
+  public double speed;
+  long Starttime = 0;
+  public double StartingRPM = 2000;
+  public double Poutput;
+  public double currenttime;
+  public static double Kp = 0.0008; // 0.00055 //0.00072
+  public static double Ki = 0;// 1e-7;//0 // 1e-9
+  public static double Kd = 0.0007;// 0.011; // 0.0007
+  public static double Kf = 0.0000125; // 0.00004; // 0.00006
+  public double RampDOwnRPM;
+  // Shooter RPM
+  public static final double SHOOTER_RPM = 2600;
 
-    public Shooter(CommandSwerveDrivetrain commandSwerveDrivetrain) {
+  public Shooter(CommandSwerveDrivetrain commandSwerveDrivetrain) {
 
-      this.commandSwerveDrivetrain = commandSwerveDrivetrain;
-      
+    this.commandSwerveDrivetrain = commandSwerveDrivetrain;
+
     M1 = new SparkMax(22, MotorType.kBrushless);
     M2 = new SparkMax(23, MotorType.kBrushless);
-    
 
     /* ---------------- Config Objects ---------------- */
     SparkMaxConfig M2Config = new SparkMaxConfig();
@@ -80,108 +69,94 @@ public class Shooter extends SubsystemBase {
         // .velocityFF(0.00006340000254567713)
         .outputRange(-1, 1);
     M1Config.closedLoop.maxMotion
-    .cruiseVelocity(2600)
-    .allowedProfileError(50)
-    .maxAcceleration(8000);
-    
+        .cruiseVelocity(2600)
+        .allowedProfileError(50)
+        .maxAcceleration(8000);
+
     M1Config.encoder
         .positionConversionFactor(1.0)
         .velocityConversionFactor(1.0);
-          
-    M2Config
-      .follow(M1, true)
-      .apply(M1Config);
 
-    M1.configure(M1Config,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-    M2.configure(M2Config,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-    
+    M2Config
+        .follow(M1, true)
+        .apply(M1Config);
+
+    M1.configure(M1Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    M2.configure(M2Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
     shooterController = M1.getClosedLoopController();
   }
 
   @Override
   public void periodic() {
     speed = commandSwerveDrivetrain.shooterspeed;
-    // double vel = getShooterRPM();
-    // if (vel>=2480){
-    //   reach1 = true;
-    // }
-    //   if (((StartingRPM-4)>=vel) && reach1 && vel<=3000 && vel>1000){
-    //       //timer.start();
-          
-    //       Poutput = (10*((StartingRPM-vel)));
-    //       // InitRPM+=Poutput;
-    //   }
-    //   else {
-    //     //timer.reset();
-    //     InitRPM = 2400;
-    //     Poutput = 0;
-    //   }
-    //shooterController.setReference(InitRPM, ControlType.kMAXMotionVelocityControl);
+
     SmartDashboard.putNumber("OutputPower", Poutput);
     SmartDashboard.putNumber("Timer", currenttime);
-    SmartDashboard.putNumber("Changed KP:",Kp);
-    SmartDashboard.putNumber("Changed Ki:",Ki);
-    SmartDashboard.putNumber("Changed Kd:",Kd);
+    SmartDashboard.putNumber("Changed KP:", Kp);
+    SmartDashboard.putNumber("Changed Ki:", Ki);
+    SmartDashboard.putNumber("Changed Kd:", Kd);
 
-    //splay the applied output of the left and right side onto the dashboard
     SmartDashboard.putNumber("RPMLeftMotor", shooterEncoder.getVelocity());
-    SmartDashboard.putNumber("InitRPM", InitRPM);
     SmartDashboard.putNumber("RPM", getShooterRPM());
     SmartDashboard.putNumber("Speed", speed);
     SmartDashboard.putNumber("Applied Output", GetPow());
     // This method will be called once per scheduler run
   }
-  public void increaseRPM(){
-      if (InitRPM <= 4000){
-        InitRPM+=50;}
-      else{
-        InitRPM = 4000;
-      }
+
+  public void increaseRPM() {
+
+    if (InitRPM <= 4000) {
+      InitRPM += 50;
+    } else {
+      InitRPM = 4000;
+    }
   }
 
-  public void decreaseRPM(){
-    
-    if (InitRPM<=0){
+  public void decreaseRPM() {
+    if (InitRPM <= 0) {
       InitRPM = 0;
-    }
-    else {
-      InitRPM-=50;
+    } else {
+      InitRPM -= 50;
     }
   }
-  public void runShooterRPM() {
-      M1.set(speed);
 
-      // shooterController.setReference(rpm, ControlType.kMAXMotionVelocityControl);
-      SmartDashboard.putNumber("Set Speed", speed);
+  public void runShooterRPM() {
+    M1.set(speed);
+    SmartDashboard.putNumber("Set Speed", speed);
   }
 
   /** Get current shooter velocity */
   public double getShooterRPM() {
-      return shooterEncoder.getVelocity();   
-  }  
-
-  public void Stop(){
-    shooterController.setReference(0,ControlType.kVoltage);
+    return shooterEncoder.getVelocity();
   }
-  public void NoPID(double vel){
+
+  public void Stop() {
+    shooterController.setReference(0, ControlType.kVoltage);
+  }
+
+  public void NoPID(double vel) {
     M1.set(vel);
   }
-  public double GetVel(){
-   return  shooterEncoder.getVelocity();
+
+  public double GetVel() {
+    return shooterEncoder.getVelocity();
   }
-  public double GetPow(){
+
+  public double GetPow() {
     return M1.getAppliedOutput();
   }
 
-  public static double mapRange(double value, double inputStart, double inputEnd, double outputStart, double outputEnd) {
+  public static double mapRange(double value, double inputStart, double inputEnd, double outputStart,
+      double outputEnd) {
     // Avoid division by zero if the input range is zero
     if (inputStart == inputEnd) {
-        throw new IllegalArgumentException("Input range cannot be zero.");
+      throw new IllegalArgumentException("Input range cannot be zero.");
     }
-    
+
     // Calculate the proportion of the value within the input range
     double proportion = (value - inputStart) / (inputEnd - inputStart);
-    
+
     // Apply the proportion to the output range and shift by the output start
     return outputStart + proportion * (outputEnd - outputStart);
   }

@@ -87,7 +87,7 @@ public class FeederSub extends SubsystemBase {
   }
 
   public void FeederNoPID(double pow){
-    if (!(s4.GetPow()<=commandSwerveDrivetrain.shooterspeed))
+    if (!(s4.GetPow()>=500))
       FeederL.set(pow);
   }
 

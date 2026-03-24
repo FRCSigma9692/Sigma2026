@@ -499,10 +499,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return getState().Pose.getRotation().getDegrees();
     }
     public boolean AutoAllign(){
-          if ((Math.abs(Error)>1)){         
+          if ((Math.abs(Error)>1)){             
                 rot= (0.08*Error)+(0.0015*((Error-LastReqRot)/0.02));
                 LastReqRot = Error;
-                rot = Math.max(-0.6, Math.min(rot, 0.6));
+                rot = Math.max(-0.7, Math.min(rot, 0.7));
                 return true;
             }
             else {
