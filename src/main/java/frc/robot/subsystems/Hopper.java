@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Hopper extends SubsystemBase {
-  private double pos;
+  public double pos;
   private final SparkMax hopper;
   SparkClosedLoopController closedLoopController;
   SparkMaxConfig configure = new SparkMaxConfig();
@@ -48,18 +48,23 @@ public class Hopper extends SubsystemBase {
     // This method will be called once per scheduler run
   }
   public void runHopper(){
-    if (pos<=16.26){
+        SmartDashboard.putNumber("Hopper position Left", pos);
+  
+    if (pos<=10){
         hopper.set(0.3);
     }
     else {
       hopper.set(0);
     }
+    SmartDashboard.updateValues();
   }
   public void RunHopperReverse(){
+    SmartDashboard.putNumber("Hopper position Right", pos);
     if (pos>=0){
       hopper.set(-0.3);
     }else {
       hopper.set(0);
     }
+    SmartDashboard.updateValues();
   }
 }

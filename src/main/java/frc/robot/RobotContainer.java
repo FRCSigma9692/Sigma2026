@@ -147,12 +147,10 @@ import frc.robot.subsystems.FeederSub;
                 // new FeederStop(feeder),
                 // new TransferStop(transfer))
             );
-            joystick.povLeft().whileTrue(
-                Commands.run(()->hopper.runHopper()));
-        
-            
-            joystick.povRight().whileTrue(
-                Commands.run(()->hopper.RunHopperReverse()));
+            joystick.povDown().onTrue(
+                Commands.run(()->hopper.runHopper(), hopper));
+            joystick.povUp().onTrue(
+                Commands.run(()->hopper.RunHopperReverse(), hopper));
         
             // joystick.rightTrigger(0.7).whileTrue(
             //     new ParallelCommandGroup(
@@ -187,10 +185,10 @@ import frc.robot.subsystems.FeederSub;
                     feeder
             ));
 
-            new RunCommand(
+            feeder2.setDefaultCommand(new RunCommand(
                     () -> feeder2.FeederNoPID(-joystick.getLeftY()* .7)  ,
                     feeder2
-            );
+            ));
 
 
             
