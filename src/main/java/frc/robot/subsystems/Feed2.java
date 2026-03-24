@@ -17,30 +17,30 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
-public class FeederSub extends SubsystemBase {
+public class Feed2 extends SubsystemBase {
   public static double Kp = 0.0004;
   public static double Ki = 0.0000017;
   public static double Kd = 0.011;
   public static double Kf = 0.00008;
-  private final SparkMax FeederL;
-  private final SparkMax FeederR;
+  private final SparkMax Feeder;
   private final RelativeEncoder FeederEncoder;
   private final SparkClosedLoopController FeederController;
 
   private Shooter s4;
-
   CommandSwerveDrivetrain commandSwerveDrivetrain;
+
   SparkMaxConfig lConfig = new SparkMaxConfig();
   /** Creates a new Intake. */
-  public FeederSub(Shooter s4, CommandSwerveDrivetrain commandSwerveDrivetrain) {
+  public Feed2(Shooter s4, CommandSwerveDrivetrain commandSwerveDrivetrain) {
     this.commandSwerveDrivetrain = commandSwerveDrivetrain;
     this.s4 = s4;
-    FeederL = new SparkMax(19, MotorType.kBrushless);
-    FeederR  = new SparkMax(20, MotorType.kBrushless);
-    SparkMaxConfig rConfig = new SparkMaxConfig();
-    FeederEncoder  = FeederL.getEncoder();
+    Feeder = new SparkMax(25, MotorType.kBrushless);
+    //FeederR  = new SparkMax(20, MotorType.kBrushless);
+   // SparkMaxConfig rConfig = new SparkMaxConfig();
+    FeederEncoder  = Feeder.getEncoder();
   //  PusherEncoder = Pusher.getEncoder();
     lConfig
+    .inverted(true)
     .smartCurrentLimit(60)
     .idleMode(IdleMode.kBrake);
   
@@ -55,31 +55,28 @@ public class FeederSub extends SubsystemBase {
      lConfig.encoder
     .velocityConversionFactor(1.0)
     .positionConversionFactor(1.0);
-    rConfig
-    .smartCurrentLimit(60)
-    .follow(FeederL, true)
-    .apply(lConfig);
-  
+    // rConfig
+    // .smartCurrentLimit(60)
+    // .follow(Feeder, true)
+    // .apply(lConfig);
 
-    FeederL.configure(lConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    FeederR.configure(rConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    FeederController = FeederL.getClosedLoopController();
+    Feeder.configure(lConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    //FeederR.configure(rConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    FeederController = Feeder.getClosedLoopController();
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Left Pusher Current",GetCurrentL());
-    SmartDashboard.putNumber("Right Pusher Current",GetCurrentR());
-    SmartDashboard.putNumber("AppliedOutputFeeder",FeederL.getAppliedOutput());
-    // if(s4.GetPow()>=s4.speed - 0.005){
-    //   FeederNoPID(0.8);
+    // SmartDashboard.putNumber("Right Pusher Current",GetCurrentR());
+    //SmartDashboard.putNumber("AppliedOutputFeeder",FeederL.getAppliedOutput());
+    // if(s4.GetPow()>=s4.speed-0.005){
+    //       FeederNoPID(0.6);
     // }
     // else{
-    //   Stop();
+    //   FeederNoPID(0);
     // }
-
-    SmartDashboard.putNumber("CUrrentShooter", s4.GetPow());
-    SmartDashboard.putNumber("SetShooter",s4.speed);
+    
     // This method will be called once per scheduler run
   }
   public void runFeeder(double vel){
@@ -87,18 +84,18 @@ public class FeederSub extends SubsystemBase {
   }
 
   public void FeederNoPID(double pow){
-      FeederL.set(pow);
+      Feeder.set(pow);
   }
 
   public void Stop(){
     FeederController.setReference(0, ControlType.kVoltage);
   }
   public double GetCurrentL(){
-    return FeederL.getOutputCurrent();
+    return Feeder.getOutputCurrent();
   }
-   public double GetCurrentR(){
-    return FeederR.getOutputCurrent();
-  }
+  //  public double GetCurrentR(){
+  //   return Feeder.getOutputCurrent();
+  // }
   public double FeederVel(){
     return FeederEncoder.getVelocity();
   }

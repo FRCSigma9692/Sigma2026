@@ -20,7 +20,8 @@
     import edu.wpi.first.wpilibj2.command.Commands;
     import edu.wpi.first.wpilibj2.command.InstantCommand;
     import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-    import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
     import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
     import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
     import frc.robot.commands.FeedCmd;
@@ -30,7 +31,8 @@
     import frc.robot.commands.TransferStop;
     import frc.robot.generated.TunerConstants;
     import frc.robot.subsystems.CommandSwerveDrivetrain;
-    import frc.robot.subsystems.FeederSub;
+import frc.robot.subsystems.Feed2;
+import frc.robot.subsystems.FeederSub;
     import frc.robot.subsystems.Hopper;
     import frc.robot.subsystems.Intake;
     import frc.robot.subsystems.TransferSub;
@@ -46,7 +48,7 @@
         public double output;
         public double RotPow45;
         private double speed = 0.6;
-        private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * speed; // kSpeedAt12Volts desired top speed
+        private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
         private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
         //private Pushing transfer;
 
@@ -66,11 +68,12 @@
         private final CommandXboxController joystick = new CommandXboxController(1);
         public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-        private Intake intake = new Intake();
+        //private Intake intake = new Intake();
         public Shooter shooter = new Shooter(drivetrain);
         public FeederSub feeder = new FeederSub(shooter,drivetrain);
-        private IntakCmd intakCmdOn = new IntakCmd(intake,0.6);
-        private IntakCmd intakCmdOff = new IntakCmd(intake, 0);
+        public Feed2 feeder2 = new Feed2(shooter,drivetrain);
+        // private IntakCmd intakCmdOn = new IntakCmd(intake,0.6);
+        // private IntakCmd intakCmdOff = new IntakCmd(intake, 0);
         public TransferSub transfer = new TransferSub(shooter);
         private TransferCmd transferCmd  = new TransferCmd(transfer, 0.6, drivetrain);
         private FeedCmd feedCmd = new FeedCmd(feeder,0.6, drivetrain);
@@ -85,8 +88,8 @@
             autoChooser = AutoBuilder.buildAutoChooser("AutoChooser");
             NamedCommands.registerCommand("Align",new InstantCommand(()-> drivetrain.rotOverride(drivetrain.rot)));
             NamedCommands.registerCommand("Shoot", Commands.run(()->shooter.runShooterRPM()));
-            NamedCommands.registerCommand("StartIntake",Commands.run(()-> intake.runIntake(0.5)));
-            NamedCommands.registerCommand("StopIntake", Commands.run(()-> intake.StopIntake()));
+            // NamedCommands.registerCommand("StartIntake",Commands.run(()-> intake.runIntake(0.5)));
+            // NamedCommands.registerCommand("StopIntake", Commands.run(()-> intake.StopIntake()));
             NamedCommands.registerCommand("FeederTransfer",(Commands.run(()->feeder.FeederNoPID(FeederRPM))).alongWith(Commands.run(()-> transfer.runShooterRPM(FeederRPM))));
             NamedCommands.registerCommand("FeederTransferOff", (Commands.run(()->feeder.Stop())).alongWith(Commands.run(()-> transfer.stopShooter())));
             SmartDashboard.putData("Auto Mode", autoChooser);
@@ -132,21 +135,75 @@
         
             // Shooter ----------------------                       
             joystick.leftTrigger(0.7).whileTrue(
-                new ParallelCommandGroup(
-                    Commands.run(() -> shooter.runShooterRPM(), shooter))
+                    Commands.run(() -> shooter.runShooterRPM(), shooter));
                     // Commands.run(() -> transfer.runShooterRPM(TransferRPM)),
-                    // //ew TransferCmd(transfer,TransferRPM, drivetrain),  
-                    // Commands.run(() -> feeder.FeederNoPID(0.6)))
-            );
-
+                    // new TransferCmd(transfer,TransferRPM, drivetrain),  
+                    // Commands.run(() -> feeder.FeederNoPID(0.6)),
+                    // Commands.run(() -> feeder2.FeederNoPID(0.6)))
+        
             joystick.leftTrigger(0.7).whileFalse(
                 new ParallelCommandGroup(
-                new InstantCommand(()-> shooter.Stop()),
-                new FeederStop(feeder),
-                new TransferStop(transfer))
-                );
+                new InstantCommand(()-> shooter.Stop()))
+                // new FeederStop(feeder),
+                // new TransferStop(transfer))
+            );
+            joystick.povLeft().whileTrue(
+                Commands.run(()->hopper.runHopper()));
+        
+            
+            joystick.povRight().whileTrue(
+                Commands.run(()->hopper.RunHopperReverse()));
+        
+            // joystick.rightTrigger(0.7).whileTrue(
+            //     new ParallelCommandGroup(
+            //         //new InstantCommand(()-> shooter.Stop()))
+            //         Commands.run(() -> feeder.FeederNoPID(0.6)),
+            //         new TransferCmd(transfer,0.9, drivetrain),
+            //         Commands.run(() -> feeder2.FeederNoPID(0.6)),
+            //         new IntakCmd(intake, 0.3)
+            //     )
+            // );
+
+            // joystick.rightTrigger(0.7).whileFalse(
+            //     new ParallelCommandGroup(
+            //     //new InstantCommand(()-> shooter.Stop()))
+            //     Commands.run(() -> feeder.FeederNoPID(0)),
+            //     new TransferCmd(transfer,0, drivetrain),
+            //     Commands.run(() -> feeder2.FeederNoPID(0)))
+            // );
+
+            transfer.setDefaultCommand(new RunCommand(
+                () -> transfer.runShooterRPM(-joystick.getLeftY() * .7),    
+                transfer
+            ));
+
+            // intake.setDefaultCommand(new RunCommand(
+            //         () -> intake.runIntake(-joystick.getLeftY() * .7)  ,
+            //         intake
+            // ));
+
+            feeder.setDefaultCommand(new RunCommand(
+                    () -> feeder.FeederNoPID(-joystick.getLeftY()* .7)  ,
+                    feeder
+            ));
+
+            new RunCommand(
+                    () -> feeder2.FeederNoPID(-joystick.getLeftY()* .7)  ,
+                    feeder2
+            );
+
+
+            
+            // joystick.axisMagnitudeGreaterThan(1, 0.1).whileTrue(new ParallelCommandGroup(
+            //     new TransferCmd(transfer,-joystick.getLeftY(), drivetrain), 
+            //     new IntakCmd(intake, -joystick.getLeftY())));
+
+            //joystick.whileTrue(new InstantCommand(()-> shooter.NoPID(joystick.getLeftX()*0.5)));
+            //joystick.getLeftX().whileTrue(new TransferCmd(transfer, joystick.getLeftX(), drivetrain));
             // -------------------------
 
+            //joystick.rightTrigger().whileTrue((new InstantCommand(()-> feeder2.FeederNoPID(0.6))));
+            // joystick.rightTrigger().whileFalse(new InstantCommand(()-> feeder2.FeederNoPID(0)));
             //Feeder -----------------
             // joystick.rightTrigger().whileTrue((new InstantCommand(()-> feeder.FeederNoPID(0.8))));
             // joystick.rightTrigger().whileFalse(new InstantCommand(()-> feeder.FeederNoPID(0)));
@@ -166,31 +223,35 @@
             // -----------------------------
 
             // Intake -----------------------
-            joystick.y().onTrue(
-                new ParallelCommandGroup(
-                    new IntakCmd(intake, 0.7),
-                    new TransferCmd(transfer,TransferRPM, drivetrain),
-                    new InstantCommand(()-> feeder.FeederNoPID(-0.3))
-                    // shooter.run(() -> shooter.runShooter(drivetrain.getShooterSpeed())),
-                    // feeder.run(() -> feeder.FeederNoPID(0.6))
-                )
-            );
+            // joystick.leftBumper().onTrue(
+            //     new ParallelCommandGroup(
+            //        // new IntakCmd(intake, 0.7),
+            //         new TransferCmd(transfer,0.4, drivetrain),
+            //         new InstantCommand(()-> feeder.FeederNoPID(-0.3)),
+            //         new InstantCommand(()-> feeder2.FeederNoPID(-0.3))
+            //     )
+            // );
             
-            joystick.a().onTrue(
+            joystick.rightBumper().onTrue(
                 new ParallelCommandGroup(
-                    new IntakCmd(intake, 0),
-                    new TransferStop(transfer),
-                    new InstantCommand(()-> feeder.FeederNoPID(0))
-                    // shooter.run(() -> shooter.runShooter(drivetrain.getShooterSpeed())),
-                    // feeder.run(() -> feeder.FeederNoPID(0.6))
+                    // new IntakCmd(intake, -0.6)
                 )
             );
+
+            joystick.a().onTrue(
+                    new ParallelCommandGroup(
+                        // new IntakCmd(intake,0),
+                        new TransferStop(transfer)
+
+                    )
+            );
+
             // -------------------------------
             
             // Stop All ---------------------------- 
-            joystick.rightBumper().onTrue(
+            joystick.x().onTrue(
                 new ParallelCommandGroup(
-                    new IntakCmd(intake, 0),
+                    // new IntakCmd(intake, 0),
                     new TransferStop(transfer),
                     new InstantCommand(()-> feeder.FeederNoPID(0)),
                     new InstantCommand(()-> shooter.Stop())
