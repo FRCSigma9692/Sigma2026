@@ -122,7 +122,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void runShooterRPM() {
-    M1.set(speed);
+    M1.set(0.55);
     SmartDashboard.putNumber("Set Speed", speed);
   }
 

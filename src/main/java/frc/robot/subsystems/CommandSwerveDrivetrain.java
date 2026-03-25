@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.Optional;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import com.ctre.phoenix6.SignalLogger;
@@ -475,7 +474,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("CheckCase", checkcase);
         SmartDashboard.putBoolean("Works", Alliances);
         SmartDashboard.putNumber("Shooter Speed", shooterspeed);
-        SmartDashboard.putNumber("NoLimelightDistance",calcdist);
+    
 
         
         //SmartDashboard.putData("null", field);
@@ -500,9 +499,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
     public boolean AutoAllign(){
           if ((Math.abs(Error)>1)){             
-                rot= (0.08*Error)+(0.0015*((Error-LastReqRot)/0.02));
+                rot= (0.05*Error)+(0.002*((Error-LastReqRot)/0.02));
                 LastReqRot = Error;
-                rot = Math.max(-0.7, Math.min(rot, 0.7));
+                rot = Math.max(-0.3, Math.min(rot, 0.3));
                 return true;
             }
             else {
@@ -519,7 +518,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             SmartDashboard.putString("Is ", "in Bumper Zone");
             Rot45 = (0.25*FinalError)+(0.0015*((FinalError-LastRot45)/0.02));
             LastRot45 = FinalError;
-            Rot45 = Math.max(-1,Math.min(Rot45,1));
+            Rot45 = Math.max(-0.6,Math.min(Rot45,0.6));
             return true;
         }
         else {

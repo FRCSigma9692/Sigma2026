@@ -23,37 +23,38 @@ public class Hopper extends SubsystemBase {
   SparkClosedLoopController closedLoopController;
   SparkMaxConfig configure = new SparkMaxConfig();
   RelativeEncoder hoppereEncoder;
+
   /** Creates a new Intake. */
   public Hopper() {
     hopper = new SparkMax(16, MotorType.kBrushless);
     hoppereEncoder = hopper.getEncoder();
     configure
-    .inverted(true)
-    .smartCurrentLimit(50)
-    .idleMode(IdleMode.kBrake);
+        .inverted(true)
+        .smartCurrentLimit(50)
+        .idleMode(IdleMode.kBrake);
     configure.encoder
-    .velocityConversionFactor(1)
-    .positionConversionFactor(1);
+        .velocityConversionFactor(1)
+        .positionConversionFactor(1);
     configure.closedLoop
-    .pid(0, 0, 0)
-    .velocityFF(0)
-    .outputRange(-0.8,0.8);
+        .pid(0, 0, 0)
+        .velocityFF(0)
+        .outputRange(-0.8, 0.8);
     hopper.configure(configure, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-  
+
   }
 
   @Override
   public void periodic() {
     pos = hoppereEncoder.getPosition();
     SmartDashboard.putNumber("Hopper position", hoppereEncoder.getPosition());
-    
+
     // This method will be called once per scheduler run
   }
-  public void runHopper(double pow){
-    if (pow<0 && pos < 0){
-        hopper.set(pow);
-    }
-    else {
+
+  public void runHopper(double pow) {
+    if (pow < 0 && pos < 0) {
+      hopper.set(0);
+    } else {
       hopper.set(pow);
     }
     SmartDashboard.updateValues();
