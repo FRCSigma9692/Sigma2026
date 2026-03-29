@@ -29,7 +29,7 @@ public class Hopper extends SubsystemBase {
     hopper = new SparkMax(16, MotorType.kBrushless);
     hoppereEncoder = hopper.getEncoder();
     configure
-        .inverted(true)
+        .inverted(false)
         .smartCurrentLimit(50)
         .idleMode(IdleMode.kBrake);
     configure.encoder
@@ -52,10 +52,10 @@ public class Hopper extends SubsystemBase {
   }
 
   public void runHopper(double pow) {
-    if (pow < 0 && pos < 0) {
-      hopper.set(0);
-    } else {
+    if (pow < 0 && pos > 0 || pow>0 && pos<44) {
       hopper.set(pow);
+    } else {
+      hopper.set(0);
     }
     SmartDashboard.updateValues();
   }

@@ -48,6 +48,12 @@ public class Intake extends SubsystemBase {
   public void StopIntake(){
     Lintake.set(0);
   }
+  public void runIntakeForHop(double speed){
+    if (speed>0){
+      Lintake.set(speed);
+    }
+   
+  }
   public double GetCurrentL(){
     return Lintake.getOutputCurrent();
   }

@@ -106,7 +106,7 @@
   },
   "goalEndState": {
     "velocity": 2.0,
-    "rotation": 85.0
+    "rotation": -80.5799157345722
   },
   "reversed": false,
   "folder": "NeutralZoneSide2",

@@ -64,32 +64,32 @@
     },
     {
       "anchor": {
-        "x": 11.439036144578314,
-        "y": 0.5927710843373495
+        "x": 13.045409638554215,
+        "y": 0.669265060240964
       },
       "prevControl": {
-        "x": 11.027842482629625,
-        "y": 0.520207496934641
+        "x": 12.634215976605526,
+        "y": 0.5967014728382555
       },
       "nextControl": {
-        "x": 11.685232034282798,
-        "y": 0.6362174178146108
+        "x": 13.2916055282587,
+        "y": 0.7127113937182253
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 12.925204819277107,
-        "y": 0.48349397590361487
+        "x": 14.127253012048193,
+        "y": 2.2974939759036137
       },
       "prevControl": {
-        "x": 12.578975394881287,
-        "y": 0.5205470043650401
+        "x": 14.06661910578911,
+        "y": 2.0549583508672806
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "2EndP2"
+      "linkedName": "ShootingSide2"
     }
   ],
   "rotationTargets": [],
@@ -124,9 +124,9 @@
         "x": 0.4,
         "y": 5.5
       },
-      "rotationOffset": 115.0,
+      "rotationOffset": -160.0,
       "minWaypointRelativePos": 3.089588377723973,
-      "maxWaypointRelativePos": 5.0,
+      "maxWaypointRelativePos": 4.116222760290555,
       "name": "Point Towards Zone"
     }
   ],
@@ -160,7 +160,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -90.0
+    "rotation": -41.268603000839626
   },
   "reversed": false,
   "folder": "NeutralZoneSide2",

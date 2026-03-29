@@ -27,30 +27,6 @@
           "data": {
             "name": "FeederTransfer"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ToDepot(ForCenter)"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Align"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "FeederTransfer"
-          }
         }
       ]
     }

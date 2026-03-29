@@ -33,24 +33,6 @@
           "data": {
             "pathName": "CollectAgainRamp"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "IntakeAgainRamp"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Align"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "FeederTransfer"
-          }
         }
       ]
     }

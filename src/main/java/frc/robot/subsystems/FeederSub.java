@@ -88,11 +88,11 @@ public class FeederSub extends SubsystemBase {
   }
 
   public void FeederNoPID(double pow) {
-    if (s4.getShooterRPM() >= 2650)
+    // if (s4.getShooterRPM() >= (s4.speed-56))
       FeederL.set(pow);
-    else {
-      FeederL.set(0);
-    }
+    // else {
+    //   FeederL.set(0);
+    // }
   }
 
   public void Stop() {

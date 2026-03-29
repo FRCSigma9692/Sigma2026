@@ -4,12 +4,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 
-public class ShooterCmd extends Command {
+public class ShooterCmd2 extends Command {
 
     private Shooter shooter;
     private double rpm;
 
-    public ShooterCmd(Shooter shooter, double rpm) {
+    public ShooterCmd2(Shooter shooter, double rpm) {
         this.shooter = shooter;
         this.rpm = rpm;
         addRequirements(shooter);
@@ -23,7 +23,7 @@ public class ShooterCmd extends Command {
 
     @Override
     public void execute() {
-        shooter.runShooterRPM();
+        shooter.runShooterRPMFixed7();
         SmartDashboard.putNumber("Shooter RPM Target", rpm);
     }
 

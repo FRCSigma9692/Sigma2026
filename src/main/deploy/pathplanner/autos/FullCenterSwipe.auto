@@ -7,13 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "P1-Collect1"
+            "pathName": "P1-COllect1swipe"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "P2-Intake1 Ramp"
+            "pathName": "CollectFullSwipe"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FeederTransfer"
           }
         },
         {
@@ -32,6 +44,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Side1Autos(Ramp)",
+  "folder": "Side1Autos(NoRamp)",
   "choreoAuto": false
 }

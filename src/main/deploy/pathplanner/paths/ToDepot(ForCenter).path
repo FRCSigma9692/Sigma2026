@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 15.5,
-        "y": 2.1445060240963856
+        "x": 15.602493975903613,
+        "y": 2.1335783132530115
       },
       "prevControl": {
-        "x": 15.684881193444447,
-        "y": 2.31278835920782
+        "x": 15.78737516934806,
+        "y": 2.301860648364446
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,6 +48,12 @@
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
+    {
+      "name": "FeederTransferOff",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
     {
       "name": "StartIntake",
       "waypointRelativePos": 0.964764267990076,
@@ -71,7 +77,7 @@
   "folder": "SourceDepot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 31.6075022462488
+    "rotation": 45.655
   },
   "useDefaultConstraints": true
 }

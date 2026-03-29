@@ -330,7 +330,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 yOdo = getState().Pose.getY();
                 calcdist = Math.sqrt((((HubX-xOdo) * (HubX-xOdo)) + ((HubY-yOdo) * (HubY-yOdo))));
                 
-                shooterspeed = mapRange(calcdist,2, 4, 0.42, 0.6);
+                shooterspeed = mapRange(calcdist,2, 4, 2838, 3405);
                 // double Error135 = 120-Heading;
                 // double Error_45 = -30-Heading;
                 // double Error_135 = -125-Heading;
@@ -597,6 +597,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         overrideRot  = null;
     }
     public double GetDistFromHub(){
+        if (calcdist>4){
+            return 4;
+        }
         return calcdist;
     }
    

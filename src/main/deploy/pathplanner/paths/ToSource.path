@@ -55,7 +55,7 @@
   "folder": "SourceDepot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 31.6075022462488
+    "rotation": 45.655
   },
   "useDefaultConstraints": true
 }

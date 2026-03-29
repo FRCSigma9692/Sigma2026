@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -17,7 +16,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 
 public class TransferSub extends SubsystemBase {
   private Shooter s4;
@@ -64,11 +62,11 @@ public class TransferSub extends SubsystemBase {
   }
 
   public void runShooterRPM(double rpm) {
-    if (s4.getShooterRPM() >= 2650) {
-      TransferL.set(rpm);
-    } else {
-      TransferL.set(0);
-    }
+    // if (s4.getShooterRPM() >= (s4.speed - 56)) {
+    TransferL.set(rpm);
+    // } else {
+    // TransferL.set(0);
+    // }
     // TransferL.set(rpm);
   }
 

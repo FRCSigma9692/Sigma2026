@@ -27,30 +27,6 @@
           "data": {
             "name": "FeederTransfer"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "CollectFullRampEndDepot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Align"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "FeederTransfer"
-          }
         }
       ]
     }

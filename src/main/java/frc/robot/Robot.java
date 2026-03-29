@@ -37,9 +37,11 @@ public class Robot extends TimedRobot {
     public Robot() {
         m_robotContainer = new RobotContainer();
     }
+    
 
     @Override
     public void robotPeriodic() {
+        
         m_robotContainer.field.setRobotPose(m_robotContainer.drivetrain.GetPose());
         Matchtime = DriverStation.getMatchTime();
         //SmartDashboard.putBoolean("Result Of Selection",m_robotContainer.drivetrain.wonAuto);
@@ -52,6 +54,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledInit() {
 
+       // m_robotContainer.drivetrain.runOnce(m_robotContainer.drivetrain::seedFieldCentric);
     }
 
     @Override

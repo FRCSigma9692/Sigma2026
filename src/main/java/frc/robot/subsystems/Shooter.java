@@ -122,7 +122,20 @@ public class Shooter extends SubsystemBase {
   }
 
   public void runShooterRPM() {
+    // shooterController.setReference(0.3, ControlType.kMAXMotionVelocityControl);
+    M1.set(speed);
+    SmartDashboard.putNumber("Set Speed", speed);
+  }
+
+  public void runShooterRPMFixed() {
+    // shooterController.setReference(0.3, ControlType.kMAXMotionVelocityControl);
     M1.set(0.55);
+    SmartDashboard.putNumber("Set Speed", speed);
+  }
+  
+  public void runShooterRPMFixed7() {
+    // shooterController.setReference(0.3, ControlType.kMAXMotionVelocityControl);
+    M1.set(0.7);
     SmartDashboard.putNumber("Set Speed", speed);
   }
 
