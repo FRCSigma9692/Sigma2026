@@ -138,7 +138,7 @@
   "folder": "NeutralZone",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 45.655
+    "rotation": 28.21735585472938
   },
   "useDefaultConstraints": true
 }

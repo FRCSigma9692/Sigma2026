@@ -3,73 +3,73 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 13.821277108433735,
-        "y": 4.013144578313253
+        "x": 14.138,
+        "y": 5.215
       },
       "prevControl": null,
       "nextControl": {
-        "x": 13.547432088190979,
-        "y": 5.038026311247979
-      },
-      "isLocked": false,
-      "linkedName": "ShootStart"
-    },
-    {
-      "anchor": {
-        "x": 12.826855421686746,
-        "y": 5.302614457831326
-      },
-      "prevControl": {
-        "x": 13.144226868751314,
-        "y": 5.256569669103868
-      },
-      "nextControl": {
-        "x": 11.612842814130595,
-        "y": 5.4787454694406375
+        "x": 14.31801223231587,
+        "y": 6.230076225555084
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 11.865216867469881,
-        "y": 5.44467469879518
+        "x": 13.290199714693294,
+        "y": 7.302011412268189
       },
       "prevControl": {
-        "x": 12.122869038620559,
-        "y": 5.3893965106208475
+        "x": 13.781110226430174,
+        "y": 7.028014847577837
       },
       "nextControl": {
-        "x": 10.64649306038759,
-        "y": 5.706146758741596
+        "x": 12.733837375178316,
+        "y": 7.6125392296718974
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 9.79987951807229,
-        "y": 5.674156626506024
+        "x": 11.49172610556348,
+        "y": 7.509029957203994
       },
       "prevControl": {
-        "x": 10.490619617291815,
-        "y": 5.919510824218824
+        "x": 11.874397125826867,
+        "y": 7.494498146307916
       },
       "nextControl": {
-        "x": 9.340404024577962,
-        "y": 5.510948726454509
+        "x": 10.469572039942939,
+        "y": 7.547845934379458
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.827313253012047,
-        "y": 4.7453012048192775
+        "x": 9.253338088445078,
+        "y": 7.030299572039943
       },
       "prevControl": {
-        "x": 8.945423817273172,
-        "y": 5.199271610107741
+        "x": 9.779045919070759,
+        "y": 7.360104359057438
+      },
+      "nextControl": {
+        "x": 8.823570190033298,
+        "y": 6.760683062744352
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.696975748930099,
+        "y": 5.309457917261056
+      },
+      "prevControl": {
+        "x": 8.798236015283171,
+        "y": 6.151491901219548
       },
       "nextControl": null,
       "isLocked": false,
@@ -98,9 +98,9 @@
         "x": 0.4,
         "y": 5.5
       },
-      "rotationOffset": 135.0,
-      "minWaypointRelativePos": 0.5,
-      "maxWaypointRelativePos": 2.25,
+      "rotationOffset": 70.0,
+      "minWaypointRelativePos": 2.408941485864558,
+      "maxWaypointRelativePos": 3.3767258382642873,
       "name": "Point Towards Zone"
     },
     {
@@ -108,16 +108,28 @@
         "x": 0.4,
         "y": 5.5
       },
-      "rotationOffset": 70.0,
-      "minWaypointRelativePos": 3.2585607940446684,
-      "maxWaypointRelativePos": 4.0,
+      "rotationOffset": 180.0,
+      "minWaypointRelativePos": 0.010519395134780942,
+      "maxWaypointRelativePos": 2.25,
       "name": "Point Towards Zone"
     }
   ],
   "eventMarkers": [
     {
+      "name": "FeederTransferOff",
+      "waypointRelativePos": 0.2735042735042738,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "StopShoot",
+      "waypointRelativePos": 0.3050624589086116,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
       "name": "StartIntake",
-      "waypointRelativePos": 3.0253101736972745,
+      "waypointRelativePos": 2.1459566074950542,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -132,13 +144,13 @@
   },
   "goalEndState": {
     "velocity": 2.0,
-    "rotation": -110.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "NeutralZone",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 40.419262741368506
   },
   "useDefaultConstraints": true
 }

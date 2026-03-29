@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.619686746987952,
-        "y": 6.8543493975903615
+        "x": 8.645221112696147,
+        "y": 5.257703281027104
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.230680960524122,
-        "y": 4.734707616576765
+        "x": 8.256215326232317,
+        "y": 3.1380615000135075
       },
       "isLocked": false,
       "linkedName": "EndP1"
@@ -176,7 +176,7 @@
   "folder": "NeutralZone",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -80.0
+    "rotation": -86.63353933657021
   },
   "useDefaultConstraints": true
 }
