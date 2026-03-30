@@ -31,45 +31,46 @@ public class Robot extends TimedRobot {
 
     /* log and replay timestamp and joystick data */
     private final HootAutoReplay m_timeAndJoystickReplay = new HootAutoReplay()
-        .withTimestampReplay()
-        .withJoystickReplay();
+            .withTimestampReplay()
+            .withJoystickReplay();
 
     public Robot() {
         m_robotContainer = new RobotContainer();
     }
-    
 
     @Override
     public void robotPeriodic() {
-        
+
         m_robotContainer.field.setRobotPose(m_robotContainer.drivetrain.GetPose());
         Matchtime = DriverStation.getMatchTime();
-        //SmartDashboard.putBoolean("Result Of Selection",m_robotContainer.drivetrain.wonAuto);
-         SmartDashboard.putNumber("MatchTime",DriverStation.getMatchTime());
-         SmartDashboard.putBoolean("Active Zone or No ", Allianceshift);
+        // SmartDashboard.putBoolean("Result Of
+        // Selection",m_robotContainer.drivetrain.wonAuto);
+        SmartDashboard.putNumber("MatchTime", DriverStation.getMatchTime());
+        SmartDashboard.putBoolean("Active Zone or No ", Allianceshift);
         m_timeAndJoystickReplay.update();
-        CommandScheduler.getInstance().run(); 
+        CommandScheduler.getInstance().run();
     }
 
     @Override
     public void disabledInit() {
 
-       // m_robotContainer.drivetrain.runOnce(m_robotContainer.drivetrain::seedFieldCentric);
+        // m_robotContainer.drivetrain.runOnce(m_robotContainer.drivetrain::seedFieldCentric);
     }
 
     @Override
     public void disabledPeriodic() {
         m_robotContainer.drivetrain.checkcase = 0;
         CommandScheduler.getInstance().cancelAll();
-        
+
     }
 
     @Override
-    public void disabledExit() {}
+    public void disabledExit() {
+    }
 
     @Override
     public void autonomousInit() {
-        
+        LimelightHelpers.setPipelineIndex("limelight-l", 0);
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
@@ -77,54 +78,58 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void autonomousPeriodic() {}
+    public void autonomousPeriodic() {
+        LimelightHelpers.setPipelineIndex("limelight-l", 0);
+        SmartDashboard.putNumber("LimelightPipelineIndex", LimelightHelpers.getCurrentPipelineIndex("limelight-l"));
+    }
 
     @Override
-    public void autonomousExit() {}
+    public void autonomousExit() {
+    }
 
     @Override
     public void teleopInit() {
+        LimelightHelpers.setPipelineIndex("limelight-l", 1);
 
         // m_robotContainer.shooter.NoPID(0);
         // m_robotContainer.transfer.runShooterRPM(0);
         // m_robotContainer.feeder.FeederNoPID(0);
-     
+
         CommandScheduler.getInstance().cancelAll();
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
         // LimelightHelpers.SetIMUMode("limelight-l", 1);
     }
-    
 
     @Override
     public void teleopPeriodic() {
-     if (m_robotContainer.drivetrain.wonAuto){
-            if ( Matchtime>= 130 &&(Matchtime<=130.00 && Matchtime>=105) || (Matchtime <= 80 && Matchtime >=55)){
-            Allianceshift = true;
-            testColor = new Color(0, 255, 0);
+        SmartDashboard.putNumber("LimelightPipelineIndex", LimelightHelpers.getCurrentPipelineIndex("limelight-l"));
+        if (m_robotContainer.drivetrain.wonAuto) {
+            if (Matchtime >= 130 && (Matchtime <= 130.00 && Matchtime >= 105) || (Matchtime <= 80 && Matchtime >= 55)) {
+                Allianceshift = true;
+                testColor = new Color(0, 255, 0);
+            } else {
+                Allianceshift = false;
+                testColor = new Color(255, 0, 0);
             }
-         else {
-            Allianceshift = false;
-            testColor = new Color(255, 0, 0);
-         }
         }
-             
-         if (!m_robotContainer.drivetrain.wonAuto){
-         if (Matchtime> 130 && (Matchtime<=105.00 && Matchtime>=80) || (Matchtime <= 55 && Matchtime >=30)){
-            Allianceshift = true;
-            testColor = new Color(0, 255, 0);
+
+        if (!m_robotContainer.drivetrain.wonAuto) {
+            if (Matchtime > 130 && (Matchtime <= 105.00 && Matchtime >= 80) || (Matchtime <= 55 && Matchtime >= 30)) {
+                Allianceshift = true;
+                testColor = new Color(0, 255, 0);
+            } else {
+                Allianceshift = false;
+                testColor = new Color(255, 0, 0);
             }
-         else {
-            Allianceshift = false;
-            testColor = new Color(255, 0, 0);
-         }
-        }        
-          SmartDashboard.putString("Alliance Shift", testColor.toString());
+        }
+        SmartDashboard.putString("Alliance Shift", testColor.toString());
     }
 
     @Override
-    public void teleopExit() {}
+    public void teleopExit() {
+    }
 
     @Override
     public void testInit() {
@@ -132,11 +137,14 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void testPeriodic() {}
+    public void testPeriodic() {
+    }
 
     @Override
-    public void testExit() {}
+    public void testExit() {
+    }
 
     @Override
-    public void simulationPeriodic() {}
+    public void simulationPeriodic() {
+    }
 }

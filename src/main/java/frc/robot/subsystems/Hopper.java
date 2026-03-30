@@ -52,7 +52,7 @@ public class Hopper extends SubsystemBase {
   }
 
   public void runHopper(double pow) {
-    if (pow < 0 && pos > 0 || pow>0 && pos<44) {
+    if (pow < 0 && pos > 0 || pow > 0 && pos < 44) {
       hopper.set(pow);
     } else {
       hopper.set(0);

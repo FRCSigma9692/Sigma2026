@@ -29,9 +29,8 @@ public class TransferSub extends SubsystemBase {
   public static double Kf = 0.000195;
   CommandSwerveDrivetrain commandSwerveDrivetrain;
 
-  public TransferSub(Shooter s4, CommandSwerveDrivetrain commandSwerveDrivetrain) {
-    this.commandSwerveDrivetrain = commandSwerveDrivetrain;
-    this.s4 = s4;
+  public TransferSub() {
+
     TransferL = new SparkMax(17, MotorType.kBrushless);
 
     TransferEncoder = TransferL.getEncoder();

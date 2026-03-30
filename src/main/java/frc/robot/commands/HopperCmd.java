@@ -5,33 +5,37 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.FeederSub;
-import frc.robot.subsystems.TransferSub;
+import frc.robot.subsystems.Hopper;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class FeederStop extends Command {
-  private FeederSub transfer;
-  /** Creates a new FeedingCmd. */
-  public FeederStop(FeederSub transfer) {
-    this.transfer = transfer;
-    addRequirements(transfer);
+public class HopperCmd extends Command {
+  /** Creates a new HopperCmd. */
+  private Hopper hopper;
+  private double speed;
+
+  /** Creates a new IntakCmd. */
+  public HopperCmd(Hopper hopper, double speed) {
+    this.hopper = hopper;
+    this.speed = speed;
+    addRequirements(hopper);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    transfer.Stop();
+    hopper.runHopper(speed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+
   }
 
   // Returns true when the command should end.

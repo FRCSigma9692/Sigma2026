@@ -27,15 +27,10 @@ public class FeederSub extends SubsystemBase {
   private final RelativeEncoder FeederEncoder;
   private final SparkClosedLoopController FeederController;
 
-  private Shooter s4;
-
-  CommandSwerveDrivetrain commandSwerveDrivetrain;
   SparkMaxConfig lConfig = new SparkMaxConfig();
 
   /** Creates a new Intake. */
-  public FeederSub(Shooter s4, CommandSwerveDrivetrain commandSwerveDrivetrain) {
-    this.commandSwerveDrivetrain = commandSwerveDrivetrain;
-    this.s4 = s4;
+  public FeederSub() {
     FeederL = new SparkMax(19, MotorType.kBrushless);
     FeederR = new SparkMax(20, MotorType.kBrushless);
     SparkMaxConfig rConfig = new SparkMaxConfig();
@@ -78,9 +73,9 @@ public class FeederSub extends SubsystemBase {
     // Stop();
     // }
 
-    SmartDashboard.putNumber("CUrrentShooter", s4.GetPow());
-    SmartDashboard.putNumber("SetShooter", s4.speed);
-    // This method will be called once per scheduler run
+    // SmartDashboard.putNumber("CUrrentShooter", s4.GetPow());
+    // SmartDashboard.putNumber("SetShooter", s4.speed);
+    // // This method will be called once per scheduler run
   }
 
   public void runFeeder(double vel) {

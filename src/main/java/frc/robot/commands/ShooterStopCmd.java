@@ -5,16 +5,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.FeederSub;
-import frc.robot.subsystems.TransferSub;
+import frc.robot.subsystems.Shooter;
+
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class FeederStop extends Command {
-  private FeederSub transfer;
-  /** Creates a new FeedingCmd. */
-  public FeederStop(FeederSub transfer) {
-    this.transfer = transfer;
-    addRequirements(transfer);
+public class ShooterStopCmd extends Command {
+
+  Shooter shooter;
+  /** Creates a new ShooterStopCmd. */
+  public ShooterStopCmd(Shooter shooter) {
+    this.shooter = shooter;
+    addRequirements(shooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -25,14 +26,12 @@ public class FeederStop extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    transfer.Stop();
+    shooter.Stop();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

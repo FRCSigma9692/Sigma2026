@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.generated.FieldConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.subsystems.LimelightHelpers.PoseEstimate;
 
@@ -42,20 +43,21 @@ import frc.robot.subsystems.LimelightHelpers.PoseEstimate;
  * https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/tuner-swerve/index.html
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
+    public double rot180;
     public double shooterspeed;
     public int checkcase = 0;
     public boolean wonAuto;
     double LensHeight = 13;
-    double goalHeight= 2.955;
+    double goalHeight = 2.955;
     double offsetAngleVertical;
     double distance;
-    double tx,ty;
+    double tx, ty;
     boolean DetectedFuel;
     Command followCommand = null;
     private Rotation2d overrideRot;
     public Command pathfindingCommand;
     public boolean pathDone;
-    //ShooterCalc shooterCalc;
+    // ShooterCalc shooterCalc;
     public boolean LimSeed = false;
     private static final double kSimLoopPeriod = 0.004; // 4 ms
     private Notifier m_simNotifier = null;
@@ -67,12 +69,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     boolean rejectUpdate2;
     public double ReqRot;
     public double FinalError;
-    public final double HubX= 11.935;
-    public final double HubY= 4.024;
+    public final double HubX =  FieldConstants.BlueHubX;  //11.935;   
+    public final double HubY = FieldConstants.BlueHubY;  // 4.024
     private final double BumpX1 = 14.2;
     private final double BumpX2 = 10.4;
     private final double BumpY1 = 4.80;
     private final double BumpY2 = 6.120;
+
     public double Rot45;
     public double LastRot45 = 0;
     public double Error45;
@@ -80,8 +83,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public double yOdo;
     public double rot;
     public double LastReqRot = 0;
+    public double LastError180 = 0;
     public double Heading;
     public double Error;
+    public double Error180;
     private CommandPS5Controller User1 = new CommandPS5Controller(0);
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -100,69 +105,66 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private boolean visionEnabled = true;
     private double autoStartTime = 0;
     boolean Alliances;
-    
 
     private final Field2d field = new Field2d();
-    
 
-    /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
+    /*
+     * SysId routine for characterizing translation. This is used to find PID gains
+     * for the drive motors.
+     */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null,        // Use default ramp rate (1 V/s)
-            Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
-            null,        // Use default timeout (10 s)
-            // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())
-        ),
-        new SysIdRoutine.Mechanism(
-            output -> setControl(m_translationCharacterization.withVolts(output)),
-            null,
-            this
-        )
-    );
+            new SysIdRoutine.Config(
+                    null, // Use default ramp rate (1 V/s)
+                    Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
+                    null, // Use default timeout (10 s)
+                    // Log state with SignalLogger class
+                    state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())),
+            new SysIdRoutine.Mechanism(
+                    output -> setControl(m_translationCharacterization.withVolts(output)),
+                    null,
+                    this));
 
-    /* SysId routine for characterizing steer. This is used to find PID gains for the steer motors. */
+    /*
+     * SysId routine for characterizing steer. This is used to find PID gains for
+     * the steer motors.
+     */
     private final SysIdRoutine m_sysIdRoutineSteer = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null,        // Use default ramp rate (1 V/s)
-            Volts.of(7), // Use dynamic voltage of 7 V
-            null,        // Use default timeout (10 s)
-            // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysIdSteer_State", state.toString())
-        ),
-        new SysIdRoutine.Mechanism(
-            volts -> setControl(m_steerCharacterization.withVolts(volts)),
-            null,
-            this
-        )
-    );
+            new SysIdRoutine.Config(
+                    null, // Use default ramp rate (1 V/s)
+                    Volts.of(7), // Use dynamic voltage of 7 V
+                    null, // Use default timeout (10 s)
+                    // Log state with SignalLogger class
+                    state -> SignalLogger.writeString("SysIdSteer_State", state.toString())),
+            new SysIdRoutine.Mechanism(
+                    volts -> setControl(m_steerCharacterization.withVolts(volts)),
+                    null,
+                    this));
 
     /*
      * SysId routine for characterizing rotation.
-     * This is used to find PID gains for the FieldCentricFacingAngle HeadingController.
-     * See the documentation of SwerveRequest.SysIdSwerveRotation for info on importing the log to SysId.
+     * This is used to find PID gains for the FieldCentricFacingAngle
+     * HeadingController.
+     * See the documentation of SwerveRequest.SysIdSwerveRotation for info on
+     * importing the log to SysId.
      */
     private final SysIdRoutine m_sysIdRoutineRotation = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            /* This is in radians per second², but SysId only supports "volts per second" */
-            Volts.of(Math.PI / 6).per(Second),
-            /* This is in radians per second, but SysId only supports "volts" */
-            Volts.of(Math.PI),
-            null, // Use default timeout (10 s)
-            // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysIdRotation_State", state.toString())
-        ),
-        new SysIdRoutine.Mechanism(
-            output -> {
-                /* output is actually radians per second, but SysId only supports "volts" */
-                setControl(m_rotationCharacterization.withRotationalRate(output.in(Volts)));
-                /* also log the requested output for SysId */
-                SignalLogger.writeDouble("Rotational_Rate", output.in(Volts));
-            },
-            null,
-            this
-        )
-    );
+            new SysIdRoutine.Config(
+                    /* This is in radians per second², but SysId only supports "volts per second" */
+                    Volts.of(Math.PI / 6).per(Second),
+                    /* This is in radians per second, but SysId only supports "volts" */
+                    Volts.of(Math.PI),
+                    null, // Use default timeout (10 s)
+                    // Log state with SignalLogger class
+                    state -> SignalLogger.writeString("SysIdRotation_State", state.toString())),
+            new SysIdRoutine.Mechanism(
+                    output -> {
+                        /* output is actually radians per second, but SysId only supports "volts" */
+                        setControl(m_rotationCharacterization.withRotationalRate(output.in(Volts)));
+                        /* also log the requested output for SysId */
+                        SignalLogger.writeDouble("Rotational_Rate", output.in(Volts));
+                    },
+                    null,
+                    this));
 
     /* The SysId routine to test */
     private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
@@ -170,17 +172,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      * <p>
-     * This constructs the underlying hardware devices, so users should not construct
-     * the devices themselves. If they need the devices, they can access them through
+     * This constructs the underlying hardware devices, so users should not
+     * construct
+     * the devices themselves. If they need the devices, they can access them
+     * through
      * getters in the classes.
      *
-     * @param drivetrainConstants   Drivetrain-wide constants for the swerve drive
-     * @param modules               Constants for each specific module
+     * @param drivetrainConstants Drivetrain-wide constants for the swerve drive
+     * @param modules             Constants for each specific module
      */
     public CommandSwerveDrivetrain(
-        SwerveDrivetrainConstants drivetrainConstants,
-        SwerveModuleConstants<?, ?, ?>... modules
-    ) {
+            SwerveDrivetrainConstants drivetrainConstants,
+            SwerveModuleConstants<?, ?, ?>... modules) {
 
         super(drivetrainConstants, modules);
         if (Utils.isSimulation()) {
@@ -189,12 +192,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         configureAutoBuilder();
     }
 
-
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      * <p>
-     * This constructs the underlying hardware devices, so users should not construct
-     * the devices themselves. If they need the devices, they can access them through
+     * This constructs the underlying hardware devices, so users should not
+     * construct
+     * the devices themselves. If they need the devices, they can access them
+     * through
      * getters in the classes.
      *
      * @param drivetrainConstants     Drivetrain-wide constants for the swerve drive
@@ -204,10 +208,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      * @param modules                 Constants for each specific module
      */
     public CommandSwerveDrivetrain(
-        SwerveDrivetrainConstants drivetrainConstants,
-        double odometryUpdateFrequency,
-        SwerveModuleConstants<?, ?, ?>... modules
-    ) {
+            SwerveDrivetrainConstants drivetrainConstants,
+            double odometryUpdateFrequency,
+            SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, odometryUpdateFrequency, modules);
         if (Utils.isSimulation()) {
             startSimThread();
@@ -218,37 +221,44 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
      * <p>
-     * This constructs the underlying hardware devices, so users should not construct
-     * the devices themselves. If they need the devices, they can access them through
+     * This constructs the underlying hardware devices, so users should not
+     * construct
+     * the devices themselves. If they need the devices, they can access them
+     * through
      * getters in the classes.
      *
-     * @param drivetrainConstants       Drivetrain-wide cyonstants for the swerve drive
+     * @param drivetrainConstants       Drivetrain-wide cyonstants for the swerve
+     *                                  drive
      * @param odometryUpdateFrequency   The frequency to run the odometry loop. If
-     *                                  unspecified or set to 0 Hz, this is 250 Hz on
+     *                                  unspecified or set to 0 Hz, this is 250 Hz
+     *                                  on
      *                                  CAN FD, and 100 Hz on CAN 2.0.
-     * @param odometryStandardDeviation The standard deviation for odometry calculation
-     *                                  in the form [x, y, theta]ᵀ, with units in meters
+     * @param odometryStandardDeviation The standard deviation for odometry
+     *                                  calculation
+     *                                  in the form [x, y, theta]ᵀ, with units in
+     *                                  meters
      *                                  and radians
-     * @param visionStandardDeviation   The standard deviation for vision calculation
-     *                                  in the form [x, y, theta]ᵀ, with units in meters
+     * @param visionStandardDeviation   The standard deviation for vision
+     *                                  calculation
+     *                                  in the form [x, y, theta]ᵀ, with units in
+     *                                  meters
      *                                  and radians
      * @param modules                   Constants for each specific module
      */
     public CommandSwerveDrivetrain(
-        SwerveDrivetrainConstants drivetrainConstants,
-        double odometryUpdateFrequency,
-        Matrix<N3, N1> odometryStandardDeviation,
-        Matrix<N3, N1> visionStandardDeviation,
-        SwerveModuleConstants<?, ?, ?>... modules
-    ) {
-        super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation, modules);
+            SwerveDrivetrainConstants drivetrainConstants,
+            double odometryUpdateFrequency,
+            Matrix<N3, N1> odometryStandardDeviation,
+            Matrix<N3, N1> visionStandardDeviation,
+            SwerveModuleConstants<?, ?, ?>... modules) {
+        super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation,
+                modules);
         if (Utils.isSimulation()) {
             startSimThread();
         }
 
         configureAutoBuilder();
     }
- 
 
     private void configureAutoBuilder() {
         try {
@@ -257,7 +267,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     () -> getState().Pose, // Supplier of current robot pose
                     this::resetPose, // Consumer for seeding pose against auto
                     () -> getState().Speeds,
-                     // Supplier of current robot speeds
+                    // Supplier of current robot speeds
                     // Consumer of ChassisSpeeds and feedforwards to drive the robot
                     (speeds, feedforwards) -> setControl(
                             m_pathApplyRobotSpeeds.withSpeeds(speeds)
@@ -273,7 +283,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     // case
                     () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue,
                     this // Subsystem for requirements
-                    
 
             );
         } catch (Exception ex) {
@@ -283,7 +292,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     /**
-     * Returns a command that applies the specified control request to this swerve drivetrain.
+     * Returns a command that applies the specified control request to this swerve
+     * drivetrain.
      *
      * @param request Function returning the request to apply
      * @return Command to run
@@ -313,140 +323,101 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return m_sysIdRoutineToApply.dynamic(direction);
     }
-   
-    
 
     @Override
-    
+
     public void periodic() {
-                LimelightHelpers.setPipelineIndex("limelight-l",1);  
-        
-        if (!BumperPos()){
-            Rot45=-User1.getRightX() * MaxAngularRate * 0.6;
+        // LimelightHelpers.setPipelineIndex("limelight-l", 1);
+
+        if (!BumperPos()) {
+            Rot45 = -User1.getRightX() * MaxAngularRate * 0.6;
         }
 
-                Heading = getState().Pose.getRotation().getDegrees();
-                xOdo = getState().Pose.getX();
-                yOdo = getState().Pose.getY();
-                calcdist = Math.sqrt((((HubX-xOdo) * (HubX-xOdo)) + ((HubY-yOdo) * (HubY-yOdo))));
-                
-                shooterspeed = mapRange(calcdist,2, 4, 2838, 3405);
-                // double Error135 = 120-Heading;
-                // double Error_45 = -30-Heading;
-                // double Error_135 = -125-Heading;
-                // Error45 = 30-Heading;
-                // if (Error45>0){
-                // Error45= (Error45+180)%360-180;
-                // }
-                // else {
-                //     Error45= (Error45-180)%360+180;
-                // }
-                // if (Error135>0){
-                // Error135= (Error135+180)%360-180;
-                // }
-                // else {
-                //     Error135= (Error135-180)%360+180;
-                // }
-                // if (Error_45>0){
-                // Error_45= (Error_45+180)%360-180;
-                // }
-                // else {
-                //     Error_45= (Error_45-180)%360+180;
-                // }
-                // if (Error_135>0){
-                // Error_135= (Error_135+180)%360-180;
-                // }
-                // else {
-                //     Error_135= (Error_135-180)%360+180;
-                // }
-                // if (Math.abs(Error45)<=Math.abs(Error135) && Math.abs(Error45)<=Math.abs(Error_45)&& Math.abs(Error45)<=Math.abs(Error_135)){
-                    
-                //     FinalError=Error45;
-                // }
-                // if (Math.abs(Error135)<=Math.abs(Error45) && Math.abs(Error135)<=Math.abs(Error_45)&& Math.abs(Error135)<=Math.abs(Error_135)){
-                //     FinalError=Error135;
-                // }
-                // if (Math.abs(Error_45)<=Math.abs(Error135) && Math.abs(Error_45)<=Math.abs(Error45)&& Math.abs(Error_45)<=Math.abs(Error_135)){
-                //     FinalError=Error_45;
-                // }
-                // if (Math.abs(Error_135)<=Math.abs(Error135) && Math.abs(Error_135)<=Math.abs(Error_45)&& Math.abs(Error_135)<=Math.abs(Error45)){
-                //     FinalError=Error_135;
-                // }
-                // if (FinalError>0){
-                // FinalError= (FinalError+180)%360-180;
-                // }
-                // else {
-                //     FinalError= (FinalError-180)%360+180;
-                // }
-                ReqRot = 180+ Math.toDegrees(Math.atan2((HubY-yOdo), (HubX- xOdo)));
-                Error = (ReqRot-Heading);
-                if (ReqRot>0){
-                    Error = (Error + 180) % 360 - 180;
-                }
-                else{
-                    Error = (Error - 180) % 360 + 180;
-                }
+        Heading = getState().Pose.getRotation().getDegrees();
+        xOdo = getState().Pose.getX();
+        yOdo = getState().Pose.getY();
+        calcdist = Math.sqrt((((HubX - xOdo) * (HubX - xOdo)) + ((HubY - yOdo) * (HubY - yOdo))));
 
-                if ((Math.abs(Error)>1)){         
-                rot= (0.08*Error)+(0.0015*((Error-LastReqRot)/0.02));
-                LastReqRot = Error;
-                rot = Math.max(-1, Math.min(rot, 1));}
-                else{
-                    rot=0;
-                }
+        shooterspeed = mapRange(calcdist, 2, 4, 2838, 3405);
 
-                
+        ReqRot = 180 + Math.toDegrees(Math.atan2((HubY - yOdo), (HubX - xOdo)));
+        Error = (ReqRot - Heading);
+        if (ReqRot > 0) {
+            Error = (Error + 180) % 360 - 180;
+        } else {
+            Error = (Error - 180) % 360 + 180;
+        }
+        Error180 = (0 - Heading);
+
+        if ((Math.abs(Error) > 1)) {
+            rot = (0.08 * Error) + (0.0015 * ((Error - LastReqRot) / 0.02));
+            LastReqRot = Error;
+            rot = Math.max(-1, Math.min(rot, 1));
+        } else {
+            rot = 0;
+        }
+        if ((Math.abs(Error180) > 1)) {
+            rot180 = (0.08 * Error180) + (0.0015 * ((Error180 - LastError180) / 0.02));
+            LastError180 = Error180;
+            rot180 = (Math.max(-1, Math.min(rot180, 1)));
+
+        } else {
+            rot180 = 0;
+        }
+
         /*
          * Periodically try to apply the operator perspective.
-         * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
-         * This allows us to correct the perspective in case the robot code restarts mid-match.
-         * Otherwise, only check and apply the operator perspective if the DS is disabled.
-         * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
+         * If we haven't applied the operator perspective before, then we should apply
+         * it regardless of DS state.
+         * This allows us to correct the perspective in case the robot code restarts
+         * mid-match.
+         * Otherwise, only check and apply the operator perspective if the DS is
+         * disabled.
+         * This ensures driving behavior doesn't change until an explicit disable event
+         * occurs during testing.
          */
-        
 
-        LimelightHelpers.SetRobotOrientation("limelight-l", GetHeading(), 0,0,0,0,0);
-        
+        LimelightHelpers.SetRobotOrientation("limelight-l", GetHeading(), 0, 0, 0, 0, 0);
+
         // LimelightHelpers.SetIMUAssistAlpha("limelight-l", 0.001);
-        //LimelightHelpers.SetIMUMode("limelight-l", 0);
-        //LimelightHelpers.SetIMUMode("limelight-ll", 0);
+        // LimelightHelpers.SetIMUMode("limelight-l", 0);
+        // LimelightHelpers.SetIMUMode("limelight-ll", 0);
         // LimelightHelpers.setPipelineIndex("limelight-ll",0);
         // LimelightHelpers.SetIMUAssistAlpha("limelight-ll", 0.001);
-        
-        //LimelightHelpers.SetRobotOrientation("limelight-ll", getState().Pose.getRotation().getDegrees(), 0,0,0,0,0);
 
-        //lim2mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-ll");
+        // LimelightHelpers.SetRobotOrientation("limelight-ll",
+        // getState().Pose.getRotation().getDegrees(), 0,0,0,0,0);
+
+        // lim2mt2 =
+        // LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-ll");
         mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-l");
-        
+
         rejectUpdate = false;
 
-
         // ✅ 4. Normal rejection rules (only used BEFORE auto, or in teleop)
-        if (mt2 == null || mt2.tagCount == 0){
+        if (mt2 == null || mt2.tagCount == 0) {
             rejectUpdate = true;
         }
-        //  if (lim2mt2.tagCount == 0)
-        //      rejectUpdate2 = true;
+        // if (lim2mt2.tagCount == 0)
+        // rejectUpdate2 = true;
 
-
-        if (Math.abs(getPigeon2().getAngularVelocityZDevice().getValueAsDouble()) > 720){
-           rejectUpdate = true;
+        if (Math.abs(getPigeon2().getAngularVelocityZDevice().getValueAsDouble()) > 720) {
+            rejectUpdate = true;
         }
-           //rejectUpdate2 = true;
+        // rejectUpdate2 = true;
 
         // 5. Apply MT2 once vision is enabled
-   
-            // We trust X/Y but ignore 
-            if (!rejectUpdate){
+
+        // We trust X/Y but ignore
+        if (!rejectUpdate) {
             setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
             addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
-            }
+        }
 
-        
         // ✅ 6. Dashboard
-      ///  double x = getState().Pose.getX();
-      //  x = mt2.pose.getX();
-      //pathDone = false;
+        /// double x = getState().Pose.getX();
+        // x = mt2.pose.getX();
+        // pathDone = false;
         SmartDashboard.putNumber("Vision X", (mt2 != null) ? mt2.pose.getX() : -99);
         SmartDashboard.putNumber("Vision Y", (mt2 != null) ? mt2.pose.getY() : -99);
 
@@ -454,14 +425,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("Robot Y", getState().Pose.getY());
         SmartDashboard.putNumber("Heading", GetHeading());
         SmartDashboard.putNumber("Velocity", getState().Speeds.vxMetersPerSecond);
-        SmartDashboard.putNumber("Degrees Required",ReqRot);
+        SmartDashboard.putNumber("Degrees Required", ReqRot);
         SmartDashboard.putBoolean("Is in Zone", BumperPos());
-        SmartDashboard.putNumber("Error",Error);
+        SmartDashboard.putNumber("Error", Error);
         SmartDashboard.putNumber("ErrorFor45", FinalError);
-        SmartDashboard.putNumber("Dist",calcdist);
+        SmartDashboard.putNumber("Dist", calcdist);
         SmartDashboard.putNumber("LimelightTags", lim2mt2.tagCount);
         SmartDashboard.putBoolean("Lim2mt2", rejectUpdate2);
-        //SmartDashboard.putNumber("LimelightYaw",GetLimHeading());
+        // SmartDashboard.putNumber("LimelightYaw",GetLimHeading());
         SmartDashboard.putBoolean("LimelightSeeding", LimSeed);
         SmartDashboard.putBoolean("Reject Update Lim1", rejectUpdate);
         SmartDashboard.putBoolean("Reject Update Lim2", rejectUpdate2);
@@ -474,15 +445,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("CheckCase", checkcase);
         SmartDashboard.putBoolean("Works", Alliances);
         SmartDashboard.putNumber("Shooter Speed", shooterspeed);
-    
 
-        
-        //SmartDashboard.putData("null", field);
-        //  SmartDashboard.putNumber("Best Velocity", shooterCalc.bestVelocity);
-        //         SmartDashboard.putNumber("Best Angle", shooterCalc.bestAngle);
-        //         SmartDashboard.putNumber("Best RPM", shooterCalc.bestVelocity*60/Math.PI*4);
-
-        
+        // SmartDashboard.putData("null", field);
+        // SmartDashboard.putNumber("Best Velocity", shooterCalc.bestVelocity);
+        // SmartDashboard.putNumber("Best Angle", shooterCalc.bestAngle);
+        // SmartDashboard.putNumber("Best RPM", shooterCalc.bestVelocity*60/Math.PI*4);
 
         // ✅ Operator Perspective logic
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
@@ -494,72 +461,92 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             });
         }
     }
-    public double BotHeading()  {
+
+    public double BotHeading() {
         return getState().Pose.getRotation().getDegrees();
     }
-    public boolean AutoAllign(){
-          if ((Math.abs(Error)>1)){             
-                rot= (0.05*Error)+(0.002*((Error-LastReqRot)/0.02));
-                LastReqRot = Error;
-                rot = Math.max(-0.3, Math.min(rot, 0.3));
-                return true;
-            }
-            else {
-                return false;
-            }
-                    
-    }
-    public boolean BumperPos(){
-    //private final double BumpX1 = 14.2;
-    //private final double BumpX2 = 11.294;
-    //private final double BumpY1 = 4.970;
-    //private final double BumpY2 = 6.120;
-        if (xOdo<=BumpX1 && xOdo>=BumpX2 && yOdo>= BumpY1 && yOdo<=BumpY2){
-            SmartDashboard.putString("Is ", "in Bumper Zone");
-            Rot45 = (0.25*FinalError)+(0.0015*((FinalError-LastRot45)/0.02));
-            LastRot45 = FinalError;
-            Rot45 = Math.max(-0.6,Math.min(Rot45,0.6));
+
+    public boolean AutoAllign() {
+        if ((Math.abs(Error) > 1)) {
+            rot = (0.05 * Error) + (0.002 * ((Error - LastReqRot) / 0.02));
+            LastReqRot = Error;
+            rot = Math.max(-0.3, Math.min(rot, 0.3));
             return true;
+        } else {
+            return false;
         }
-        else {
+
+    }
+
+    public boolean PassingAlign() {
+        if ((Math.abs(Error180) > 1)) {
+            rot180 = (0.05 * Error180) + (0.002 * ((Error180 - LastError180) / 0.02));
+            LastError180 = Error180;
+            rot180 = (Math.max(-0.3, Math.min(rot180, 0.3)));
+            return true;
+
+        } else {
+            return false;
+        }
+
+    }
+
+    public boolean BumperPos() {
+        // private final double BumpX1 = 14.2;
+        // private final double BumpX2 = 11.294;
+        // private final double BumpY1 = 4.970;
+        // private final double BumpY2 = 6.120;
+        if (xOdo <= BumpX1 && xOdo >= BumpX2 && yOdo >= BumpY1 && yOdo <= BumpY2) {
+            SmartDashboard.putString("Is ", "in Bumper Zone");
+            Rot45 = (0.25 * FinalError) + (0.0015 * ((FinalError - LastRot45) / 0.02));
+            LastRot45 = FinalError;
+            Rot45 = Math.max(-0.6, Math.min(Rot45, 0.6));
+            return true;
+        } else {
             return false;
         }
     }
-    // public Command pathFind(double x, double y, double Deg, BooleanSupplier override){
-    //     PathConstraints constraints = new PathConstraints(1,1, Math.toRadians(500), Math.toRadians(600));
-    //     pathDone = true;
-    //     pathfindingCommand = AutoBuilder.pathfindToPose(new Pose2d(x,y, Rotation2d.fromDegrees(Deg)), constraints, 0);
-    //     // Pathfinding.setGoalPosition(new Translation2d(x,y));
-    //     // PathPlannerPath generatePath = Pathfinding.getCurrentPath(constraints, new GoalEndState(0.0, Rotation2d.fromDegrees(Deg)));
-    //     // return Commands.waitUntil(()->Pathfinding.isNewPathAvailable()).andThen(
-    //     //     Commands.runOnce(()->{
-    //     //     generatePath = Pathfinding.getCurrentPath(constraints, new GoalEndState(0.0, Rotation2d.fromDegrees(Deg)));
-    //     //     })
-    //     return pathfindingCommand;
+
+    // public Command pathFind(double x, double y, double Deg, BooleanSupplier
+    // override){
+    // PathConstraints constraints = new PathConstraints(1,1, Math.toRadians(500),
+    // Math.toRadians(600));
+    // pathDone = true;
+    // pathfindingCommand = AutoBuilder.pathfindToPose(new Pose2d(x,y,
+    // Rotation2d.fromDegrees(Deg)), constraints, 0);
+    // // Pathfinding.setGoalPosition(new Translation2d(x,y));
+    // // PathPlannerPath generatePath = Pathfinding.getCurrentPath(constraints, new
+    // GoalEndState(0.0, Rotation2d.fromDegrees(Deg)));
+    // // return Commands.waitUntil(()->Pathfinding.isNewPathAvailable()).andThen(
+    // // Commands.runOnce(()->{
+    // // generatePath = Pathfinding.getCurrentPath(constraints, new
+    // GoalEndState(0.0, Rotation2d.fromDegrees(Deg)));
+    // // })
+    // return pathfindingCommand;
     // }
-     public Command CancelCommand(){
+    public Command CancelCommand() {
         pathfindingCommand = null;
         return pathfindingCommand;
     }
-    public void AutoWon(){
-        if (checkcase==0){
-        wonAuto = true;
-        checkcase++;
-        }
-        else {
+
+    public void AutoWon() {
+        if (checkcase == 0) {
+            wonAuto = true;
+            checkcase++;
+        } else {
 
         }
     }
-    public void AutoLost(){
-        if (checkcase==0){
-        wonAuto = false;
-        checkcase++;
-        }
-        else {
+
+    public void AutoLost() {
+        if (checkcase == 0) {
+            wonAuto = false;
+            checkcase++;
+        } else {
 
         }
     }
-    
+
     private void startSimThread() {
         m_lastSimTime = Utils.getCurrentTimeSeconds();
 
@@ -574,95 +561,107 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         });
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
-    public double getXPose(){
+
+    public double getXPose() {
         return getState().Pose.getX();
     }
-    public double getYPose(){
+
+    public double getYPose() {
         return getState().Pose.getY();
     }
-    public double GetHeading(){
+
+    public double GetHeading() {
         return getState().Pose.getRotation().getDegrees();
     }
-    public Pose2d GetPose(){
-        return getState().Pose;
-    } 
 
-    public void SetNSeed(){
+    public Pose2d GetPose() {
+        return getState().Pose;
+    }
+
+    public void SetNSeed() {
         LimSeed = true;
     }
-    public void rotOverride(double deg){
-        overrideRot  = Rotation2d.fromDegrees(deg);
+
+    public void rotOverride(double deg) {
+        overrideRot = Rotation2d.fromDegrees(deg);
     }
-     public void clearOverride(double deg){
-        overrideRot  = null;
+
+    public void clearOverride(double deg) {
+        overrideRot = null;
     }
-    public double GetDistFromHub(){
-        if (calcdist>4){
+
+    public double GetDistFromHub() {
+        if (calcdist > 4) {
             return 4;
         }
         return calcdist;
     }
-   
-    
+
     /**
-     * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
+     * Adds a vision measurement to the Kalman Filter. This will correct the
+     * odometry pose estimate
      * while still accounting for measurement noise.
      *
-     * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
-     * @param timestampSeconds The timestamp of the vision measurement in seconds.
+     * @param visionRobotPoseMeters The pose of the robot as measured by the vision
+     *                              camera.
+     * @param timestampSeconds      The timestamp of the vision measurement in
+     *                              seconds.
      */
     @Override
     public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds));
     }
-   
-
 
     /**
-     * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
+     * Adds a vision measurement to the Kalman Filter. This will correct the
+     * odometry pose estimate
      * while still accounting for measurement noise.
      * <p>
      * Note that the vision measurement standard deviations passed into this method
      * will continue to apply to future measurements until a subsequent call to
      * {@link #setVisionMeasurementStdDevs(Matrix)} or this method.
      *
-     * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
-     * @param timestampSeconds The timestamp of the vision measurement in seconds.
-     * @param visionMeasurementStdDevs Standard deviations of the vision pose measurement
-     *     in the form [x, y, theta]ᵀ, with units in meters and radians.
+     * @param visionRobotPoseMeters    The pose of the robot as measured by the
+     *                                 vision camera.
+     * @param timestampSeconds         The timestamp of the vision measurement in
+     *                                 seconds.
+     * @param visionMeasurementStdDevs Standard deviations of the vision pose
+     *                                 measurement
+     *                                 in the form [x, y, theta]ᵀ, with units in
+     *                                 meters and radians.
      */
     @Override
     public void addVisionMeasurement(
-        Pose2d visionRobotPoseMeters,
-        double timestampSeconds,
-        Matrix<N3, N1> visionMeasurementStdDevs
-    ) {
-        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
+            Pose2d visionRobotPoseMeters,
+            double timestampSeconds,
+            Matrix<N3, N1> visionMeasurementStdDevs) {
+        super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds),
+                visionMeasurementStdDevs);
     }
 
     /**
      * Return the pose at a given timestamp, if the buffer is not empty.
      *
      * @param timestampSeconds The timestamp of the pose in seconds.
-     * @return The pose at the given timestamp (or Optional.empty() if the buffer is empty).
+     * @return The pose at the given timestamp (or Optional.empty() if the buffer is
+     *         empty).
      */
     @Override
     public Optional<Pose2d> samplePoseAt(double timestampSeconds) {
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
     }
 
-   
-      public  double mapRange(double value, double inputStart, double inputEnd, double outputStart, double outputEnd) {
-    // Avoid division by zero if the input range is zero
-    if (inputStart == inputEnd) {
-        throw new IllegalArgumentException("Input range cannot be zero.");
+    public double mapRange(double value, double inputStart, double inputEnd, double outputStart, double outputEnd) {
+        // Avoid division by zero if the input range is zero
+        if (inputStart == inputEnd) {
+            throw new IllegalArgumentException("Input range cannot be zero.");
+        }
+
+        // Calculate the proportion of the value within the input range
+        double proportion = (value - inputStart) / (inputEnd - inputStart);
+
+        // Apply the proportion to the output range and shift by the output start
+        return outputStart + proportion * (outputEnd - outputStart);
     }
-    
-    // Calculate the proportion of the value within the input range
-    double proportion = (value - inputStart) / (inputEnd - inputStart);
-    
-    // Apply the proportion to the output range and shift by the output start
-    return outputStart + proportion * (outputEnd - outputStart);
-}
 
 }

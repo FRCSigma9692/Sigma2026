@@ -3,19 +3,17 @@
   "robotLength": 0.904,
   "holonomicMode": true,
   "pathFolders": [
-    "AlignTest",
-    "NeutralZone",
-    "NeutralZoneSide2",
-    "SourceDepot"
+    "LeftBluePath",
+    "RightBluePaths",
+    "LeftRedPath",
+    "RightRedPaths"
   ],
   "autoFolders": [
-    "Side2Autos(Ramp)",
-    "Side1Autos(NoRamp)",
-    "Side1Autos(Ramp)",
-    "Side2Autos(NoRamp)"
+    "PreShoot",
+    "Testing"
   ],
-  "defaultMaxVel": 5.0,
-  "defaultMaxAccel": 7.0,
+  "defaultMaxVel": 4.0,
+  "defaultMaxAccel": 5.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,

@@ -23,7 +23,7 @@ public class ShooterCmd2 extends Command {
 
     @Override
     public void execute() {
-        shooter.runShooterRPMFixed7();
+        shooter.runShooterRPMFixed7(rpm);
         SmartDashboard.putNumber("Shooter RPM Target", rpm);
     }
 
