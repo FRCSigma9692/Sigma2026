@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5,
-        "y": 4.0
+        "x": 7.95947218259629,
+        "y": 2.514707560627676
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4605420827389435,
-        "y": 3.692125534950071
+        "x": 7.920014265335233,
+        "y": 2.2068330955777467
       },
       "isLocked": false,
       "linkedName": "RPEnd"
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -178.53119928561424
+    "rotation": -135.0
   },
   "useDefaultConstraints": false
 }

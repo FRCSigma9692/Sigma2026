@@ -38,8 +38,8 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Left IntakeCurrent", GetCurrentL());
-    SmartDashboard.putNumber("Right IntakeCurrent", GetCurrentR());
+    // SmartDashboard.putNumber("Left IntakeCurrent", GetCurrentL());
+    // SmartDashboard.putNumber("Right IntakeCurrent", GetCurrentR());
     // This method will be called once per scheduler run
   }
   public void runIntake(double speed){

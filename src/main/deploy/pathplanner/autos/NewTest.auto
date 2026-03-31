@@ -7,19 +7,86 @@
         {
           "type": "named",
           "data": {
+            "name": "Transfer"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Shooter"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 1.0
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShooterStop"
+            "name": "Feeder2"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Feeder"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "FeederStop"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShooterStop"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Feeder2Stop"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "TransferStop"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "HopperOut"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeStop"
+                }
+              }
+            ]
           }
         }
       ]

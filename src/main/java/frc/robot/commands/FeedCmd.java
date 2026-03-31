@@ -39,12 +39,12 @@ public class FeedCmd extends Command {
   @Override
   public void end(boolean interrupted) {
     // pusher.Stop();
-    feed.Stop();
+    // // feed.FeederNoPID(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

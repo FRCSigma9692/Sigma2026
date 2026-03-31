@@ -58,17 +58,17 @@ public class TransferSub extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Left Transfer Current", TransferL.getOutputCurrent());
+    //SmartDashboard.putNumber("Left Transfer Current", TransferL.getOutputCurrent());
 
   }
 
   public void runShooterRPM(double rpm) {
-    if (shooter.getShooterRPM() >= 2800) {
+    // if (shooter.getShooterRPM() >= 2800) {
       TransferL.set(rpm);
-    } else {
-      TransferL.set(0);
-    }
-    TransferL.set(rpm);
+    // } else {
+    //   TransferL.set(0);
+    // }
+    // TransferL.set(rpm);
   }
 
   /** Stop shooter */

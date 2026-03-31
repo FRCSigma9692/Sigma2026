@@ -31,10 +31,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.Feed2Cmd;
 import frc.robot.commands.FeedCmd;
-import frc.robot.commands.FeedStopCmd;
+import frc.robot.commands.FeedStop2;
 import frc.robot.commands.FeederStop;
 import frc.robot.commands.HopperCmd;
-import frc.robot.commands.HopperStopCmd;
 import frc.robot.commands.IntakCmd;
 import frc.robot.commands.IntakStopCmd;
 import frc.robot.commands.ShooterCmd;
@@ -56,7 +55,7 @@ import frc.robot.subsystems.Shooter;
 public class RobotContainer {
 
         public double AlignmentSpeed = 0.25;
-        public double IntakeRobotSpeed = 0.3;
+        public double IntakeRobotSpeed = 1;
         public double TransferRPM = 0.9;
         public double FeederRPM = 3100;
         public double rpm = 2600;
@@ -89,6 +88,7 @@ public class RobotContainer {
         private final CommandXboxController joystick = new CommandXboxController(1);
         public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
+
         public Hopper hopper = new Hopper();
         public Shooter shooter = new Shooter(drivetrain);
         private Intake intake = new Intake();
@@ -106,13 +106,23 @@ public class RobotContainer {
         public Field2d field = new Field2d();
         // private CheckSparkFlex cs= new CheckSparkFlex();
         private final SendableChooser<Command> autoChooser;
-
         public RobotContainer() {
 
+                // NamedCommands.registerCommand(
+                //                 "Shooter3Sec",
+                //                 Commands.sequence(
+                //                                 Commands.runOnce(() -> System.out.println("Shooter3Sec START")),
+                //                                 Commands.run(() -> shooter.runShooterRPMFixed7(2950), shooter)
+                //                                                 .withTimeout(3.0),
+                //                                 Commands.runOnce(() -> {
+                //                                         shooter.Stop();
+                //                                         System.out.println("Shooter3Sec END");
+                //                                 }, shooter)));
+                                                
                 NamedCommands.registerCommand("HopperOut", new HopperCmd(hopper, 0.3));
 
                 NamedCommands.registerCommand("Shooter", new ShooterCmd(shooter, 2950)); // make 2950
-                System.out.println("Shooter Registered");
+                //System.out.println("Shooter Registered");
 
                 NamedCommands.registerCommand("ShooterStop", new ShooterStopCmd(shooter));
 
@@ -123,14 +133,14 @@ public class RobotContainer {
                 NamedCommands.registerCommand("TransferStop", new TransferStopCmd(transfer));
 
                 NamedCommands.registerCommand("Feeder", new FeedCmd(feeder, 0.8));
-                NamedCommands.registerCommand("FeederStop", new FeedStopCmd(feeder));
+                NamedCommands.registerCommand("FeederStop", new FeederStop(feeder));
                 NamedCommands.registerCommand("Feeder2", new Feed2Cmd(feeder2, -0.8));
-                NamedCommands.registerCommand("Feeder2Stop", new InstantCommand(() -> feeder2.FeederNoPID(0), feeder2));
+                NamedCommands.registerCommand("Feeder2Stop", new FeedStop2(feeder2));
                 // NamedCommands.registerCommand("Feeder2Stop", new Feed2Cmd(feeder2, 0));
 
                 SmartDashboard.putData("Field", field);
 
-                autoChooser = AutoBuilder.buildAutoChooser("AutoChooser");
+                autoChooser = AutoBuilder.buildAutoChooser("BallLost");
 
                 SmartDashboard.putData("Auto Mode", autoChooser);
                 configureBindings();
@@ -177,7 +187,7 @@ public class RobotContainer {
                                 drivetrain.applyRequest(() -> idle).ignoringDisable(true));
 
                 joystick.leftTrigger(0.7).whileTrue(
-                                Commands.run(() -> new ShooterCmd(shooter, FeederRPM)));
+                                new ShooterCmd(shooter, FeederRPM));
                 joystick.b().whileTrue(new ShooterCmd3(shooter, 0.7));
 
                 joystick.rightTrigger(0.5).whileTrue(new ShooterCmd2(shooter, 2950));
@@ -189,20 +199,20 @@ public class RobotContainer {
                                                                                 * 0.5),
                                                 hopper));
                 // ----------------
-                // transfer.setDefaultCommand(new RunCommand(
-                // () -> transfer.runShooterRPM(MathUtil.applyDeadband(-joystick.getLeftY(),
-                // 0.1) * .7),
-                // transfer));
+                transfer.setDefaultCommand(new RunCommand(
+                                () -> transfer.runShooterRPM(MathUtil.applyDeadband(-joystick.getLeftY(),
+                                                0.1) * .7),
+                                transfer));
 
-                // feeder.setDefaultCommand(new RunCommand(
-                // () -> feeder.FeederNoPID(MathUtil.applyDeadband(-joystick.getLeftY(), 0.1) *
-                // 0.8),
-                // feeder));
+                feeder.setDefaultCommand(new RunCommand(
+                                () -> feeder.FeederNoPID(MathUtil.applyDeadband(-joystick.getLeftY(), 0.1) *
+                                                0.8),
+                                feeder));
 
-                // feeder2.setDefaultCommand(new RunCommand(
-                // () -> feeder2.FeederNoPID(MathUtil.applyDeadband(-joystick.getLeftY(), 0.1) *
-                // -0.8),
-                // feeder2));
+                feeder2.setDefaultCommand(new RunCommand(
+                                () -> feeder2.FeederNoPID(MathUtil.applyDeadband(-joystick.getLeftY(), 0.1) *
+                                                -0.8),
+                                feeder2));
                 // --------------------
                 // //Transfer -------------------
                 joystick.povUp().whileTrue(
@@ -222,15 +232,22 @@ public class RobotContainer {
                                                 .withVelocityY(-User1.getLeftX() * MaxSpeed * AlignmentSpeed) // Drive
 
                                                 .withRotationalRate(drivetrain.rot180 * MaxAngularRate * speed)));
+                User1.R2().whileTrue(
+                                drivetrain.applyRequest(() -> drive
+                                                .withVelocityX(-User1.getLeftY() * MaxSpeed * 0.4) // forward
+                                                .withVelocityY(-User1.getLeftX() * MaxSpeed * 0.4) // Drive
+
+                                                .withRotationalRate(-User1.getRightX() * MaxAngularRate * speed)));
+                
 
                 // Intake -----------------------
                 joystick.leftBumper().onTrue(
                                 new ParallelCommandGroup(
                                                 drivetrain.applyRequest(() -> drive
                                                                 .withVelocityX(-User1.getLeftY() * MaxSpeed
-                                                                                * IntakeRobotSpeed) // forward
+                                                                                * IntakeRobotSpeed * speed) // forward
                                                                 .withVelocityY(-User1.getLeftX() * MaxSpeed
-                                                                                * IntakeRobotSpeed) // Drive
+                                                                                * IntakeRobotSpeed *speed) // Drive
                                                                 .withRotationalRate(-User1.getRightX() * MaxAngularRate
                                                                                 * speed)),
 

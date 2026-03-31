@@ -5,15 +5,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.FeederSub;
+import frc.robot.subsystems.Feed2;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class FeedStopCmd extends Command {
+public class FeedStop2 extends Command {
 
-  FeederSub feeder;
+  Feed2 feeder;
 
   /** Creates a new FeedStopCmd. */
-  public FeedStopCmd(FeederSub feeder) {
+  public FeedStop2(Feed2 feeder) {
     this.feeder = feeder;
     addRequirements(feeder);
     // Use addRequirements() here to declare subsystem dependencies.

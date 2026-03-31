@@ -68,7 +68,7 @@ public class Feed2 extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Left Pusher Current", GetCurrentL());
+    //SmartDashboard.putNumber("Left Pusher Current", GetCurrentL());
     // SmartDashboard.putNumber("Right Pusher Current",GetCurrentR());
     // SmartDashboard.putNumber("AppliedOutputFeeder",FeederL.getAppliedOutput());
     // if(s4.GetPow()>=s4.speed-0.005){
@@ -86,11 +86,11 @@ public class Feed2 extends SubsystemBase {
   }
 
   public void FeederNoPID(double pow) {
-    if (s4.getShooterRPM() >= 2800)
+    // if (s4.getShooterRPM() >= 2800)
       Feeder.set(pow);
-    else {
-      Feeder.set(0);
-    }
+    // else {
+    //   Feeder.set(0);
+    // }
   }
 
   public void Stop() {

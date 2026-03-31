@@ -5,59 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "race",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "RedTest"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shooter"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Transfer"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Feeder"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Feeder2"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 3.0
-                }
-              }
-            ]
+            "pathName": "RedTest"
           }
         }
       ]
