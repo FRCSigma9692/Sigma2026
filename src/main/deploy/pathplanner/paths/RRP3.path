@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.0,
-        "y": 2.5
+        "x": 2.5,
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.974465634291803,
-        "y": 1.5704898509874008
+        "x": 2.4744656342918034,
+        "y": 3.070489850987401
       },
       "isLocked": false,
       "linkedName": "RPEnd"
@@ -59,7 +59,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
+    "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -73,7 +73,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -135.0
+    "rotation": -178.53119928561424
   },
   "useDefaultConstraints": true
 }

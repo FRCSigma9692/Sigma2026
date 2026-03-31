@@ -36,10 +36,10 @@ public class Shooter extends SubsystemBase {
   public double StartingRPM = 2000;
   public double Poutput;
   public double currenttime;
-  public static double Kp = 0.001; // 0.00055 //0.00072
-  public static double Ki = 0;// 1e-7;//0 // 1e-9
-  public static double Kd = 0.0007;// 0.011; // 0.0007
-  public static double Kf = 0.00025; // 0.00004; // 0.00006
+  public static double Kp = 0.0009;// 0.001; // 0.00055 //0.00072
+  public static double Ki = 0;// 0;// 1e-7;//0 // 1e-9
+  public static double Kd = 0;// 0.0007;// 0.011; // 0.0007
+  public static double Kf = 0.00018;// 0.00025; // 0.00004; // 0.00006
   public double RampDOwnRPM;
   // Shooter RPM
   public static final double SHOOTER_RPM = 2600;
@@ -71,7 +71,7 @@ public class Shooter extends SubsystemBase {
     M1Config.closedLoop.maxMotion
         .cruiseVelocity(2600)
         .allowedProfileError(50)
-        .maxAcceleration(8000);
+        .maxAcceleration(20000);
 
     M1Config.encoder
         .positionConversionFactor(1.0)

@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class TransferSub extends SubsystemBase {
-  private Shooter s4;
+  private Shooter shooter;
   private final SparkMax TransferL;
   SparkMaxConfig leftconfig = new SparkMaxConfig();
   private final SparkClosedLoopController TransferController;
@@ -29,7 +29,9 @@ public class TransferSub extends SubsystemBase {
   public static double Kf = 0.000195;
   CommandSwerveDrivetrain commandSwerveDrivetrain;
 
-  public TransferSub() {
+  public TransferSub(Shooter shooter) {
+
+    this.shooter = shooter;
 
     TransferL = new SparkMax(17, MotorType.kBrushless);
 
@@ -61,12 +63,12 @@ public class TransferSub extends SubsystemBase {
   }
 
   public void runShooterRPM(double rpm) {
-    // if (s4.getShooterRPM() >= (s4.speed - 56)) {
+    if (shooter.getShooterRPM() >= 2800) {
+      TransferL.set(rpm);
+    } else {
+      TransferL.set(0);
+    }
     TransferL.set(rpm);
-    // } else {
-    // TransferL.set(0);
-    // }
-    // TransferL.set(rpm);
   }
 
   /** Stop shooter */

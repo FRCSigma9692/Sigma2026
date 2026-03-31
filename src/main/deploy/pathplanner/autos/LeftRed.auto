@@ -17,7 +17,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -36,7 +36,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -50,18 +50,12 @@
                 "data": {
                   "name": "Shooter"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeStop"
-                }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -77,40 +71,28 @@
                 }
               },
               {
+                "type": "named",
+                "data": {
+                  "name": "Feeder2"
+                }
+              },
+              {
                 "type": "wait",
                 "data": {
-                  "waitTime": 5.0
+                  "waitTime": 4.0
                 }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
                   "pathName": "RedLeftCollect2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "TransferStop"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "FeederStop"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShooterStop"
                 }
               },
               {
@@ -123,7 +105,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -137,18 +119,12 @@
                 "data": {
                   "name": "Shooter"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeStop"
-                }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -164,34 +140,15 @@
                 }
               },
               {
+                "type": "named",
+                "data": {
+                  "name": "Feeder2"
+                }
+              },
+              {
                 "type": "wait",
                 "data": {
-                  "waitTime": 5.0
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "TransferStop"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "FeederStop"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShooterStop"
+                  "waitTime": 4.0
                 }
               }
             ]

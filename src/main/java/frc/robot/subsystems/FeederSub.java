@@ -27,10 +27,15 @@ public class FeederSub extends SubsystemBase {
   private final RelativeEncoder FeederEncoder;
   private final SparkClosedLoopController FeederController;
 
+  Shooter shooter;
+
   SparkMaxConfig lConfig = new SparkMaxConfig();
 
   /** Creates a new Intake. */
-  public FeederSub() {
+  public FeederSub(Shooter shooter) {
+
+    this.shooter = shooter;
+
     FeederL = new SparkMax(19, MotorType.kBrushless);
     FeederR = new SparkMax(20, MotorType.kBrushless);
     SparkMaxConfig rConfig = new SparkMaxConfig();
@@ -83,11 +88,11 @@ public class FeederSub extends SubsystemBase {
   }
 
   public void FeederNoPID(double pow) {
-    // if (s4.getShooterRPM() >= (s4.speed-56))
+    if (shooter.getShooterRPM() >= 2800)
       FeederL.set(pow);
-    // else {
-    //   FeederL.set(0);
-    // }
+    else {
+      FeederL.set(0);
+    }
   }
 
   public void Stop() {

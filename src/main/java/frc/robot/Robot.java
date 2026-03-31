@@ -60,8 +60,7 @@ public class Robot extends TimedRobot {
     @Override
     public void disabledPeriodic() {
         m_robotContainer.drivetrain.checkcase = 0;
-        CommandScheduler.getInstance().cancelAll();
-
+        // CommandScheduler.getInstance().cancelAll();
     }
 
     @Override
@@ -70,7 +69,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        LimelightHelpers.setPipelineIndex("limelight-l", 0);
+        LimelightHelpers.setPipelineIndex("limelight-l", 1);
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
@@ -79,7 +78,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
-        LimelightHelpers.setPipelineIndex("limelight-l", 0);
+        LimelightHelpers.setPipelineIndex("limelight-l", 1);
         SmartDashboard.putNumber("LimelightPipelineIndex", LimelightHelpers.getCurrentPipelineIndex("limelight-l"));
     }
 
@@ -105,25 +104,27 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         SmartDashboard.putNumber("LimelightPipelineIndex", LimelightHelpers.getCurrentPipelineIndex("limelight-l"));
-        if (m_robotContainer.drivetrain.wonAuto) {
-            if (Matchtime >= 130 && (Matchtime <= 130.00 && Matchtime >= 105) || (Matchtime <= 80 && Matchtime >= 55)) {
-                Allianceshift = true;
-                testColor = new Color(0, 255, 0);
-            } else {
-                Allianceshift = false;
-                testColor = new Color(255, 0, 0);
-            }
-        }
+        // if (m_robotContainer.drivetrain.wonAuto) {
+        // if (Matchtime >= 130 && (Matchtime <= 130.00 && Matchtime >= 105) ||
+        // (Matchtime <= 80 && Matchtime >= 55)) {
+        // Allianceshift = true;
+        // testColor = new Color(0, 255, 0);
+        // } else {
+        // Allianceshift = false;
+        // testColor = new Color(255, 0, 0);
+        // }
+        // }
 
-        if (!m_robotContainer.drivetrain.wonAuto) {
-            if (Matchtime > 130 && (Matchtime <= 105.00 && Matchtime >= 80) || (Matchtime <= 55 && Matchtime >= 30)) {
-                Allianceshift = true;
-                testColor = new Color(0, 255, 0);
-            } else {
-                Allianceshift = false;
-                testColor = new Color(255, 0, 0);
-            }
-        }
+        // if (!m_robotContainer.drivetrain.wonAuto) {
+        // if (Matchtime > 130 && (Matchtime <= 105.00 && Matchtime >= 80) || (Matchtime
+        // <= 55 && Matchtime >= 30)) {
+        // Allianceshift = true;
+        // testColor = new Color(0, 255, 0);
+        // } else {
+        // Allianceshift = false;
+        // testColor = new Color(255, 0, 0);
+        // }
+        // }
         SmartDashboard.putString("Alliance Shift", testColor.toString());
     }
 

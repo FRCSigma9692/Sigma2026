@@ -5,31 +5,25 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "HopperOut"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
           "type": "race",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Intake"
+                  "pathName": "RedTest"
                 }
               },
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 2.0
+                  "name": "Shooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
                 }
               }
             ]
@@ -39,6 +33,12 @@
           "type": "race",
           "data": {
             "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Transfer"
+                }
+              },
               {
                 "type": "named",
                 "data": {
@@ -52,34 +52,9 @@
                 }
               },
               {
-                "type": "named",
-                "data": {
-                  "name": "Transfer"
-                }
-              },
-              {
                 "type": "wait",
                 "data": {
-                  "waitTime": 2.0
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shooter"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 2.0
+                  "waitTime": 3.0
                 }
               }
             ]
@@ -88,7 +63,7 @@
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": "Testing",
   "choreoAuto": false
 }

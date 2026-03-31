@@ -5,7 +5,7 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -24,7 +24,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -61,37 +61,13 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
                   "pathName": "RBCollect2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "FeederStop"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Feeder2Stop"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "TransferStop"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShooterStop"
                 }
               },
               {
@@ -104,19 +80,13 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
                   "pathName": "RBShoot"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeStop"
                 }
               },
               {
@@ -129,7 +99,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -160,37 +130,13 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
                   "pathName": "RBCollect2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "FeederStop"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Feeder2Stop"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "TransferStop"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShooterStop"
                 }
               },
               {
@@ -203,19 +149,13 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
                   "pathName": "RBShoot"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeStop"
                 }
               },
               {
@@ -228,7 +168,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -253,37 +193,6 @@
                 "type": "wait",
                 "data": {
                   "waitTime": 5.0
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "FeederStop"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Feeder2Stop"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "TransferStop"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ShooterStop"
                 }
               }
             ]
@@ -293,6 +202,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "PreShoot",
   "choreoAuto": false
 }

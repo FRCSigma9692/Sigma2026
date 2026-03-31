@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.024469879518072,
-        "y": 0.6364819277108438
+        "x": 4.85918866399221,
+        "y": 0.6959480071388265
       },
       "isLocked": false,
       "linkedName": null
@@ -20,12 +20,12 @@
         "y": 0.669265060240964
       },
       "prevControl": {
-        "x": 5.736221762057429,
-        "y": 0.6617383532627258
+        "x": 5.6124557920234,
+        "y": 0.5476482675701135
       },
       "nextControl": {
-        "x": 7.800108433734941,
-        "y": 0.7239036144578312
+        "x": 8.111162536192294,
+        "y": 1.3609295511143218
       },
       "isLocked": false,
       "linkedName": null
@@ -36,12 +36,12 @@
         "y": 2.461409638554217
       },
       "prevControl": {
-        "x": 7.931240963855421,
-        "y": 2.1117228915662647
+        "x": 8.007804485562557,
+        "y": 2.2827886133001134
       },
       "nextControl": {
-        "x": 7.717353395613136,
-        "y": 2.8722120230943866
+        "x": 7.2193127463786375,
+        "y": 3.0879961612793183
       },
       "isLocked": false,
       "linkedName": null
@@ -52,8 +52,8 @@
         "y": 3.1170722891566265
       },
       "prevControl": {
-        "x": 6.860325301204818,
-        "y": 3.1061445783132533
+        "x": 6.361613548416455,
+        "y": 3.0128219684463606
       },
       "nextControl": null,
       "isLocked": false,
@@ -80,8 +80,8 @@
       "minWaypointRelativePos": 1.3075060532687721,
       "maxWaypointRelativePos": 3.0,
       "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 2.0,
+        "maxVelocity": 2.0,
+        "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -93,7 +93,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
+    "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

@@ -27,13 +27,12 @@ public class Feed2 extends SubsystemBase {
   private final SparkClosedLoopController FeederController;
 
   private Shooter s4;
-  CommandSwerveDrivetrain commandSwerveDrivetrain;
 
   SparkMaxConfig lConfig = new SparkMaxConfig();
 
   /** Creates a new Intake. */
-  public Feed2(Shooter s4, CommandSwerveDrivetrain commandSwerveDrivetrain) {
-    this.commandSwerveDrivetrain = commandSwerveDrivetrain;
+  public Feed2(Shooter s4) {
+    // this.commandSwerveDrivetrain = commandSwerveDrivetrain;
     this.s4 = s4;
     Feeder = new SparkMax(25, MotorType.kBrushless);
     // FeederR = new SparkMax(20, MotorType.kBrushless);
@@ -87,11 +86,11 @@ public class Feed2 extends SubsystemBase {
   }
 
   public void FeederNoPID(double pow) {
-    // if (s4.getShooterRPM() >= (s4.speed-56))
-    Feeder.set(pow);
-    // else {
-    // Feeder.set(0);
-    // }
+    if (s4.getShooterRPM() >= 2800)
+      Feeder.set(pow);
+    else {
+      Feeder.set(0);
+    }
   }
 
   public void Stop() {

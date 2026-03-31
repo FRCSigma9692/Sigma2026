@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -64,13 +65,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private double m_lastSimTime;
     public double calcdist;
     LimelightHelpers.PoseEstimate mt2 = new PoseEstimate();
-    LimelightHelpers.PoseEstimate lim2mt2 = new PoseEstimate();
     boolean rejectUpdate;
-    boolean rejectUpdate2;
     public double ReqRot;
     public double FinalError;
-    public final double HubX =  FieldConstants.BlueHubX;  //11.935;   
-    public final double HubY = FieldConstants.BlueHubY;  // 4.024
+    public final double HubX = FieldConstants.BlueHubX; // 11.935;
+    public final double HubY = FieldConstants.BlueHubY; // 4.024
     private final double BumpX1 = 14.2;
     private final double BumpX2 = 10.4;
     private final double BumpY1 = 4.80;
@@ -281,7 +280,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     config,
                     // Assume the path needs to be flipped for Red vs Blue, this is normally the
                     // case
-                    () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue,
+                    () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                     this // Subsystem for requirements
 
             );
@@ -328,6 +327,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public void periodic() {
         // LimelightHelpers.setPipelineIndex("limelight-l", 1);
+
 
         if (!BumperPos()) {
             Rot45 = -User1.getRightX() * MaxAngularRate * 0.6;
@@ -409,6 +409,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         // 5. Apply MT2 once vision is enabled
 
         // We trust X/Y but ignore
+        // if (DriverStation.isAutonomous()) {
+        // Pose2d fakeVision = new Pose2d(5, 5, Rotation2d.fromDegrees(180));
+        // addVisionMeasurement(fakeVision, Timer.getFPGATimestamp());
+        // }
+
+        if (mt2.pose != null) {
+            addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
+        }
+
         if (!rejectUpdate) {
             setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
             addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
@@ -418,10 +427,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         /// double x = getState().Pose.getX();
         // x = mt2.pose.getX();
         // pathDone = false;
-        SmartDashboard.putNumber("Vision X", (mt2 != null) ? mt2.pose.getX() : -99);
-        SmartDashboard.putNumber("Vision Y", (mt2 != null) ? mt2.pose.getY() : -99);
+        SmartDashboard.putNumber("Vision X", (mt2 != null && mt2.pose != null) ? mt2.pose.getX() : -99);
+        SmartDashboard.putNumber("Vision Y", (mt2 != null && mt2.pose != null) ? mt2.pose.getY() : -99);
 
         SmartDashboard.putNumber("Robot X", getState().Pose.getX());
+
+        SmartDashboard.putBoolean("Periodic running : ", true);
+        System.out.println("Periodic Runinng");
+
         SmartDashboard.putNumber("Robot Y", getState().Pose.getY());
         SmartDashboard.putNumber("Heading", GetHeading());
         SmartDashboard.putNumber("Velocity", getState().Speeds.vxMetersPerSecond);
@@ -430,12 +443,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("Error", Error);
         SmartDashboard.putNumber("ErrorFor45", FinalError);
         SmartDashboard.putNumber("Dist", calcdist);
-        SmartDashboard.putNumber("LimelightTags", lim2mt2.tagCount);
-        SmartDashboard.putBoolean("Lim2mt2", rejectUpdate2);
+
         // SmartDashboard.putNumber("LimelightYaw",GetLimHeading());
         SmartDashboard.putBoolean("LimelightSeeding", LimSeed);
         SmartDashboard.putBoolean("Reject Update Lim1", rejectUpdate);
-        SmartDashboard.putBoolean("Reject Update Lim2", rejectUpdate2);
         SmartDashboard.putBoolean("PathDone", pathDone);
         SmartDashboard.putBoolean("DetectedFuel", DetectedFuel);
         SmartDashboard.putNumber("DetectedFuel Tx", tx);
