@@ -67,7 +67,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RBCollect2"
+                  "pathName": "BRP3"
                 }
               },
               {
@@ -86,7 +86,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RBShoot"
+                  "pathName": "BRP2"
                 }
               },
               {
@@ -136,7 +136,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RBCollect2"
+                  "pathName": "BRP3"
                 }
               },
               {
@@ -155,7 +155,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RBShoot"
+                  "pathName": "BRP2"
                 }
               },
               {

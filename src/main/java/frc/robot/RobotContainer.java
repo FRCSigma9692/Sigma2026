@@ -25,7 +25,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -88,7 +90,6 @@ public class RobotContainer {
         private final CommandXboxController joystick = new CommandXboxController(1);
         public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-
         public Hopper hopper = new Hopper();
         public Shooter shooter = new Shooter(drivetrain);
         private Intake intake = new Intake();
@@ -106,37 +107,103 @@ public class RobotContainer {
         public Field2d field = new Field2d();
         // private CheckSparkFlex cs= new CheckSparkFlex();
         private final SendableChooser<Command> autoChooser;
+
         public RobotContainer() {
 
                 // NamedCommands.registerCommand(
-                //                 "Shooter3Sec",
-                //                 Commands.sequence(
-                //                                 Commands.runOnce(() -> System.out.println("Shooter3Sec START")),
-                //                                 Commands.run(() -> shooter.runShooterRPMFixed7(2950), shooter)
-                //                                                 .withTimeout(3.0),
-                //                                 Commands.runOnce(() -> {
-                //                                         shooter.Stop();
-                //                                         System.out.println("Shooter3Sec END");
-                //                                 }, shooter)));
-                                                
-                NamedCommands.registerCommand("HopperOut", new HopperCmd(hopper, 0.3));
+                // "Shooter3Sec",
+                // Commands.sequence(
+                // Commands.runOnce(() -> System.out.println("Shooter3Sec START")),
+                // Commands.run(() -> shooter.runShooterRPMFixed7(2950), shooter)
+                // .withTimeout(3.0),
+                // Commands.runOnce(() -> {
+                // shooter.Stop();
+                // System.out.println("Shooter3Sec END");
+                // }, shooter)));
 
-                NamedCommands.registerCommand("Shooter", new ShooterCmd(shooter, 2950)); // make 2950
-                //System.out.println("Shooter Registered");
+                // NamedCommands.registerCommand("HopperOut", new HopperCmd(hopper, 0.3));
 
-                NamedCommands.registerCommand("ShooterStop", new ShooterStopCmd(shooter));
+                // NamedCommands.registerCommand("Shooter", new ShooterCmd(shooter, 2950)); //
+                // make 2950
+                // //System.out.println("Shooter Registered");
 
-                NamedCommands.registerCommand("Intake", new IntakCmd(intake, -0.7));
-                NamedCommands.registerCommand("IntakeStop", new IntakStopCmd(intake));
+                // NamedCommands.registerCommand("ShooterStop", new ShooterStopCmd(shooter));
 
-                NamedCommands.registerCommand("Transfer", new TransferCmd(transfer, 0.8));
-                NamedCommands.registerCommand("TransferStop", new TransferStopCmd(transfer));
+                // NamedCommands.registerCommand("Intake", new IntakCmd(intake, -0.7));
+                // NamedCommands.registerCommand("IntakeStop", new IntakStopCmd(intake));
 
-                NamedCommands.registerCommand("Feeder", new FeedCmd(feeder, 0.8));
-                NamedCommands.registerCommand("FeederStop", new FeederStop(feeder));
-                NamedCommands.registerCommand("Feeder2", new Feed2Cmd(feeder2, -0.8));
-                NamedCommands.registerCommand("Feeder2Stop", new FeedStop2(feeder2));
+                // NamedCommands.registerCommand("Transfer", new TransferCmd(transfer, 0.8));
+                // NamedCommands.registerCommand("TransferStop", new TransferStopCmd(transfer));
+
+                // NamedCommands.registerCommand("Feeder", new FeedCmd(feeder, 0.8));
+                // NamedCommands.registerCommand("FeederStop", new FeederStop(feeder));
+                // NamedCommands.registerCommand("Feeder2", new Feed2Cmd(feeder2, -0.8));
+                // NamedCommands.registerCommand("Feeder2Stop", new FeedStop2(feeder2));
                 // NamedCommands.registerCommand("Feeder2Stop", new Feed2Cmd(feeder2, 0));
+
+                NamedCommands.registerCommand("Shoot_Stop",
+                                new ParallelCommandGroup(
+                                                new InstantCommand(() -> shooter.Stop(), shooter),
+                                                new InstantCommand(() -> feeder.FeederNoPID(0), feeder),
+                                                new InstantCommand(() -> transfer.runShooterRPM(0), transfer),
+                                                new InstantCommand(() -> feeder2.FeederNoPID(0), feeder2)));
+
+                NamedCommands.registerCommand("Shoot",
+                                new ParallelCommandGroup(
+                                                new InstantCommand(() -> feeder.FeederNoPID(0.8), feeder),
+                                                new InstantCommand(() -> transfer.runShooterRPM(0.8), transfer),
+                                                new InstantCommand(() -> feeder2.FeederNoPID(-0.8), feeder2)));
+
+                NamedCommands.registerCommand(
+                                "Shooter", new InstantCommand(() -> shooter.runShooterRPMFixed7(2950), shooter));
+
+                NamedCommands.registerCommand(
+                                "ShooterStop",
+                                new InstantCommand(() -> shooter.Stop(), shooter));
+
+                NamedCommands.registerCommand(
+                                "Intake", new InstantCommand(() -> intake.runIntakeForHop(-0.7), intake));
+
+                NamedCommands.registerCommand(
+                                "IntakeStop", new InstantCommand(() -> intake.runIntake(0), intake));
+
+                // NamedCommands.registerCommand(
+                // "Transfer",
+                // new ParallelDeadlineGroup(
+                // new WaitCommand(1),
+                // new InstantCommand(() -> transfer.runShooterRPM(0.8), transfer)));
+
+                // NamedCommands.registerCommand(
+                // "TransferStop",
+                // new InstantCommand(() -> transfer.stopShooter(), transfer));
+
+                // NamedCommands.registerCommand(
+                // "Feeder",
+                // new ParallelDeadlineGroup(
+                // new WaitCommand(1),
+                // new InstantCommand(() -> feeder.FeederNoPID(0.8), feeder)));
+
+                // NamedCommands.registerCommand(
+                // "FeederStop",
+                // new InstantCommand(() -> feeder.Stop(), feeder));
+
+                // NamedCommands.registerCommand(
+                // "Feeder2",
+                // new ParallelDeadlineGroup(
+                // new WaitCommand(1),
+                // new InstantCommand(() -> feeder2.FeederNoPID(-0.8), feeder2)));
+
+                // NamedCommands.registerCommand(
+                // "Feeder2Stop",
+                // new InstantCommand(() -> feeder2.FeederNoPID(0), feeder2));
+
+                NamedCommands.registerCommand(
+                                "HopperOut",
+                                new HopperCmd(hopper, 0.3));
+
+                NamedCommands.registerCommand(
+                                "HopperStop",
+                                new InstantCommand(() -> hopper.stop(), hopper));
 
                 SmartDashboard.putData("Field", field);
 
@@ -238,7 +305,6 @@ public class RobotContainer {
                                                 .withVelocityY(-User1.getLeftX() * MaxSpeed * 0.4) // Drive
 
                                                 .withRotationalRate(-User1.getRightX() * MaxAngularRate * speed)));
-                
 
                 // Intake -----------------------
                 joystick.leftBumper().onTrue(
@@ -247,7 +313,7 @@ public class RobotContainer {
                                                                 .withVelocityX(-User1.getLeftY() * MaxSpeed
                                                                                 * IntakeRobotSpeed * speed) // forward
                                                                 .withVelocityY(-User1.getLeftX() * MaxSpeed
-                                                                                * IntakeRobotSpeed *speed) // Drive
+                                                                                * IntakeRobotSpeed * speed) // Drive
                                                                 .withRotationalRate(-User1.getRightX() * MaxAngularRate
                                                                                 * speed)),
 

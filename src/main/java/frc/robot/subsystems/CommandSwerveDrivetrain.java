@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.Optional;
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
@@ -14,7 +13,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -69,7 +67,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     boolean rejectUpdate2;
     public double ReqRot;
     public double FinalError;
-    public final double HubX = FieldConstants.BlueHubX; // 11.935; ;
+    public final double HubX = FieldConstants.BlueHubX; // 11.935;
     public final double HubY = FieldConstants.BlueHubY; // 4.024;
     private final double BumpX1 = 14.2;
     private final double BumpX2 = 10.4;
@@ -281,13 +279,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     config,
                     // Assume the path needs to be flipped for Red vs Blue, this is normally the
                     // case
-                    () -> {
-                        var Alliance = DriverStation.getAlliance();
-                        if (Alliance.isPresent()) {
-                            return Alliance.get() == DriverStation.Alliance.Red;
-                        }
-                        return false;
-                    }, this
+                    () ->  false,
+                    this
             // () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
             // this // Subsystem for requirements
 
@@ -642,7 +635,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
 
 
-     
+
      *                                 in the form [x, y, theta]ᵀ, with units in
      *                                 meters and radians.
      */

@@ -12,7 +12,7 @@
         "y": 2.070330094456073
       },
       "isLocked": false,
-      "linkedName": "RedLeftShoot1"
+      "linkedName": "RL_P1P2"
     },
     {
       "anchor": {
@@ -32,37 +32,37 @@
     },
     {
       "anchor": {
-        "x": 13.639543509272466,
+        "x": 13.078192771084337,
         "y": 0.6583373493975899
       },
       "prevControl": {
-        "x": 13.348852764716485,
-        "y": 0.6059330592636921
+        "x": 12.798718097766516,
+        "y": 0.5627275927362292
       },
       "nextControl": {
-        "x": 14.488206291300106,
-        "y": 0.8113300796035309
+        "x": 13.49344578313253,
+        "y": 0.8003975903614469
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 14.609942938659055,
-        "y": 2.6829101283880177
+        "x": 13.427879518072288,
+        "y": 2.177289156626506
       },
       "prevControl": {
-        "x": 15.057120529714751,
-        "y": 1.5758640129876735
+        "x": 13.930554216867467,
+        "y": 1.34678313253012
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "RedLeftCollect1"
+      "linkedName": "RL_P2P3"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.7512195121951322,
+      "waypointRelativePos": 1.0780487804878058,
       "rotationDegrees": 0.0
     },
     {
@@ -74,7 +74,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
+    "maxVelocity": 4.5,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -83,7 +83,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -29.291362170984293
+    "rotation": -50.04245106917105
   },
   "reversed": false,
   "folder": "LeftRedPath",

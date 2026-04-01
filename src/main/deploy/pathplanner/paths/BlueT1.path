@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5,
+        "x": 2.5,
         "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.476297726843002,
-        "y": 4.248873868148488
+        "x": 2.4890722891566264,
+        "y": 3.5301084337349398
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.5,
-        "y": 4.5
+        "x": 2.5,
+        "y": 3.0
       },
       "prevControl": {
-        "x": 3.5,
-        "y": 4.25
+        "x": 2.4890722891566264,
+        "y": 3.371542168674698
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "BLT1"
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

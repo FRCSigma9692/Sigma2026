@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -16,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
-  private final  SparkMax Lintake;
+  private final SparkMax Lintake;
   private final SparkMax Rintake;
   SparkMaxConfig Lconfig = new SparkMaxConfig();
 
@@ -26,14 +25,14 @@ public class Intake extends SubsystemBase {
     Rintake = new SparkMax(15, MotorType.kBrushless);
     SparkMaxConfig RConfig = new SparkMaxConfig();
     Lconfig
-    .smartCurrentLimit(60)
-    .idleMode(IdleMode.kCoast);
+        .smartCurrentLimit(60)
+        .idleMode(IdleMode.kCoast);
     RConfig
-    .smartCurrentLimit(60)
-    .apply(Lconfig)
-    .follow(Lintake, true);
-  Lintake.configure(Lconfig, ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
-  Rintake.configure(RConfig,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
+        .smartCurrentLimit(60)
+        .apply(Lconfig)
+        .follow(Lintake, true);
+    Lintake.configure(Lconfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    Rintake.configure(RConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override
@@ -42,22 +41,26 @@ public class Intake extends SubsystemBase {
     // SmartDashboard.putNumber("Right IntakeCurrent", GetCurrentR());
     // This method will be called once per scheduler run
   }
-  public void runIntake(double speed){
+
+  public void runIntake(double speed) {
     Lintake.set(speed);
   }
-  public void StopIntake(){
+
+  public void StopIntake() {
     Lintake.set(0);
   }
-  public void runIntakeForHop(double speed){
-    if (speed>0){
-      Lintake.set(speed);
-    }
-   
+
+  public void runIntakeForHop(double speed) {
+    // if (speed>0){
+    Lintake.set(speed);
+    // }
   }
-  public double GetCurrentL(){
+
+  public double GetCurrentL() {
     return Lintake.getOutputCurrent();
   }
-  public double GetCurrentR(){
+
+  public double GetCurrentR() {
     return Rintake.getOutputCurrent();
   }
 }

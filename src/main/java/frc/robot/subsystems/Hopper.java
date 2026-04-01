@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Hopper extends SubsystemBase {
   public double pos;
-  private final SparkMax hopper;
+  public final SparkMax hopper;
   SparkClosedLoopController closedLoopController;
   SparkMaxConfig configure = new SparkMaxConfig();
   RelativeEncoder hoppereEncoder;
@@ -51,6 +51,15 @@ public class Hopper extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+  public void autoHopper(double pow) {
+    if (hopper.getForwardLimitSwitch().isPressed()) {
+      hopper.set(0);
+    } else {
+      hopper.set(pow);
+    }
+    SmartDashboard.updateValues();
+  }
+
   public void runHopper(double pow) {
     if (pow < 0 && pos > 0 || pow > 0 && pos < 44) {
       hopper.set(pow);
@@ -58,5 +67,11 @@ public class Hopper extends SubsystemBase {
       hopper.set(0);
     }
     SmartDashboard.updateValues();
+  }
+
+  public void stop() {
+
+    hopper.set(0);
+
   }
 }

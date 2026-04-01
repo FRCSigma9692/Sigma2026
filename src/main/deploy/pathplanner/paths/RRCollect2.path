@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 14.635820256776036,
-        "y": 5.425905848787448
+        "x": 13.5,
+        "y": 6.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 14.815832489091905,
-        "y": 6.440982074342532
+        "x": 13.68001223231587,
+        "y": 7.0150762255550845
       },
       "isLocked": false,
       "linkedName": "RRShoot2+RRCollect2"
@@ -57,7 +57,7 @@
       },
       "nextControl": {
         "x": 9.925238506299696,
-        "y": 6.602186506626404
+        "y": 6.602186506626403
       },
       "isLocked": false,
       "linkedName": null
@@ -108,7 +108,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
+    "maxVelocity": 4.5,
     "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -123,7 +123,7 @@
   "folder": "RightRedPaths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 28.0
+    "rotation": 50.0
   },
   "useDefaultConstraints": true
 }

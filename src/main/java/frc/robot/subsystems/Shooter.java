@@ -24,8 +24,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Shooter extends SubsystemBase {
   CommandSwerveDrivetrain commandSwerveDrivetrain;
   public double InitRPM = 2000;
-  private SparkMax M1;
-  private SparkMax M2;
+  public SparkMax M1;
+  public SparkMax M2;
   SparkMaxConfig M1Config = new SparkMaxConfig();
   // Closed-loop objects (ONLY from leader)
   private SparkClosedLoopController shooterController;

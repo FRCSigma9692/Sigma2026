@@ -39,11 +39,12 @@ public class TransferCmd extends Command {
   @Override
   public void end(boolean interrupted) {
     // super.end(interrupted);
+    feedingsub.stopShooter();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }
