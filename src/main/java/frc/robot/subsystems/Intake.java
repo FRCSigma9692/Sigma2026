@@ -25,10 +25,10 @@ public class Intake extends SubsystemBase {
     Rintake = new SparkMax(15, MotorType.kBrushless);
     SparkMaxConfig RConfig = new SparkMaxConfig();
     Lconfig
-        .smartCurrentLimit(60)
+        .smartCurrentLimit(80)
         .idleMode(IdleMode.kCoast);
     RConfig
-        .smartCurrentLimit(60)
+        .smartCurrentLimit(80)
         .apply(Lconfig)
         .follow(Lintake, true);
     Lintake.configure(Lconfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

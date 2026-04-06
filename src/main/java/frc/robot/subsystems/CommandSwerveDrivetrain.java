@@ -67,8 +67,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     boolean rejectUpdate2;
     public double ReqRot;
     public double FinalError;
-    public final double HubX = FieldConstants.BlueHubX; // 11.935;
-    public final double HubY = FieldConstants.BlueHubY; // 4.024;
+    public double HubX = FieldConstants.BlueHubX; // 11.935; //
+    public double HubY = FieldConstants.BlueHubY;// 4.024;// 4.024; //
     private final double BumpX1 = 14.2;
     private final double BumpX2 = 10.4;
     private final double BumpY1 = 4.80;
@@ -99,13 +99,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
-    private boolean autoRunning = false;
-    private boolean visionEnabled = true;
-    private double autoStartTime = 0;
     boolean Alliances;
-
-    private final Field2d field = new Field2d();
-
     /*
      * SysId routine for characterizing translation. This is used to find PID gains
      * for the drive motors.
@@ -279,10 +273,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     config,
                     // Assume the path needs to be flipped for Red vs Blue, this is normally the
                     // case
-                    () ->  false,
-                    this
-            // () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
-            // this // Subsystem for requirements
+
+                    () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                    this // Subsystem for requirements
 
             );
         } catch (Exception ex) {
@@ -327,70 +320,20 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     @Override
 
     public void periodic() {
-        // LimelightHelpers.setPipelineIndex("limelight-l", 1);
-
         if (!BumperPos()) {
             Rot45 = -User1.getRightX() * MaxAngularRate * 0.6;
         }
 
-        Heading = getState().Pose.getRotation().getDegrees();
-        xOdo = getState().Pose.getX();
-        yOdo = getState().Pose.getY();
         calcdist = Math.sqrt((((HubX - xOdo) * (HubX - xOdo)) + ((HubY - yOdo) * (HubY - yOdo))));
-
         shooterspeed = mapRange(calcdist, 2, 4, 2838, 3405);
-
-        ReqRot = 180 + Math.toDegrees(Math.atan2((HubY - yOdo), (HubX - xOdo)));
-        Error = (ReqRot - Heading);
-        if (ReqRot > 0) {
-            Error = (Error + 180) % 360 - 180;
-        } else {
-            Error = (Error - 180) % 360 + 180;
-        }
-        Error180 = (0 - Heading);
-
-        if ((Math.abs(Error) > 1)) {
-            rot = (0.08 * Error) + (0.0015 * ((Error - LastReqRot) / 0.02));
-            LastReqRot = Error;
-            rot = Math.max(-1, Math.min(rot, 1));
-        } else {
-            rot = 0;
-        }
-        if ((Math.abs(Error180) > 1)) {
-            rot180 = (0.08 * Error180) + (0.0015 * ((Error180 - LastError180) / 0.02));
-            LastError180 = Error180;
-            rot180 = (Math.max(-1, Math.min(rot180, 1)));
-
-        } else {
-            rot180 = 0;
-        }
-
-        /*
-         * Periodically try to apply the operator perspective.
-         * If we haven't applied the operator perspective before, then we should apply
-         * it regardless of DS state.
-         * This allows us to correct the perspective in case the robot code restarts
-         * mid-match.
-         * Otherwise, only check and apply the operator perspective if the DS is
-         * disabled.
-         * This ensures driving behavior doesn't change until an explicit disable event
-         * occurs during testing.
-         */
 
         LimelightHelpers.SetRobotOrientation("limelight-l", GetHeading(), 0, 0, 0, 0, 0);
 
-        // LimelightHelpers.SetIMUAssistAlpha("limelight-l", 0.001);
-        // LimelightHelpers.SetIMUMode("limelight-l", 0);
-        // LimelightHelpers.SetIMUMode("limelight-ll", 0);
-        // LimelightHelpers.setPipelineIndex("limelight-ll",0);
-        // LimelightHelpers.SetIMUAssistAlpha("limelight-ll", 0.001);
-
-        // LimelightHelpers.SetRobotOrientation("limelight-ll",
-        // getState().Pose.getRotation().getDegrees(), 0,0,0,0,0);
-
-        // lim2mt2 =
-        // LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-ll");
-        mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-l");
+        if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+            mt2 = LimelightHelpers.getBotPoseEstimate_wpiRed_MegaTag2("limelight-l");
+        } else {
+            mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-l");
+        }
 
         rejectUpdate = false;
 
@@ -398,58 +341,30 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (mt2 == null || mt2.tagCount == 0) {
             rejectUpdate = true;
         }
-        // if (lim2mt2.tagCount == 0)
-        // rejectUpdate2 = true;
 
         if (Math.abs(getPigeon2().getAngularVelocityZDevice().getValueAsDouble()) > 720) {
             rejectUpdate = true;
         }
-        // rejectUpdate2 = true;
 
         // 5. Apply MT2 once vision is enabled
 
         // We trust X/Y but ignore
-        if (!rejectUpdate) {
+        if (!rejectUpdate && !DriverStation.isAutonomous()) {
             setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
             addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
         }
 
         // ✅ 6. Dashboard
-        /// double x = getState().Pose.getX();
-        // x = mt2.pose.getX();
-        // pathDone = false;
+
         SmartDashboard.putNumber("Vision X", (mt2 != null) ? mt2.pose.getX() : -99);
         SmartDashboard.putNumber("Vision Y", (mt2 != null) ? mt2.pose.getY() : -99);
-
         SmartDashboard.putNumber("Robot X", getState().Pose.getX());
         SmartDashboard.putNumber("Robot Y", getState().Pose.getY());
         SmartDashboard.putNumber("Heading", GetHeading());
-        // SmartDashboard.putNumber("Velocity", getState().Speeds.vxMetersPerSecond);
         SmartDashboard.putNumber("Degrees Required", ReqRot);
-        // SmartDashboard.putBoolean("Is in Zone", BumperPos());
         SmartDashboard.putNumber("Error", Error);
-        // SmartDashboard.putNumber("ErrorFor45", FinalError);
         SmartDashboard.putNumber("Dist", calcdist);
-        // SmartDashboard.putNumber("LimelightTags", lim2mt2.tagCount);
-        // SmartDashboard.putBoolean("Lim2mt2", rejectUpdate2);
-        // SmartDashboard.putNumber("LimelightYaw",GetLimHeading());
-        // SmartDashboard.putBoolean("LimelightSeeding", LimSeed);
-        // SmartDashboard.putBoolean("Reject Update Lim1", rejectUpdate);
-        // SmartDashboard.putBoolean("Reject Update Lim2", rejectUpdate2);
-        // SmartDashboard.putBoolean("PathDone", pathDone);
-        // SmartDashboard.putBoolean("DetectedFuel", DetectedFuel);
-        // SmartDashboard.putNumber("DetectedFuel Tx", tx);
-        // SmartDashboard.putNumber("DetectedFuelTy", ty);
-        // SmartDashboard.putNumber("DistanceFromFuel", distance);
-        // SmartDashboard.putBoolean("Won Auto Or Not", wonAuto);
-        // SmartDashboard.putNumber("CheckCase", checkcase);
-        // SmartDashboard.putBoolean("Works", Alliances);
         SmartDashboard.putNumber("Shooter Speed", shooterspeed);
-
-        // SmartDashboard.putData("null", field);
-        // SmartDashboard.putNumber("Best Velocity", shooterCalc.bestVelocity);
-        // SmartDashboard.putNumber("Best Angle", shooterCalc.bestAngle);
-        // SmartDashboard.putNumber("Best RPM", shooterCalc.bestVelocity*60/Math.PI*4);
 
         // ✅ Operator Perspective logic
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
@@ -459,6 +374,36 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                                 : kBlueAlliancePerspectiveRotation);
                 m_hasAppliedOperatorPerspective = true;
             });
+        }
+    }
+
+    public void autoAlignToHub() {
+
+        if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+            HubX = FieldConstants.RedHubX;
+            HubY = FieldConstants.RedHubY;
+        } else {
+            HubX = FieldConstants.BlueHubX;
+            HubY = FieldConstants.BlueHubY;
+        }
+
+        Heading = getState().Pose.getRotation().getDegrees();
+        xOdo = getState().Pose.getX();
+        yOdo = getState().Pose.getY();
+
+        ReqRot = Math.toDegrees(Math.atan2((HubY - yOdo), (HubX - xOdo)));
+        ReqRot += 180;
+        ReqRot = (ReqRot + 360) % 360;
+
+        Error = ReqRot - Heading;
+        Error = (Error + 180) % 360 - 180;
+
+        if (Math.abs(Error) > 2) {
+            rot = (0.05 * Error) + (0.001 * ((Error - LastReqRot) / 0.02));
+            LastReqRot = Error;
+            rot = Math.max(-0.5, Math.min(rot, 0.5));
+        } else {
+            rot = 0;
         }
     }
 
@@ -492,10 +437,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public boolean BumperPos() {
-        // private final double BumpX1 = 14.2;
-        // private final double BumpX2 = 11.294;
-        // private final double BumpY1 = 4.970;
-        // private final double BumpY2 = 6.120;
         if (xOdo <= BumpX1 && xOdo >= BumpX2 && yOdo >= BumpY1 && yOdo <= BumpY2) {
             SmartDashboard.putString("Is ", "in Bumper Zone");
             Rot45 = (0.25 * FinalError) + (0.0015 * ((FinalError - LastRot45) / 0.02));
@@ -507,44 +448,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
     }
 
-    // public Command pathFind(double x, double y, double Deg, BooleanSupplier
-    // override){
-    // PathConstraints constraints = new PathConstraints(1,1, Math.toRadians(500),
-    // Math.toRadians(600));
-    // pathDone = true;
-    // pathfindingCommand = AutoBuilder.pathfindToPose(new Pose2d(x,y,
-    // Rotation2d.fromDegrees(Deg)), constraints, 0);
-    // // Pathfinding.setGoalPosition(new Translation2d(x,y));
-    // // PathPlannerPath generatePath = Pathfinding.getCurrentPath(constraints, new
-    // GoalEndState(0.0, Rotation2d.fromDegrees(Deg)));
-    // // return Commands.waitUntil(()->Pathfinding.isNewPathAvailable()).andThen(
-    // // Commands.runOnce(()->{
-    // // generatePath = Pathfinding.getCurrentPath(constraints, new
-    // GoalEndState(0.0, Rotation2d.fromDegrees(Deg)));
-    // // })
-    // return pathfindingCommand;
-    // }
     public Command CancelCommand() {
         pathfindingCommand = null;
         return pathfindingCommand;
-    }
-
-    public void AutoWon() {
-        if (checkcase == 0) {
-            wonAuto = true;
-            checkcase++;
-        } else {
-
-        }
-    }
-
-    public void AutoLost() {
-        if (checkcase == 0) {
-            wonAuto = false;
-            checkcase++;
-        } else {
-
-        }
     }
 
     private void startSimThread() {
@@ -629,13 +535,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      *                                 measurement
      * 
      * 
-
-
-
-
-
-
-
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
      *                                 in the form [x, y, theta]ᵀ, with units in
      *                                 meters and radians.
      */

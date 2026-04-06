@@ -17,18 +17,19 @@ public class ShooterCmd3 extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        shooter.Stop();
         // TODO Auto-generated method stub
         super.end(interrupted);
     }
 
     @Override
     public void execute() {
-        shooter.runShooterRPMFixed(rpm);
+        shooter.runShooterRPMFixed7(rpm);
         SmartDashboard.putNumber("Shooter RPM Target", rpm);
     }
 
     @Override
     public boolean isFinished() {
-        return true;
+        return false;
     }
 }

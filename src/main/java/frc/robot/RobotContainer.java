@@ -64,7 +64,7 @@ public class RobotContainer {
         public BooleanSupplier override = () -> true;
         public double output;
         public double RotPow45;
-        private double speed = 0.65;
+        private double speed = 0.7;
         private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
                                                                                       // speed
         private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per
@@ -143,6 +143,7 @@ public class RobotContainer {
 
                 NamedCommands.registerCommand("Shoot_Stop",
                                 new ParallelCommandGroup(
+                                                // new InstantCommand(() -> intake.runIntake(0), intake),
                                                 new InstantCommand(() -> shooter.Stop(), shooter),
                                                 new InstantCommand(() -> feeder.FeederNoPID(0), feeder),
                                                 new InstantCommand(() -> transfer.runShooterRPM(0), transfer),
@@ -150,9 +151,9 @@ public class RobotContainer {
 
                 NamedCommands.registerCommand("Shoot",
                                 new ParallelCommandGroup(
-                                                new InstantCommand(() -> feeder.FeederNoPID(0.8), feeder),
-                                                new InstantCommand(() -> transfer.runShooterRPM(0.8), transfer),
-                                                new InstantCommand(() -> feeder2.FeederNoPID(-0.8), feeder2)));
+                                                new InstantCommand(() -> feeder.FeederNoPID(0.9), feeder),
+                                                new InstantCommand(() -> transfer.runShooterRPM(0.9), transfer),
+                                                new InstantCommand(() -> feeder2.FeederNoPID(-0.9), feeder2)));
 
                 NamedCommands.registerCommand(
                                 "Shooter", new InstantCommand(() -> shooter.runShooterRPMFixed7(2950), shooter));
@@ -162,7 +163,7 @@ public class RobotContainer {
                                 new InstantCommand(() -> shooter.Stop(), shooter));
 
                 NamedCommands.registerCommand(
-                                "Intake", new InstantCommand(() -> intake.runIntakeForHop(-0.7), intake));
+                                "Intake", new InstantCommand(() -> intake.runIntakeForHop(-0.78), intake));
 
                 NamedCommands.registerCommand(
                                 "IntakeStop", new InstantCommand(() -> intake.runIntake(0), intake));
@@ -207,7 +208,7 @@ public class RobotContainer {
 
                 SmartDashboard.putData("Field", field);
 
-                autoChooser = AutoBuilder.buildAutoChooser("BallLost");
+                autoChooser = AutoBuilder.buildAutoChooser("None");
 
                 SmartDashboard.putData("Auto Mode", autoChooser);
                 configureBindings();
@@ -215,33 +216,11 @@ public class RobotContainer {
         }
 
         private void configureBindings() {
-                // User1.circle().onTrue(
-                // Commands.race(drivetrain.pathFind(10.8,7.17,180.0,
-                // override),Commands.waitUntil(()->(!((Math.abs(User1.getLeftX()))<0.05 &&
-                // Math.abs(User1.getLeftY())<0.05 && Math.abs(User1.getRightX())<0.03 &&
-                // Math.abs(User1.getRightY())<0.03)))));
-                // new Trigger(()->((Math.abs(User1.getLeftX()))<0.1 &&
-                // Math.abs(User1.getLeftY())<0.1 && Math.abs(User1.getRightX())<0.1 &&
-                // Math.abs(User1.getRightY())<0.1))
-                // .onTrue(
-                // Commands.runOnce(()->CommandScheduler.getInstance().cancelAll()));
 
-                // Note that X is defined as forward according to WPILib convention,
-                // and Y is defined as to the left according to WPILib convention.
                 drivetrain.setDefaultCommand(
-                                // Drivetrain will execute this command periodically
-                                drivetrain.applyRequest(() -> drive.withVelocityX(-User1.getLeftY() * MaxSpeed * speed) // Drive
-                                                                                                                        // (forward)
-                                                .withVelocityY(-User1.getLeftX() * MaxSpeed * speed) // Drive left with
-                                                                                                     // negative X
-                                                                                                     // (left)
-                                                .withRotationalRate(-User1.getRightX() * MaxAngularRate * speed) // Drive
-                                                                                                                 // counterclockwise
-                                                                                                                 // with
-                                                                                                                 // negative
-                                                                                                                 // X
-                                                                                                                 // (left)
-                                ));
+                                drivetrain.applyRequest(() -> drive.withVelocityX(-User1.getLeftY() * MaxSpeed * speed)
+                                                .withVelocityY(-User1.getLeftX() * MaxSpeed * speed)
+                                                .withRotationalRate(-User1.getRightX() * MaxAngularRate * speed)));
 
                 // Reset Robot Heading
                 User1.pov(0).onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
@@ -255,7 +234,7 @@ public class RobotContainer {
 
                 joystick.leftTrigger(0.7).whileTrue(
                                 new ShooterCmd(shooter, FeederRPM));
-                joystick.b().whileTrue(new ShooterCmd3(shooter, 0.7));
+                joystick.b().whileTrue(new ShooterCmd2(shooter, 5000));
 
                 joystick.rightTrigger(0.5).whileTrue(new ShooterCmd2(shooter, 2950));
 
@@ -265,45 +244,52 @@ public class RobotContainer {
                                                                 (MathUtil.applyDeadband(joystick.getRightY(), 0.1))
                                                                                 * 0.5),
                                                 hopper));
-                // ----------------
+
                 transfer.setDefaultCommand(new RunCommand(
                                 () -> transfer.runShooterRPM(MathUtil.applyDeadband(-joystick.getLeftY(),
-                                                0.1) * .7),
+                                                0.1) * 0.9),
                                 transfer));
 
                 feeder.setDefaultCommand(new RunCommand(
                                 () -> feeder.FeederNoPID(MathUtil.applyDeadband(-joystick.getLeftY(), 0.1) *
-                                                0.8),
+                                                0.9),
                                 feeder));
 
                 feeder2.setDefaultCommand(new RunCommand(
                                 () -> feeder2.FeederNoPID(MathUtil.applyDeadband(-joystick.getLeftY(), 0.1) *
-                                                -0.8),
+                                                -0.9),
                                 feeder2));
-                // --------------------
+
                 // //Transfer -------------------
                 joystick.povUp().whileTrue(
                                 Commands.run(() -> shooter.runShooterRPM(), shooter));
 
                 // Allignment ---------------
                 User1.R1().whileTrue(
-                                drivetrain.applyRequest(() -> drive
-                                                .withVelocityX(-User1.getLeftY() * MaxSpeed * AlignmentSpeed) // forward
-                                                .withVelocityY(-User1.getLeftX() * MaxSpeed * AlignmentSpeed) // Drive
-                                                                                                              // // X
-                                                .withRotationalRate(drivetrain.rot * MaxAngularRate * speed)));
+                                new RunCommand(() -> drivetrain.autoAlignToHub(), drivetrain)
+                                                .alongWith(
+                                                                drivetrain.applyRequest(() -> drive
+                                                                                .withVelocityX(-User1.getLeftY()
+                                                                                                * MaxSpeed
+                                                                                                * AlignmentSpeed)
+                                                                                .withVelocityY(-User1.getLeftX()
+                                                                                                * MaxSpeed
+                                                                                                * AlignmentSpeed)
+                                                                                .withRotationalRate(drivetrain.rot
+                                                                                                * MaxAngularRate))))
+                                .onFalse(
+                                                new InstantCommand(() -> drivetrain.rot = 0));
 
                 User1.L2().whileTrue(
                                 drivetrain.applyRequest(() -> drive
-                                                .withVelocityX(-User1.getLeftY() * MaxSpeed * AlignmentSpeed) // forward
-                                                .withVelocityY(-User1.getLeftX() * MaxSpeed * AlignmentSpeed) // Drive
-
+                                                .withVelocityX(-User1.getLeftY() * MaxSpeed * AlignmentSpeed)
+                                                .withVelocityY(-User1.getLeftX() * MaxSpeed * AlignmentSpeed)
                                                 .withRotationalRate(drivetrain.rot180 * MaxAngularRate * speed)));
+
                 User1.R2().whileTrue(
                                 drivetrain.applyRequest(() -> drive
-                                                .withVelocityX(-User1.getLeftY() * MaxSpeed * 0.4) // forward
-                                                .withVelocityY(-User1.getLeftX() * MaxSpeed * 0.4) // Drive
-
+                                                .withVelocityX(-User1.getLeftY() * MaxSpeed * 0.4)
+                                                .withVelocityY(-User1.getLeftX() * MaxSpeed * 0.4)
                                                 .withRotationalRate(-User1.getRightX() * MaxAngularRate * speed)));
 
                 // Intake -----------------------
@@ -311,31 +297,25 @@ public class RobotContainer {
                                 new ParallelCommandGroup(
                                                 drivetrain.applyRequest(() -> drive
                                                                 .withVelocityX(-User1.getLeftY() * MaxSpeed
-                                                                                * IntakeRobotSpeed * speed) // forward
+                                                                                * IntakeRobotSpeed * speed)
                                                                 .withVelocityY(-User1.getLeftX() * MaxSpeed
-                                                                                * IntakeRobotSpeed * speed) // Drive
+                                                                                * IntakeRobotSpeed * speed)
                                                                 .withRotationalRate(-User1.getRightX() * MaxAngularRate
                                                                                 * speed)),
-
-                                                new IntakCmd(intake, -0.8)));
+                                                new IntakCmd(intake, -0.78)));
 
                 joystick.rightBumper().onTrue(
                                 new ParallelCommandGroup(
-                                                new IntakCmd(intake, 0.8)));
+                                                new IntakCmd(intake, 0.78)));
 
                 joystick.a().onTrue(
                                 new ParallelCommandGroup(
                                                 drivetrain.applyRequest(() -> drive
-                                                                .withVelocityX(-User1.getLeftY() * MaxSpeed * speed) // forward
-                                                                .withVelocityY(-User1.getLeftX() * MaxSpeed * speed) // Drive
+                                                                .withVelocityX(-User1.getLeftY() * MaxSpeed * speed)
+                                                                .withVelocityY(-User1.getLeftX() * MaxSpeed * speed)
                                                                 .withRotationalRate(-User1.getRightX() * MaxAngularRate
                                                                                 * speed)),
-                                                new IntakCmd(intake, 0)
-                                // new TransferStop(transfer)
-
-                                ));
-
-                // -------------------------------
+                                                new IntakCmd(intake, 0)));
 
                 // Stop All ----------------------------
                 joystick.x().onTrue(
@@ -343,45 +323,8 @@ public class RobotContainer {
                                                 new IntakCmd(intake, 0),
                                                 new TransferStop(transfer),
                                                 new InstantCommand(() -> feeder.FeederNoPID(0)),
-                                                new InstantCommand(() -> shooter.Stop())
-                                // shooter.run(() -> shooter.runShooter(drivetrain.getShooterSpeed())),
-                                // feeder.run(() -> feeder.FeederNoPID(0.6))
-                                ));
+                                                new InstantCommand(() -> shooter.Stop())));
                 // --------------------------------------
-
-                // User1.pov().onTrue(new InstantCommand(() -> drivetrain.AutoWon()));
-                // User1.povRight().onTrue(new InstantCommand(() -> drivetrain.AutoLost()));
-                // joystick.povDownLeft().whileTrue(new HopperCmd(hopper, 0.8));
-                // joystick.x().onTrue(new ShooterIncCommand(fs, rpm));
-                // SmartDashboard.putNumber("RPMWheel", rpm);
-
-                // User1.L2().onTrue(
-                // drivetrain.applyRequest(() ->
-                // drive.withVelocityX(-User1.getLeftY() * MaxSpeed * speed) // Drive forward
-                // with negative Y (forward)
-                // .withVelocityY(-User1.getLeftX() * MaxSpeed * speed) // Drive left with
-                // negative X (left)
-                // .withRotationalRate(drivetrain.Rot45)));
-
-                // joystick.rightTrigger().whileTrue(new FeedingCmd(feed, 0.6));
-                // joystick.rightTrigger().whileTrue(new IntakCmd(intake, -0.8));
-
-                // joystick.rightBumper().whileTrue(new IntakCmd(intake,
-                // 0)).ParallelCommandGroup(new TransferStop(transfer));
-                // joystick.rightBumper().whileTrue(new CheckFlex(cs));
-                // cs.setDefaultCommand(new RunCommand(()-> cs.runMootor(),cs));
-
-                // joystick.b().whileTrue(drivetrain.applyRequest(() ->
-                // point.withModuleDirection(new Rotation2d(-joystick.getLeftY(),
-                // -joystick.getLeftX()))
-                // ));
-
-                // Run SysId routines when holding back/start and X/Y.
-                // Note that each routine should be run exactly once in a single log.
-                // joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-                // joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-                // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-                // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
                 drivetrain.registerTelemetry((state) -> {
                         field.setRobotPose(state.Pose);

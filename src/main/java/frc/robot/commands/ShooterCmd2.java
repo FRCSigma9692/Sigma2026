@@ -18,7 +18,7 @@ public class ShooterCmd2 extends Command {
     @Override
     public void end(boolean interrupted) {
         // TODO Auto-generated method stub
-        super.end(interrupted);
+        shooter.Stop();
     }
 
     @Override
@@ -29,6 +29,6 @@ public class ShooterCmd2 extends Command {
 
     @Override
     public boolean isFinished() {
-        return true;
+        return false;
     }
 }
