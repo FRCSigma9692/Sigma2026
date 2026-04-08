@@ -67,8 +67,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     boolean rejectUpdate2;
     public double ReqRot;
     public double FinalError;
-    public double HubX = FieldConstants.BlueHubX; // 11.935; //
-    public double HubY = FieldConstants.BlueHubY;// 4.024;// 4.024; //
+    public double HubX = FieldConstants.RedHubX; // 11.935; //
+    public double HubY = FieldConstants.RedHubY;// 4.024;// 4.024; //
     private final double BumpX1 = 14.2;
     private final double BumpX2 = 10.4;
     private final double BumpY1 = 4.80;
@@ -320,6 +320,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     @Override
 
     public void periodic() {
+
+        Heading = getState().Pose.getRotation().getDegrees();
+        xOdo = getState().Pose.getX();
+        yOdo = getState().Pose.getY();
+
         if (!BumperPos()) {
             Rot45 = -User1.getRightX() * MaxAngularRate * 0.6;
         }
@@ -329,8 +334,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         LimelightHelpers.SetRobotOrientation("limelight-l", GetHeading(), 0, 0, 0, 0, 0);
 
-        if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
-            mt2 = LimelightHelpers.getBotPoseEstimate_wpiRed_MegaTag2("limelight-l");
+        if (DriverStation.isAutonomousEnabled()) {
+            if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+                mt2 = LimelightHelpers.getBotPoseEstimate_wpiRed_MegaTag2("limelight-l");
+            } else {
+                mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-l");
+            }
         } else {
             mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-l");
         }
@@ -378,7 +387,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public void autoAlignToHub() {
-
         if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
             HubX = FieldConstants.RedHubX;
             HubY = FieldConstants.RedHubY;
@@ -386,10 +394,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             HubX = FieldConstants.BlueHubX;
             HubY = FieldConstants.BlueHubY;
         }
-
-        Heading = getState().Pose.getRotation().getDegrees();
-        xOdo = getState().Pose.getX();
-        yOdo = getState().Pose.getY();
 
         ReqRot = Math.toDegrees(Math.atan2((HubY - yOdo), (HubX - xOdo)));
         ReqRot += 180;
@@ -411,27 +415,25 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return getState().Pose.getRotation().getDegrees();
     }
 
-    public boolean AutoAllign() {
-        if ((Math.abs(Error) > 1)) {
-            rot = (0.05 * Error) + (0.002 * ((Error - LastReqRot) / 0.02));
-            LastReqRot = Error;
-            rot = Math.max(-0.3, Math.min(rot, 0.3));
-            return true;
-        } else {
-            return false;
-        }
+    // public boolean AutoAllign() {
+    // if ((Math.abs(Error) > 1)) {
+    // rot = (0.05 * Error) + (0.002 * ((Error - LastReqRot) / 0.02));
+    // LastReqRot = Error;
+    // rot = Math.max(-0.3, Math.min(rot, 0.3));
+    // return true;
+    // } else {
+    // return false;
+    // }
 
-    }
+    // }
 
-    public boolean PassingAlign() {
+    public void PassingAlign() {
         if ((Math.abs(Error180) > 1)) {
             rot180 = (0.05 * Error180) + (0.002 * ((Error180 - LastError180) / 0.02));
             LastError180 = Error180;
             rot180 = (Math.max(-0.3, Math.min(rot180, 0.3)));
-            return true;
-
         } else {
-            return false;
+            rot180 = 0;
         }
 
     }
@@ -497,9 +499,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public double GetDistFromHub() {
-        if (calcdist > 4) {
-            return 4;
-        }
         return calcdist;
     }
 

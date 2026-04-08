@@ -4,12 +4,15 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.signals.SensorPhaseValue;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -18,14 +21,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Hopper extends SubsystemBase {
+  public double ArmPos;
   public double pos;
   public final SparkMax hopper;
   SparkClosedLoopController closedLoopController;
   SparkMaxConfig configure = new SparkMaxConfig();
   RelativeEncoder hoppereEncoder;
+  CANcoder ArmCoder = new CANcoder(26, "Sigma9692");
 
   /** Creates a new Intake. */
   public Hopper() {
+
     hopper = new SparkMax(16, MotorType.kBrushless);
     hoppereEncoder = hopper.getEncoder();
     configure
@@ -45,7 +51,10 @@ public class Hopper extends SubsystemBase {
 
   @Override
   public void periodic() {
-    pos = hoppereEncoder.getPosition();
+    ArmPos = ArmCoder.getAbsolutePosition().getValueAsDouble();
+    SmartDashboard.putNumber("Arm Coder : ", ArmPos);
+    //pos = hoppereEncoder.getPosition();
+     pos = ArmPos;
     SmartDashboard.putNumber("Hopper position", hoppereEncoder.getPosition());
 
     // This method will be called once per scheduler run
@@ -61,7 +70,7 @@ public class Hopper extends SubsystemBase {
   }
 
   public void runHopper(double pow) {
-    if (pow < 0 && pos > 0 || pow > 0 && pos < 38) {
+    if (pow < 0 && pos <= -0.01 || pow > 0 && pos > -0.308) {
       hopper.set(pow);
     } else {
       hopper.set(0);

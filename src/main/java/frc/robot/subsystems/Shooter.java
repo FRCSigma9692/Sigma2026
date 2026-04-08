@@ -41,10 +41,16 @@ public class Shooter extends SubsystemBase {
   public static double Kd = 0;// 0.0007;// 0.011; // 0.0007
   public static double Kf = 0.00018;// 0.00025; // 0.00004; // 0.00006
   public double RampDOwnRPM;
+  public InterpolatingDoubleTreeMap table = new InterpolatingDoubleTreeMap();
   // Shooter RPM
   public static final double SHOOTER_RPM = 2600;
 
   public Shooter(CommandSwerveDrivetrain commandSwerveDrivetrain) {
+
+    // table.put(0.0, 0.0);
+    // table.put(1.0, 10.0);
+
+    table.put(3.0, 3000.0);
 
     this.commandSwerveDrivetrain = commandSwerveDrivetrain;
 
@@ -89,6 +95,7 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("InterPolationTreeMap",table.get(commandSwerveDrivetrain.GetDistFromHub()));
     speed = commandSwerveDrivetrain.shooterspeed;
 
     SmartDashboard.putNumber("OutputPower", Poutput);
@@ -172,5 +179,12 @@ public class Shooter extends SubsystemBase {
 
     // Apply the proportion to the output range and shift by the output start
     return outputStart + proportion * (outputEnd - outputStart);
+  }
+
+  public double mapRange(double dist){
+   
+    return table.get(dist);
+
+
   }
 }

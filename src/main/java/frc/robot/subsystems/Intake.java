@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Intake extends SubsystemBase {
   private final SparkMax Lintake;
   private final SparkMax Rintake;
+
   SparkMaxConfig Lconfig = new SparkMaxConfig();
 
   /** Creates a new Intake. */
@@ -33,6 +35,8 @@ public class Intake extends SubsystemBase {
         .follow(Lintake, true);
     Lintake.configure(Lconfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     Rintake.configure(RConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+
   }
 
   @Override
@@ -40,6 +44,7 @@ public class Intake extends SubsystemBase {
     // SmartDashboard.putNumber("Left IntakeCurrent", GetCurrentL());
     // SmartDashboard.putNumber("Right IntakeCurrent", GetCurrentR());
     // This method will be called once per scheduler run
+   
   }
 
   public void runIntake(double speed) {

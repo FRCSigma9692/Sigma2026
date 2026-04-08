@@ -64,7 +64,7 @@ public class RobotContainer {
         public BooleanSupplier override = () -> true;
         public double output;
         public double RotPow45;
-        private double speed = 0.7;
+        private double speed = 0.4;
         private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top
                                                                                       // speed
         private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per
@@ -236,12 +236,12 @@ public class RobotContainer {
                                 new ShooterCmd(shooter, FeederRPM));
                 joystick.b().whileTrue(new ShooterCmd2(shooter, 5000));
 
-                joystick.rightTrigger(0.5).whileTrue(new ShooterCmd2(shooter, 2950));
+                joystick.rightTrigger(0.5).whileTrue(new ShooterCmd2(shooter, 2000));
 
                 joystick.axisMagnitudeGreaterThan(5, 0.1).whileTrue(
                                 new RunCommand(
                                                 () -> hopper.runHopper(
-                                                                (MathUtil.applyDeadband(joystick.getRightY(), 0.1))
+                                                                (MathUtil.applyDeadband(joystick.getRightY(), 0.3))
                                                                                 * 0.5),
                                                 hopper));
 
@@ -266,20 +266,18 @@ public class RobotContainer {
 
                 // Allignment ---------------
                 User1.R1().whileTrue(
-                                new RunCommand(() -> drivetrain.autoAlignToHub(), drivetrain)
-                                                .alongWith(
-                                                                drivetrain.applyRequest(() -> drive
-                                                                                .withVelocityX(-User1.getLeftY()
-                                                                                                * MaxSpeed
-                                                                                                * AlignmentSpeed)
-                                                                                .withVelocityY(-User1.getLeftX()
-                                                                                                * MaxSpeed
-                                                                                                * AlignmentSpeed)
-                                                                                .withRotationalRate(drivetrain.rot
-                                                                                                * MaxAngularRate))))
-                                .onFalse(
-                                                new InstantCommand(() -> drivetrain.rot = 0));
+                                new ParallelCommandGroup(
+                                                Commands.run(() -> drivetrain.autoAlignToHub()),
 
+                                                drivetrain.applyRequest(() -> drive
+                                                                .withVelocityX(-User1.getLeftY()
+                                                                                * MaxSpeed
+                                                                                * AlignmentSpeed)
+                                                                .withVelocityY(-User1.getLeftX()
+                                                                                * MaxSpeed
+                                                                                * AlignmentSpeed)
+                                                                .withRotationalRate(drivetrain.rot
+                                                                                * MaxAngularRate))));
                 User1.L2().whileTrue(
                                 drivetrain.applyRequest(() -> drive
                                                 .withVelocityX(-User1.getLeftY() * MaxSpeed * AlignmentSpeed)

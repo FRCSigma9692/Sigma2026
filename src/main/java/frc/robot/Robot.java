@@ -19,12 +19,17 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.LimelightHelpers;
 
 public class Robot extends TimedRobot {
+    String Gamedata;
     public Optional<Alliance> alliance;
     boolean Allianceshift;
     double Matchtime;
+    public Color color;
+    public double Time;
     boolean AutoResult = false;
     private Command m_autonomousCommand;
     private final RobotContainer m_robotContainer;
+    public boolean wonAuto;
+    public boolean checkcase = true;
     Color testColor = new Color(255, 255, 255);
 
     /* log and replay timestamp and joystick data */
@@ -90,8 +95,49 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
+        Gamedata = DriverStation.getGameSpecificMessage();
+        Time = DriverStation.getMatchTime();
+        if (Gamedata.length()>0){
+            //WonAuto if Red
+            if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red && Time>105 && checkcase) {
+
+                if (Gamedata.charAt(0)=='R')
+                    wonAuto = true;
+                else if (Gamedata.charAt(0)=='B')
+                    wonAuto=false;
+                checkcase = false;
+            }
+            //WonAuto if Blue
+            if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue && Time > 105 && checkcase) {
+                if (Gamedata.charAt(0) == 'B')
+                    wonAuto = true;
+                else if (Gamedata.charAt(0) == 'R')
+                    wonAuto = false;
+                checkcase = false;
+            }
+
+            if (Gamedata.charAt(0)=='R' && DriverStation.getAlliance().orElse(Alliance.Blue)==Alliance.Red){
+                color = new Color(0, 255, 0);
+            }
+            
+            if (!checkcase){
+                if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red && Gamedata.charAt(0)=='B' &&
+                 ((Time>80 && 85<Time) || (Time>30 && 35<Time))){
+                    //LED blink
+                 }
+                 if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue && Gamedata.charAt(0) == 'R' &&
+                         ((Time > 80 && 85 < Time) || (Time > 30 && 35 < Time))) {
+                        //LED blink
+                 }
+
+          
+            }
+
+        }
+        color = new Color(0, 0, 0);
         SmartDashboard.putNumber("LimelightPipelineIndex", LimelightHelpers.getCurrentPipelineIndex("limelight-l"));
         SmartDashboard.putString("Alliance Shift", testColor.toString());
+        
     }
 
     @Override
