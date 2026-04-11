@@ -73,7 +73,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final double BumpX2 = 10.4;
     private final double BumpY1 = 4.80;
     private final double BumpY2 = 6.120;
-
+    public double ErrorTrench;
+    public double LastTrench = 0;
+    public double rotTrench;
     public double Rot45;
     public double LastRot45 = 0;
     public double Error45;
@@ -85,6 +87,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public double Heading;
     public double Error;
     public double Error180;
+    public double LastX;
+    public double skipper = 0;
+    public double targetHeading;
     private CommandPS5Controller User1 = new CommandPS5Controller(0);
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -335,7 +340,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         LimelightHelpers.SetRobotOrientation("limelight-l", GetHeading(), 0, 0, 0, 0, 0);
 
         if (DriverStation.isAutonomousEnabled()) {
-            if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+            if (DriverStation.getAlliance().get()== Alliance.Red) {
                 mt2 = LimelightHelpers.getBotPoseEstimate_wpiRed_MegaTag2("limelight-l");
             } else {
                 mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-l");
@@ -363,6 +368,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
         }
 
+        if (skipper%20==0){
+            LastX = getState().Pose.getX();
+           
+        }
+        skipper++;
+
         // ✅ 6. Dashboard
 
         SmartDashboard.putNumber("Vision X", (mt2 != null) ? mt2.pose.getX() : -99);
@@ -374,7 +385,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SmartDashboard.putNumber("Error", Error);
         SmartDashboard.putNumber("Dist", calcdist);
         SmartDashboard.putNumber("Shooter Speed", shooterspeed);
-
+        SmartDashboard.putNumber("Error Trench",ErrorTrench);
+        SmartDashboard.putNumber("Rot trench",rotTrench);
+        SmartDashboard.putNumber("Last X",LastX);
+        SmartDashboard.putBoolean("In Trench",inTrench());
         // ✅ Operator Perspective logic
         if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent(allianceColor -> {
@@ -387,7 +401,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     public void autoAlignToHub() {
-        if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
             HubX = FieldConstants.RedHubX;
             HubY = FieldConstants.RedHubY;
         } else {
@@ -409,6 +423,91 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         } else {
             rot = 0;
         }
+    }
+    
+    public void autoAlignToTrehch() {
+        if (!inTrench()){
+        if (DriverStation.getAlliance().get() == Alliance.Red);
+        if (LastX>13.5){
+            targetHeading = 180;
+        } else {
+            targetHeading = 0; 
+        }
+        //-----------BLUE
+        if (DriverStation.getAlliance().get() == Alliance.Blue)
+            
+        if (LastX < 4) {
+            targetHeading = 0;
+        } else {
+            targetHeading = 180;
+        }
+    }
+        // if (DriverStation.getAlliance().get() == Alliance.Red) {
+            
+        //     HubX = FieldConstants.RedHubX;
+            
+        // } else {
+        //     HubX = FieldConstants.BlueHubX;
+        //     HubY = FieldConstants.BlueHubY;
+        // }
+        ErrorTrench = targetHeading - Heading;
+        ErrorTrench = (ErrorTrench+180)%360-180;
+
+        if (Math.abs(ErrorTrench) > 2) {
+            rotTrench = (0.05 * ErrorTrench) + (0.001 * ((ErrorTrench - LastTrench) / 0.02));
+            LastTrench = ErrorTrench;
+            rotTrench = Math.max(-0.5, Math.min(rotTrench, 0.5));
+        } else {
+            rotTrench = 0;
+        }
+    }
+    
+    public void autoAligntoPass() {
+        if (inNeutralZone()) {
+            if (DriverStation.getAlliance().get() == Alliance.Red)
+                ;
+            if (LastX > 13.5) {
+                targetHeading = 180;
+            } else {
+                targetHeading = 0;
+            }
+            // -----------BLUE
+            if (DriverStation.getAlliance().get() == Alliance.Blue)
+
+                if (LastX < 4) {
+                    targetHeading = 0;
+                } else {
+                    targetHeading = 180;
+                }
+        }
+        // if (DriverStation.getAlliance().get() == Alliance.Red) {
+
+        // HubX = FieldConstants.RedHubX;
+
+        // } else {
+        // HubX = FieldConstants.BlueHubX;
+        // HubY = FieldConstants.BlueHubY;
+        // }
+        ErrorTrench = targetHeading - Heading;
+        ErrorTrench = (ErrorTrench + 180) % 360 - 180;
+
+        if (Math.abs(ErrorTrench) > 2) {
+            rotTrench = (0.05 * ErrorTrench) + (0.001 * ((ErrorTrench - LastTrench) / 0.02));
+            LastTrench = ErrorTrench;
+            rotTrench = Math.max(-0.5, Math.min(rotTrench, 0.5));
+        } else {
+            rotTrench = 0;
+        }
+    }
+
+    public boolean inTrench(){
+        double x= getState().Pose.getX();
+        return (x> 12.9 && x< 11.44);
+    }
+    
+    public boolean inNeutralZone() {
+        double x = getState().Pose.getX();
+        return (x < 11);
     }
 
     public double BotHeading() {

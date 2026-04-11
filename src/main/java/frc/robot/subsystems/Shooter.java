@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
+  double rampUp = 300;
   CommandSwerveDrivetrain commandSwerveDrivetrain;
   public double InitRPM = 2000;
   public SparkMax M1;
@@ -38,8 +39,9 @@ public class Shooter extends SubsystemBase {
   public double currenttime;
   public static double Kp = 0.0009;// 0.001; // 0.00055 //0.00072
   public static double Ki = 0;// 0;// 1e-7;//0 // 1e-9
-  public static double Kd = 0;// 0.0007;// 0.011; // 0.0007
-  public static double Kf = 0.00018;// 0.00025; // 0.00004; // 0.00006
+  public static double Kd = 0.05;// 0.0007;// 0.011; // 0.0007
+  public static double Kf = 0.0002
+  ;// 0.00025; // 0.00004; // 0.00006
   public double RampDOwnRPM;
   public InterpolatingDoubleTreeMap table = new InterpolatingDoubleTreeMap();
   // Shooter RPM
@@ -130,8 +132,8 @@ public class Shooter extends SubsystemBase {
 
   public void runShooterRPM() {
     // shooterController.setReference(0.3, ControlType.kMAXMotionVelocityControl);
-    M1.set(speed);
-    SmartDashboard.putNumber("Set Speed", speed);
+    M1.set(0.5);
+    SmartDashboard.putNumber("Set Speed", 0.5);
   }
 
   public void runShooterRPMFixed(double speed) {
@@ -141,7 +143,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void runShooterRPMFixed7(double speed) {
-    shooterController.setReference(speed, ControlType.kMAXMotionVelocityControl);
+    double x = rampUp+speed;
+    shooterController.setReference(x, ControlType.kVelocity);
     // M1.set(0.7);
     SmartDashboard.putNumber("Set Speed", speed);
   }

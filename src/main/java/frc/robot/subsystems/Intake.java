@@ -36,15 +36,16 @@ public class Intake extends SubsystemBase {
     Lintake.configure(Lconfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     Rintake.configure(RConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-
+    SmartDashboard.putNumber("Left IntakeCurrent", GetCurrentL());
+    SmartDashboard.putNumber("Right IntakeCurrent", GetCurrentR());
   }
 
   @Override
   public void periodic() {
-    // SmartDashboard.putNumber("Left IntakeCurrent", GetCurrentL());
-    // SmartDashboard.putNumber("Right IntakeCurrent", GetCurrentR());
+    SmartDashboard.putNumber("Left IntakeCurrent", GetCurrentL());
+    SmartDashboard.putNumber("Right IntakeCurrent", GetCurrentR());
     // This method will be called once per scheduler run
-   
+
   }
 
   public void runIntake(double speed) {
